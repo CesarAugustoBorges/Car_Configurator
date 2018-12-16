@@ -3,14 +3,21 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Properties;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String args[]) throws Exception{
         Properties properties = new Properties();
         properties.setProperty("user", "root");
-        properties.setProperty("password", "123cacbCACBCESAR");
         properties.setProperty("useSSL", "false");
         properties.setProperty("autoReconnect", "true");
+
+        String password;
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Intruduza a palavra-passe relativa ao utilizaor root do seu mysql");
+        password = scan.next();
+        properties.setProperty("password", password);
+        scan.close();
 
         String db;
         db = "Npng";
