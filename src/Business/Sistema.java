@@ -33,4 +33,9 @@ public class Sistema {
     public boolean containsPeca(int id) {
         return facade.containsPeca(id);
     }
+
+    // Metodo que verifica as credenciais do utilizador. Deve retornar 0 se for Admin, 1 se for gestor, 2 se for cliente, -1 para credenciais erradas. Luís Macedo
+    public int login(String user, String password){
+        return 0;
+    }
 }
