@@ -6,8 +6,18 @@ CREATE TABLE `Cliente` (
  `nif` VARCHAR(45) NOT NULL,
  `nome` VARCHAR(45) NOT NULL,
  PRIMARY KEY (`id`));
+
+CREATE TABLE Funcionario(
+ id INT NOT NULL auto_increment,
+ nif VARCHAR(45) NOT NULL,
+ nome VARCHAR(45) NOT NULL,
+ tipo VARCHAR(45) NOT NULL,
+ passe VARCHAR(45) NOT NULL,
+ PRIMARY KEY(id));
+	
  
- 
+     
+
  
  Insert Into Cliente 
 	(nif,nome)
@@ -16,5 +26,14 @@ CREATE TABLE `Cliente` (
     ("123456788","César Augusto"),
     ("123456777","Mini J"),
     ("123456666","Discipulo");
-    
 -- select * from Cliente;
+
+
+Insert Into Funcionario
+(nif,nome,tipo,passe)
+VALUES
+("123456789","Vedeta","Gestor","vedeta"),
+("123456788","Draven","Gestor","axes"),
+("123456777","Lux","Gestor","narnia"),
+("123456666","Defenido","Admin","bolos");
+ select * from Funcionario;

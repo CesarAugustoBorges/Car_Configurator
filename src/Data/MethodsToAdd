@@ -1,8 +1,4 @@
 ---------------------DAOFacade---------------------
-public Funcionario getUtilizador(int id);
-public boolean constainsUtilizador(int id);
-public void putUtilizador(Utilizador user);
-
 public List<Pair<Integer,String>> getStock();  // Devolve uma lista de pares, sendo o inteiro o id e a String o nome da peça.
 public Pair<Integer,Integer> getInfoOfPeca(int id); // Devolve a quantidade disponivel e máxima como um par
 public boolean containsPeca(int id);

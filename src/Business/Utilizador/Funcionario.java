@@ -7,6 +7,14 @@ public class Funcionario {
     private String tipo;
     private String passe;
 
+    public Funcionario(){
+        this.id = 0;
+        this.nif = "";
+        this.nome = "";
+        this.tipo = "";
+        this.passe = "";
+    }
+
     public Funcionario(String nif, String nome, String passe) {
         this.id = 0;
         this.nif = nif;
@@ -36,7 +44,7 @@ public class Funcionario {
     }
 
     public void setNome(String nome) {
-        nome = nome;
+        this.nome = nome;
     }
 
     public String getTipo() {
@@ -55,4 +63,7 @@ public class Funcionario {
         return this.passe.equals(passe);
     }
 
+    public String getPasse() {
+        return passe;
+    }
 }
