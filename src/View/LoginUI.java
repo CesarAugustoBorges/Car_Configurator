@@ -35,21 +35,19 @@ public class LoginUI{
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(userTxt.getText().equals("admin")){
-                    new ClientUI();
-                    frame.dispose();
-                }
-                else{wrongInput.setVisible(true);}
-                /*
-                //switch(login(userTxt.getText(), passTxt.getText())){
-                //switch(4){
-                	case 0:     new AdminUI();
+                if(userTxt.getText.equals("admin")){createJFrame(0, new AdminUI());}
+                if(userTxt.getText.equals("gestor")){createJFrame(0, new ManagerUI());}
+                if(userTxt.getText.equals("funcionario")){createJFrame(0, new ClientUI());}
+                frame.dispose();
+                /*         
+                switch(login(userTxt.getText(), passTxt.getText())){
+                	case 0:     createJFrame(new AdminUI());
                                 frame.dispose();
                 			    break;
-                	case 1:     new ManagerUI();
+                	case 1:     createJFrame(new ManagerUI());
                                 frame.dispose();
                 			    break;
-                	case 2:     new ClientUI();
+                	case 2:     createJFrame(new ClientUI());
                                 frame.dispose();
                                 break;
                     case -1:    wrongInput.setVisible(true);
@@ -66,5 +64,31 @@ public class LoginUI{
         frame.add(password);
         frame.add(passTxt);
         frame.add(login);
-	}	
+	}
+
+    private void createJFrame(int i, JPanel panel){
+        int w = 0, h = 0;
+        String name;
+
+        switch(i){
+            case 0:     w = 520;h = 640;name="Admin";
+                        break;
+            case 1:     w = 0;h = 0;name="Gestor";
+                        break;
+            case 2:     w = 500;h = 600;name="ConfiguraFácil";
+                        break;
+            default:    w = 500;h = 600;name="ConfiguraFácil";
+                        break;
+        }
+
+        JFrame frame = new JFrame(name);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setSize(w,h);
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        frame.getContentPane().add(panel);
+
+        if(i==2 || i==0){ClientUI.createMenuBar(frame);}
+    }
 }

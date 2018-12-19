@@ -7,17 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-public class ClientUI{
-    private JFrame frame;
-
-    private JMenuItem newCar;
-    private JMenuItem saveCar;
-    private JMenuItem openFile;
-    private JMenuItem confOtima;
-    private JMenuItem order;
-    private JMenuItem instructions;
-    private JMenuItem about;
-
+public class ClientUI extends JPanel{
     private JTree my;
     private JTree all;
     private JLabel allLabel;
@@ -30,9 +20,8 @@ public class ClientUI{
     private JTextField logs;
 
     public ClientUI(){
+        this.setLayout(null);
         createAllComponents();
-        createFrame();    
-        createMenuBar();
         createListeners();
         addAll();
     }
@@ -91,91 +80,6 @@ public class ClientUI{
     }
 
     private void createListeners(){
-    	this.newCar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Stuff here
-            }
-        });
-
-    	this.saveCar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Stuff here
-            }
-        });
-
-		this.openFile.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Stuff here
-            }
-        });
-
-        this.confOtima.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame confFrame = new JFrame("Configuração Ótima");        
-		        confFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		        confFrame.setLayout(null);
-		        confFrame.setSize(325,175);
-		        confFrame.setResizable(false);
-		        confFrame.setLocationRelativeTo(null);
-		        confFrame.setVisible(true);
-
-		        JLabel label = new JLabel("Orçamento:");
-		        JLabel error = new JLabel("Valor errado!");
-		        JTextField txtBox = new JTextField();
-		        JButton done = new JButton("Feito");
-
-				label.setBounds(55,25,90,30);
-				error.setBounds(180,25,90,30);
-				error.setForeground(Color.red);
-				error.setVisible(false);
-		        txtBox.setBounds(50,50,220,30);
-		        done.setBounds(180,100,90,30);
-
-		        confFrame.add(label);
-		        confFrame.add(error);
-		        confFrame.add(txtBox);
-		        confFrame.add(done);
-
-		        done.addActionListener(new ActionListener() {
-		            @Override
-		            public void actionPerformed(ActionEvent e){
-		            	try{
-		            		int value = Integer.parseInt(txtBox.getText());
-		            		confFrame.dispose();
-		            	}
-		            	catch(NumberFormatException ex){
-		            		error.setVisible(true);
-		            	}
-		            }
-		        });
-            }
-        });
-
-        this.order.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Stuff here
-            }
-        });
-
-        this.instructions.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Stuff here
-            }
-        });
-
-        this.about.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Stuff here
-            }
-        });    	
-
         this.partsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -212,25 +116,29 @@ public class ClientUI{
         });        
     }
 
-    private void createFrame(){
-        this.frame = new JFrame("Teste");
-        this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.frame.setLayout(null);
-        this.frame.setSize(500,600);
-        this.frame.setResizable(false);
-        this.frame.setLocationRelativeTo(null);
-        this.frame.setVisible(true);
+    private void addAll(){
+        add(partsButton);
+        add(packsButton);
+        add(my);
+        add(myLabel);
+        add(all);
+        add(allLabel);
+        add(addPartButton);
+        add(removePartButton);
+        add(logs);
+        add(moreButton);
     }
 
-    private void createMenuBar(){
+    public static void createMenuBar(JFrame frame){
         JMenuBar menubar = new JMenuBar();
 
         JMenu carMenu = new JMenu("Carro");
-        this.newCar = new JMenuItem("Novo Carro");
-        this.saveCar = new JMenuItem("Guardar Carro");
-        this.openFile = new JMenuItem("Abrir Ficheiro");
-        this.confOtima = new JMenuItem("Configuração Ótima");
-        this.order = new JMenuItem("Encomendar Carro");
+        JMenuItem newCar = new JMenuItem("Novo Carro");
+        JMenuItem saveCar = new JMenuItem("Guardar Carro");
+        JMenuItem openFile = new JMenuItem("Abrir Ficheiro");
+        JMenuItem confOtima = new JMenuItem("Configuração Ótima");
+        JMenuItem order = new JMenuItem("Encomendar Carro");
+
         carMenu.add(newCar);
         carMenu.add(saveCar);
         carMenu.add(openFile);
@@ -238,27 +146,104 @@ public class ClientUI{
         carMenu.add(order);
 
         JMenu helpMenu = new JMenu("Ajuda");
-        this.instructions = new JMenuItem("Instruções");
-        this.about = new JMenuItem("Sobre");
+        JMenuItem instructions = new JMenuItem("Instruções");
+        JMenuItem about = new JMenuItem("Sobre");
+
         helpMenu.add(instructions);
         helpMenu.add(about);
 
         menubar.add(carMenu);
         menubar.add(helpMenu);
 
-        this.frame.setJMenuBar(menubar);
+        frame.setJMenuBar(menubar);
+
+        newCar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Stuff here
+            }
+        });
+
+        saveCar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Stuff here
+            }
+        });
+
+        openFile.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Stuff here
+            }
+        });
+
+        confOtima.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                configOtima();
+            }
+        });
+
+        order.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Stuff here
+            }
+        });
+
+        instructions.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Stuff here
+            }
+        });
+
+        about.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Stuff here
+            }
+        });
     }
 
-    private void addAll(){
-        this.frame.add(partsButton);
-        this.frame.add(packsButton);
-        this.frame.add(my);
-        this.frame.add(myLabel);
-        this.frame.add(all);
-        this.frame.add(allLabel);
-        this.frame.add(addPartButton);
-        this.frame.add(removePartButton);
-        this.frame.add(logs);
-        this.frame.add(moreButton);
+    private static void configOtima(){
+        JFrame confFrame = new JFrame("Configuração Ótima");        
+        confFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        confFrame.setLayout(null);
+        confFrame.setSize(325,175);
+        confFrame.setResizable(false);
+        confFrame.setLocationRelativeTo(null);
+        confFrame.setVisible(true);
+
+        JLabel label = new JLabel("Orçamento:");
+        JLabel error = new JLabel("Valor errado!");
+        JTextField txtBox = new JTextField();
+        JButton done = new JButton("Feito");
+
+        label.setBounds(55,25,90,30);
+        error.setBounds(180,25,90,30);
+        error.setForeground(Color.red);
+        error.setVisible(false);
+        txtBox.setBounds(50,50,220,30);
+        done.setBounds(180,100,90,30);
+
+        confFrame.add(label);
+        confFrame.add(error);
+        confFrame.add(txtBox);
+        confFrame.add(done);
+
+        done.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                try{
+                    int value = Integer.parseInt(txtBox.getText());
+                    confFrame.dispose();
+                }
+                catch(NumberFormatException ex){
+                    error.setVisible(true);
+                }
+            }
+        });
     }
 }
