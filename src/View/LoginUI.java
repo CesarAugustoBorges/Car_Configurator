@@ -35,9 +35,9 @@ public class LoginUI{
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(userTxt.getText.equals("admin")){createJFrame(0, new AdminUI());}
-                if(userTxt.getText.equals("gestor")){createJFrame(0, new ManagerUI());}
-                if(userTxt.getText.equals("funcionario")){createJFrame(0, new ClientUI());}
+                if(userTxt.getText().equals("admin")){createJFrame(0, new AdminUI());}
+                if(userTxt.getText().equals("gestor")){createJFrame(0, new ManagerUI());}
+                if(userTxt.getText().equals("funcionario")){createJFrame(0, new ClientUI());}
                 frame.dispose();
                 /*         
                 switch(login(userTxt.getText(), passTxt.getText())){
