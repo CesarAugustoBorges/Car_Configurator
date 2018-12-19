@@ -12,7 +12,7 @@ import java.sql.*;
 //Count - size() : int
 
 
-public class ClienteDAO extends DAOFacede{
+public class ClienteDAO{
 
     private Connection con;
 
