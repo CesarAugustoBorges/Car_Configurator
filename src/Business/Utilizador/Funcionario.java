@@ -23,6 +23,11 @@ public class Funcionario {
         this.tipo = "Funcionario";
     }
 
+    public Funcionario(int id, String pass) {
+        this.id = id;
+        this.passe = pass;
+    }
+
     public int getId() {
         return id;
     }

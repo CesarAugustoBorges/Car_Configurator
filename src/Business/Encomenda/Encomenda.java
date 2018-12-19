@@ -1,6 +1,7 @@
 package Business.Encomenda;
 
 import Business.Stock.Peca;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +10,16 @@ import java.util.stream.Collectors;
 
 public class Encomenda {
     private int id;
-    private ArrayList<LinhaDeEncomenda> linhasDeEncomenda;
+    private List<LinhaDeEncomenda> linhasDeEncomenda;
     private String status;
 
-    public Encomenda(int id, ArrayList<LinhaDeEncomenda> les) {
+    public Encomenda() {
         this.status = "";
+        this.linhasDeEncomenda = new ArrayList<>();
+    }
+
+    public Encomenda(int id, ArrayList<LinhaDeEncomenda> les) {
+        this.status = "Valid";
         this.setId(id);
         this.setLinhasDeEncomenda(les);
     }
@@ -28,6 +34,7 @@ public class Encomenda {
             }
         this.linhasDeEncomenda.add(lep);
     }
+
 
     public void addPacote(PacoteDeConfiguracao p) {
         LinhaDeEncomendaPacote lep = new LinhaDeEncomendaPacote(linhasDeEncomenda.size()+1, 1, p);
@@ -66,7 +73,7 @@ public class Encomenda {
             this.linhasDeEncomenda.add(le);
     }
 
-    public String checkStatusWhenAddding(Peca p) {
+    public String checkStatusWhenAdding(Peca p) {
         ArrayList<Integer> dependencias = p.getDependencias();
         ArrayList<Integer> incompatibilidades = p.getIncompatibilidades();
         for(LinhaDeEncomenda le: linhasDeEncomenda) {
@@ -86,7 +93,7 @@ public class Encomenda {
         return this.status;
     }
 
-    public String checkStatusWhenAddding(PacoteDeConfiguracao pdc)  {
+    public String checkStatusWhenAdding(PacoteDeConfiguracao pdc)  {
         Set<Integer> incompatibilidades = pdc.getIncompatibilidades();
         for(LinhaDeEncomenda le: linhasDeEncomenda) {
             for(Integer inc : incompatibilidades){
@@ -99,16 +106,17 @@ public class Encomenda {
         return this.status;
     }
 
-    // Se um pacote tiver um item na lista, então o pacote é removido
-    public void removePeças(List<Integer> ids) {
-        for(int i = 0; i < linhasDeEncomenda.size(); i++) {
-            for(int j = 0; j < ids.size(); j++) {
-                if(linhasDeEncomenda.get(i).hasPeca(j)){
-                    this.linhasDeEncomenda.remove(i);
-                    i--; j = ids.size();
-                }
-            }
+    public void removePeca(int id) {
+        for(LinhaDeEncomenda le: linhasDeEncomenda) {
+            if(le.hasPeca(id))
+                this.linhasDeEncomenda.remove(le);
         }
+    }
+
+    // Se um pacote tiver um item na lista, então o pacote é removido
+    public void removePecas(List<Integer> ids) {
+        for(Integer id: ids)
+            removePeca(id);
     }
 
     public static void main(String[] args) {
