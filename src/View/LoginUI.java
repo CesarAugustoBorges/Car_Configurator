@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-
+/*
 public class LoginUI{
 	public LoginUI(){
         JLabel wrongInput = new JLabel("Credenciais erradas!");
@@ -56,7 +56,7 @@ public class LoginUI{
                                 break;
                 	default:    wrongInput.setVisible(true);
                                 break;
-                }*/
+
             }
         });
 
@@ -68,3 +68,4 @@ public class LoginUI{
         frame.add(login);
 	}	
 }
+*/
