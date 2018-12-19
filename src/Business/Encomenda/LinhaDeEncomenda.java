@@ -1,17 +1,21 @@
 package Business.Encomenda;
 
 public abstract class LinhaDeEncomenda {
-    protected int id;
-    protected int preco;
-    protected String descricao;
-    protected int quantidade;
+    private int id;
+    private float preco;
+    private int quantidade;
 
     public LinhaDeEncomenda(LinhaDeEncomenda le ) {
         this.id = le.getId();
         this.preco = le.getPreco();
-        this.descricao = le.getDescricao();
         this.quantidade = le.getQuantidade();
     }
+
+    public LinhaDeEncomenda(int id, int quantidade){
+        this.id = id;
+        this.quantidade = quantidade;
+    }
+
 
     public int getId() {
         return id;
@@ -21,20 +25,12 @@ public abstract class LinhaDeEncomenda {
         this.id = id;
     }
 
-    public int getPreco() {
+    public float getPreco() {
         return preco;
     }
 
-    public void setPreco(int preco) {
+    public void setPreco(float preco) {
         this.preco = preco;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
     }
 
     public int getQuantidade() {
@@ -46,4 +42,6 @@ public abstract class LinhaDeEncomenda {
     }
 
     public abstract LinhaDeEncomenda clone();
+    public abstract boolean hasSameProduct(LinhaDeEncomenda le);
+    public abstract boolean hasPeca(int p);
 }
