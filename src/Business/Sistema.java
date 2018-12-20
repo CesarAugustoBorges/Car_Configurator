@@ -7,7 +7,7 @@ import Data.*;
 import javafx.util.Pair;
 
 import java.util.List;
-
+/*
 public class Sistema {
     private DAOFacade facade = new DAODacade();
 
@@ -39,3 +39,4 @@ public class Sistema {
         return 0;
     }
 }
+*/
