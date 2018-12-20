@@ -19,7 +19,15 @@ CREATE TABLE Funcionario(
  tipo VARCHAR(45) NOT NULL,
  passe VARCHAR(45) NOT NULL,
  PRIMARY KEY(id));
-	
+
+-- tabela de Pacotes
+CREATE TABLE Pacote(
+id INT NOT NULL AUTO_INCREMENT,
+preco FLOAT NOT NULL,
+descricao VARCHAR(45) NOT NULL,
+PRIMARY KEY(id));
+
+
 -- tabela de Peças
  CREATE TABLE Peça(
  id INT NOT NULL AUTO_INCREMENT,
@@ -40,11 +48,11 @@ id1 INT NOT NULL,
 idincompativel INT NOT NULL,
 PRIMARY Key(id1,idincompativel));
 
-CREATE TABLE Pacote(
-id INT NOT NULL AUTO_INCREMENT,
-preco FLOAT NOT NULL,
-descricao VARCHAR(45) NOT NULL,
-PRIMARY KEY(id));
+-- tabela de peças incompativeis para pacotes
+CREATE TABLE Peça_PacoteIncompativeis(
+id INT NOT NULL,
+idpeça INT NOT NULL,
+PRIMARY KEY(id,idpeça));
             
             
 -- tabel de stoks
@@ -57,6 +65,13 @@ PRIMARY KEY(idPeça));
 
 -- INSERTS
 
+INSERT INTO Peça_PacoteIncompativeis
+(id,idpeça)
+VALUES
+(1,1),(1,2),(1,3),(1,4),
+(2,1),(2,2),(2,5);
+
+
 Insert Into Stock
 (qtdisponivel,qtmaxima,idPeça)
 VALUES
@@ -65,10 +80,18 @@ VALUES
 (30,50,4),
 (10,500,5);
  
- Insert Into Peça
- (categoria)
+ INSERT Into Pacote
+ (id,preco,descricao)
  VALUES
- ("Roda"), ("Volante"),("Porta"),("Vidro"),("Jante"),("motor"),("tubo"),("pintura"),("espelho"),("capo");
+ (1,10,"Pacote Desportivo"),
+ (2,5,"Pacote Incompleto");
+ 
+ 
+
+ Insert Into Peça
+ (categoria,idpacote)
+ VALUES
+ ("Roda",1), ("Volante",2),("Porta",null),("Vidro",null),("Jante",null),("motor",null),("tubo",null),("pintura",null),("espelho",null),("capo",null);
  
  
  INSERT INTO PeçasDependentes
@@ -81,7 +104,7 @@ VALUES
  (id1,idincompativel)
  VALUES
  (1,4),(1,1);
- 
+
  
  Insert Into Cliente 
 	(nif,nome)
