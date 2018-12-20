@@ -1,5 +1,8 @@
--- CREATE DATABASE CarData; 
+DROP DATABASE CarData;
+
+CREATE DATABASE CarData; 
 Use CarData;
+
 
 -- tabela de clientes
 CREATE TABLE `Cliente` (
@@ -21,20 +24,29 @@ CREATE TABLE Funcionario(
  CREATE TABLE Peça(
  id INT NOT NULL AUTO_INCREMENT,
  categoria VARCHAR(45) NOT NULL,
- PRIMARY KEY(id));
+ idpacote INT ,
+ PRIMARY KEY(id),
+ FOREIGN KEY(idpacote) REFERENCES Pacote(id));
  
  -- tabela de Peças dependentes
 CREATE TABLE PeçasDependentes(
 id1 INT NOT  NULL,
-id2 INT NOT NULL,
-Primary Key(id1,id2));
+iddependente INT NOT NULL,
+Primary Key(id1,iddependente));
 
 -- tabela de peças incompativeis
 CREATE TABLE PeçasIncompativeis(
 id1 INT NOT NULL,
-id2 INT NOT NULL,
-PRIMARY Key(id1,id2));
+idincompativel INT NOT NULL,
+PRIMARY Key(id1,idincompativel));
 
+CREATE TABLE Pacote(
+id INT NOT NULL AUTO_INCREMENT,
+preco FLOAT NOT NULL,
+descricao VARCHAR(45) NOT NULL,
+PRIMARY KEY(id));
+            
+            
 -- tabel de stoks
 CREATE TABLE Stock(
 qtdisponivel INT NOT NULL,
@@ -43,6 +55,7 @@ idPeça INT NOT NULL,
 PRIMARY KEY(idPeça));
 
 
+-- INSERTS
 
 Insert Into Stock
 (qtdisponivel,qtmaxima,idPeça)
@@ -56,8 +69,19 @@ VALUES
  (categoria)
  VALUES
  ("Roda"), ("Volante"),("Porta"),("Vidro"),("Jante"),("motor"),("tubo"),("pintura"),("espelho"),("capo");
-
-
+ 
+ 
+ INSERT INTO PeçasDependentes
+ (id1,iddependente)
+ VALUES
+ (1,1),(1,2),(1,3);
+ 
+ 
+ INSERT INTO PeçasIncompativeis
+ (id1,idincompativel)
+ VALUES
+ (1,4),(1,1);
+ 
  
  Insert Into Cliente 
 	(nif,nome)
@@ -76,4 +100,11 @@ VALUES
 ("123456788","Draven","Gestor","axes"),
 ("123456777","Lux","Gestor","narnia"),
 ("123456666","Defenido","Admin","bolos");
- select * from Funcionario;
+
+
+
+
+
+
+
+
