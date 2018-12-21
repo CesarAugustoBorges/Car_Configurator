@@ -112,6 +112,7 @@ public class ClientUI extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Stuff here
+                System.out.println("Hello there!");
             }
         });        
     }
