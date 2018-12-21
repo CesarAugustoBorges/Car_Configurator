@@ -22,7 +22,7 @@ public class Testing {
         //System.out.println(new DAOFacede().validaUtilizador(1,"vedeta"));
 
 
-        // new DAOFacede().getIncompatibilidadesPacote(1).forEach(integer -> System.out.println(integer)); -> TESTING FASE
+        new DAOFacede().getIncompatibilidadesPacote(1).forEach(integer -> System.out.println(integer)); 
 
     }
 }

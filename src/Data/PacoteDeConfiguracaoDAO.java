@@ -5,6 +5,8 @@ import Business.Stock.Peca;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PacoteDeConfiguracaoDAO {
     Connection con;
@@ -13,7 +15,7 @@ public class PacoteDeConfiguracaoDAO {
 
         con = Connect.connect();
         PacoteDeConfiguracao pc = new PacoteDeConfiguracao();
-        ArrayList<Peca> result = new ArrayList<>();
+        ArrayList<Peca> peças = new ArrayList<>();
 
         if(con!=null){
 
@@ -28,18 +30,17 @@ public class PacoteDeConfiguracaoDAO {
                     pc.setPreco(rs.getFloat("preco"));
                 }
 
-
-                ps = con.prepareStatement("Select idpeça from Peça_PacoteIncompativeis where id = ?");
+                ps = con.prepareStatement("Select * from Peca where idPacote = ?");
                 ps.setInt(1,id);
                 rs = ps.executeQuery();
+                PeçaDAO pd = new PeçaDAO();
 
                 while(rs.next()){
-                    result.add(new PeçaDAO().getPeca((rs.getInt("idpeça"))));
+                    Peca aux = pd.getPeca(rs.getInt("id"));
+                    peças.add(aux);
                 }
 
-                pc.setPecas(result);
-
-
+                pc.setPecas(peças);
 
             }catch (SQLException e){
                 e.printStackTrace();
@@ -48,6 +49,32 @@ public class PacoteDeConfiguracaoDAO {
         }else Connect.close(con);
 
         return  pc;
+    }
+
+    public Set<Integer> getIncompatibilidadesPacote(int id) {
+
+        con = Connect.connect();
+        Set<Integer> result = new HashSet<>();
+
+        if (con != null) {
+
+            try {
+                PreparedStatement ps = con.prepareStatement(" select Pi.idincompativel from Peça as P inner join PeçasIncompativeis as Pi " +
+                        "on P.id = Pi.id1 where P.idPacote = ?;");
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    result.add(rs.getInt("idincompativel"));
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        } else Connect.close(con);
+
+        return result;
     }
 
 }

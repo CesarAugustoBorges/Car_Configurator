@@ -48,12 +48,6 @@ id1 INT NOT NULL,
 idincompativel INT NOT NULL,
 PRIMARY Key(id1,idincompativel));
 
--- tabela de peças incompativeis para pacotes
-CREATE TABLE Peça_PacoteIncompativeis(
-id INT NOT NULL,
-idpeça INT NOT NULL,
-PRIMARY KEY(id,idpeça));
-            
             
 -- tabel de stoks
 CREATE TABLE Stock(
@@ -62,15 +56,7 @@ qtmaxima INT NOT NULL,
 idPeça INT NOT NULL,
 PRIMARY KEY(idPeça));
 
-
--- INSERTS
-
-INSERT INTO Peça_PacoteIncompativeis
-(id,idpeça)
-VALUES
-(1,1),(1,2),(1,3),(1,4),
-(2,1),(2,2),(2,5);
-
+-- inserts
 
 Insert Into Stock
 (qtdisponivel,qtmaxima,idPeça)
@@ -92,6 +78,7 @@ VALUES
  (categoria,idpacote)
  VALUES
  ("Roda",1), ("Volante",2),("Porta",null),("Vidro",null),("Jante",null),("motor",null),("tubo",null),("pintura",null),("espelho",null),("capo",null);
+
  
  
  INSERT INTO PeçasDependentes
@@ -123,11 +110,3 @@ VALUES
 ("123456788","Draven","Gestor","axes"),
 ("123456777","Lux","Gestor","narnia"),
 ("123456666","Defenido","Admin","bolos");
-
-
-
-
-
-
-
-

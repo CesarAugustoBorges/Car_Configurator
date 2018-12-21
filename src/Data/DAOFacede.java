@@ -57,6 +57,11 @@ public class DAOFacede {
         return PDAO.getPeca(id);
     }
 
+    //remove um funcionário
+    public void removerFuncionario(int id) {
+        UtlDAO.removerFuncionario(id);
+    }
+
     //devolve a lista de peças dependentes de uma determinada peça
     public List<Integer> getDependenciasPeca(int id){
         return PDAO.getPeca(id).getDependencias();
@@ -74,7 +79,7 @@ public class DAOFacede {
 
     //devolve as peças incomativeis de um pacote
     public Set<Integer> getIncompatibilidadesPacote(int id){
-        return PteDAO.getPacote(id).getIncompatibilidades();
+        return PteDAO.getIncompatibilidadesPacote(id);
     }
 
     //valida um utilizador
