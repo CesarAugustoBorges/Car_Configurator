@@ -3,12 +3,9 @@ package Business.Encomenda;
 public class LinhaDeEncomendaPacote extends LinhaDeEncomenda {
     private PacoteDeConfiguracao pacoteDeConfiguracao;
 
-    public PacoteDeConfiguracao getPacoteDeConfiguracao() {
-        return pacoteDeConfiguracao;
-    }
 
-    public void setPacoteDeConfiguracao(PacoteDeConfiguracao pacoteDeConfiguracao) {
-        this.pacoteDeConfiguracao = pacoteDeConfiguracao;
+    public LinhaDeEncomendaPacote(){
+        super();
     }
 
     public LinhaDeEncomendaPacote(LinhaDeEncomendaPacote le){
@@ -19,6 +16,14 @@ public class LinhaDeEncomendaPacote extends LinhaDeEncomenda {
         super(id, quantidade);
         this.pacoteDeConfiguracao = p;
         this.setPreco(p.getPreco());
+    }
+
+    public PacoteDeConfiguracao getPacoteDeConfiguracao() {
+        return pacoteDeConfiguracao;
+    }
+
+    public void setPacoteDeConfiguracao(PacoteDeConfiguracao pacoteDeConfiguracao) {
+        this.pacoteDeConfiguracao = pacoteDeConfiguracao;
     }
 
     public LinhaDeEncomendaPacote clone() {

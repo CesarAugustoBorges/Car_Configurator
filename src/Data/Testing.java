@@ -20,9 +20,11 @@ public class Testing {
         //System.out.println(new DAOFacede().containsPeca(7)); -> método 6
         //new DAOFacede().getIncompatibilidadesPeca(1).forEach(integer -> System.out.println(integer));
         //System.out.println(new DAOFacede().validaUtilizador(1,"vedeta"));
+        //new DAOFacede().getIncompatibilidadesPacote(1).forEach(integer -> System.out.println(integer));
 
 
-        new DAOFacede().getIncompatibilidadesPacote(1).forEach(integer -> System.out.println(integer)); 
 
+        // NEED TO TEST THIS | WAIT FOR CESAR INPUTS
+        new DAOFacede().getEncomenda(1).getLinhasDeEncomenda().forEach(linhaDeEncomenda -> System.out.println(linhaDeEncomenda.getQuantidade()));
     }
 }

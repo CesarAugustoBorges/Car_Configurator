@@ -101,6 +101,15 @@ public class Encomenda {
         }
     }
 
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public List<Pair<Integer, String>> getLsEDependentesPacote(PacoteDeConfiguracao p){
         List<Integer> = p.ge
         List<Pair<Integer, String>> res = new ArrayList<>();

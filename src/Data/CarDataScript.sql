@@ -48,7 +48,39 @@ id1 INT NOT NULL,
 idincompativel INT NOT NULL,
 PRIMARY Key(id1,idincompativel));
 
-            
+
+-- tabela de encomendas
+CREATE TABLE Encomenda(
+id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+status VARCHAR(45) NOT NULL);
+
+-- tabela de linhas de encomenda
+CREATE TABLE LDEncomenda(
+id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+preco FLOAT NOT NULL,
+quantidade INT NOT NULL,
+idEncomenda int NOT NULL,
+FOREIGN KEY(idEncomenda) REFERENCES Encomenda(id)
+);
+
+
+--tabela para linha de encomenda peça
+CREATE TABLE LDEPeça(
+idPeca INT NOT NULL,
+idLDEncomenda INT NOT NULL,
+FOREIGN KEY(idPeca) REFERENCES Peça(id),
+FOREIGN KEY(idLDEncomenda) REFERENCES LDEncomenda(id)
+);
+
+--tabela para linha de encomenda pacote
+CREATE TABLE LDEPacote(
+idpacote INT NOT NULL,
+idLDEncomenda INT NOT NULL,
+FOREIGN KEY(idpacote) REFERENCES Peça(id),
+FOREIGN KEY(idLDEncomenda) REFERENCES LDEncomenda(id)
+);
+
+
 -- tabel de stoks
 CREATE TABLE Stock(
 qtdisponivel INT NOT NULL,

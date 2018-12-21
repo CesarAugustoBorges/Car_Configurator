@@ -96,8 +96,7 @@ public class UtilizadorDAO {
         return  false;
     }
 
-
-    public void removerFuncionario(int id){
+    public void removerUtilizador(int id){
         if(getUtilizador(id)!=null){
             con = Connect.connect();
             Funcionario c = null;

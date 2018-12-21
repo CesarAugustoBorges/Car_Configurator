@@ -155,7 +155,7 @@ public class Sistema {
     ///////////////////////////////////////////
 
     public String imprimirFatura(int clienteId, String Nif) throws Exception {
-        if(facade.constainsCliente(clienteId))
+        if(facade.containsCliente(clienteId))
             throw new Exception("Cliente não existe");
         Cliente c = facade.getCliente(clienteId);
         if(!c.getNif().equals(Nif))
