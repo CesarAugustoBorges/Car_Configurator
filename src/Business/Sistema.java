@@ -40,8 +40,6 @@ public class Sistema {
         return facade.containsPeca(id);
     }
 
-
-
     //////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////// Métodos a usar na view //////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,6 +98,7 @@ public class Sistema {
         return this.enc.checkStatusWhenAdding(peca);
     }
 
+
     public void removeIncomapativeisPeca(int id) {
         List<Integer> listaIncompatibilidades = facade.getIncompatibilidadesPeca(id);
         this.enc.removePecas(listaIncompatibilidades);
@@ -133,6 +132,7 @@ public class Sistema {
     ///////////// Remover Funcionario//////////
     ///////////////////////////////////////////
 
+    //Devolver um Boolean!!
     public void removerFuncionario(int id){
         if(facade.constainsUtilizador(id))
             facade.removerUtilizador(id);
@@ -142,6 +142,7 @@ public class Sistema {
     /////////// Adicionar Funcionario//////////
     ///////////////////////////////////////////
 
+    //Devolver um Boolean!!
     public void adicionarFuncionario(int id, String password) throws Exception{
         if(facade.constainsUtilizador(id))
             throw new Exception("Utilizador já existe.");

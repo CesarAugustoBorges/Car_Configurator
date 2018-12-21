@@ -20,7 +20,7 @@ public class LoginUI{
         JTextField userTxt = new JTextField();
         userTxt.setBounds(50,55,220,30);
 
-        JTextField passTxt = new JTextField();
+        JPasswordField passTxt = new JPasswordField();
         passTxt.setBounds(50,115,220,30);
 
         JButton login = new JButton("Autenticar");
@@ -36,13 +36,13 @@ public class LoginUI{
 
         login.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e){
                 if(userTxt.getText().equals("admin")){createJFrame(0, new AdminUI());}
-                if(userTxt.getText().equals("gestor")){createJFrame(0, new ManagerUI());}
-                if(userTxt.getText().equals("funcionario")){createJFrame(0, new ClientUI());}
+                if(userTxt.getText().equals("gestor")){createJFrame(1, new ManagerUI());}
+                if(userTxt.getText().equals("funcionario")){createJFrame(2, new ClientUI());}
                 frame.dispose();
-                /*         
-                switch(login(userTxt.getText(), passTxt.getText())){
+                /*
+                switch(login(Integer.parseInt(userTxt.getText()), passTxt.getText())){
                 	case 0:     createJFrame(new AdminUI());
                                 frame.dispose();
                 			    break;
@@ -75,7 +75,7 @@ public class LoginUI{
         switch(i){
             case 0:     w = 520;h = 640;name="Admin";
                         break;
-            case 1:     w = 0;h = 0;name="Gestor";
+            case 1:     w = 500;h = 500;name="Gestor";
                         break;
             case 2:     w = 500;h = 600;name="ConfiguraFácil";
                         break;

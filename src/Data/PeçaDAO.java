@@ -1,5 +1,6 @@
 package Data;
 
+import Business.Stock.Peca;
 import com.sun.java_cup.internal.runtime.lr_parser;
 import javafx.util.Pair;
 
@@ -35,4 +36,56 @@ public class PeçaDAO {
 
         return result;
     }
+
+    public Peca getPeca(int id){
+        con = Connect.connect();
+        Peca p = null;
+
+        if(con!=null){
+            try {
+                p = new Peca();
+                ArrayList<Integer> dependencia = new ArrayList<>();
+                ArrayList<Integer> incompatibilidade = new ArrayList<>();
+
+                PreparedStatement ps = con.prepareStatement("Select * from Peça where id = ?");
+                ps.setInt(1,id);
+                ResultSet rs = ps.executeQuery();
+
+                //trata da informação da peça
+                while  (rs.next()){
+                    p.setId(rs.getInt("id"));
+                    p.setCategoria(rs.getString("categoria"));
+                }
+
+                //trata das peças dependentes
+                ps = con.prepareStatement("Select iddependente from PeçasDependentes where id1 = ?");
+                ps.setInt(1,id);
+                rs = ps.executeQuery();
+
+                while(rs.next()){
+                    dependencia.add(rs.getInt("iddependente"));
+                }
+
+                p.setDependencias(dependencia);
+
+                //trata das peças incompatíveis
+                ps = con.prepareStatement("Select idincompativel from PeçasIncompativeis where id1 = ?");
+                ps.setInt(1,id);
+                rs = ps.executeQuery();
+
+                while(rs.next()){
+                    incompatibilidade.add(rs.getInt("idincompativel"));
+                }
+
+                p.setIncompatibilidades(incompatibilidade);
+
+
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }else Connect.close(con);
+
+        return p;
+    }
+
 }

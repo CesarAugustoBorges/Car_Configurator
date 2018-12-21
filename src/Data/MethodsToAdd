@@ -12,3 +12,4 @@ public boolean validaUtilizador(int userId, String pass);
 public void removerUtilizador(int id);
 
 public void addEncomenda(Encomenda enc);
+

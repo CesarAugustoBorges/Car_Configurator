@@ -1,5 +1,8 @@
--- CREATE DATABASE CarData; 
+DROP DATABASE CarData;
+
+CREATE DATABASE CarData; 
 Use CarData;
+
 
 -- tabela de clientes
 CREATE TABLE `Cliente` (
@@ -16,25 +19,36 @@ CREATE TABLE Funcionario(
  tipo VARCHAR(45) NOT NULL,
  passe VARCHAR(45) NOT NULL,
  PRIMARY KEY(id));
-	
+
+-- tabela de Pacotes
+CREATE TABLE Pacote(
+id INT NOT NULL AUTO_INCREMENT,
+preco FLOAT NOT NULL,
+descricao VARCHAR(45) NOT NULL,
+PRIMARY KEY(id));
+
+
 -- tabela de Peças
  CREATE TABLE Peça(
  id INT NOT NULL AUTO_INCREMENT,
  categoria VARCHAR(45) NOT NULL,
- PRIMARY KEY(id));
+ idpacote INT ,
+ PRIMARY KEY(id),
+ FOREIGN KEY(idpacote) REFERENCES Pacote(id));
  
  -- tabela de Peças dependentes
 CREATE TABLE PeçasDependentes(
 id1 INT NOT  NULL,
-id2 INT NOT NULL,
-Primary Key(id1,id2));
+iddependente INT NOT NULL,
+Primary Key(id1,iddependente));
 
 -- tabela de peças incompativeis
 CREATE TABLE PeçasIncompativeis(
 id1 INT NOT NULL,
-id2 INT NOT NULL,
-PRIMARY Key(id1,id2));
+idincompativel INT NOT NULL,
+PRIMARY Key(id1,idincompativel));
 
+            
 -- tabel de stoks
 CREATE TABLE Stock(
 qtdisponivel INT NOT NULL,
@@ -42,7 +56,7 @@ qtmaxima INT NOT NULL,
 idPeça INT NOT NULL,
 PRIMARY KEY(idPeça));
 
-
+-- inserts
 
 Insert Into Stock
 (qtdisponivel,qtmaxima,idPeça)
@@ -52,11 +66,31 @@ VALUES
 (30,50,4),
 (10,500,5);
  
- Insert Into Peça
- (categoria)
+ INSERT Into Pacote
+ (id,preco,descricao)
  VALUES
- ("Roda"), ("Volante"),("Porta"),("Vidro"),("Jante"),("motor"),("tubo"),("pintura"),("espelho"),("capo");
+ (1,10,"Pacote Desportivo"),
+ (2,5,"Pacote Incompleto");
+ 
+ 
 
+ Insert Into Peça
+ (categoria,idpacote)
+ VALUES
+ ("Roda",1), ("Volante",2),("Porta",null),("Vidro",null),("Jante",null),("motor",null),("tubo",null),("pintura",null),("espelho",null),("capo",null);
+
+ 
+ 
+ INSERT INTO PeçasDependentes
+ (id1,iddependente)
+ VALUES
+ (1,1),(1,2),(1,3);
+ 
+ 
+ INSERT INTO PeçasIncompativeis
+ (id1,idincompativel)
+ VALUES
+ (1,4),(1,1);
 
  
  Insert Into Cliente 
@@ -76,4 +110,3 @@ VALUES
 ("123456788","Draven","Gestor","axes"),
 ("123456777","Lux","Gestor","narnia"),
 ("123456666","Defenido","Admin","bolos");
- select * from Funcionario;
