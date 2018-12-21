@@ -1,10 +1,14 @@
 ---------------------DAOFacade---------------------
 
 public Peca getPeca(int id);
+public String getDescricaoPeca(int id);
 public Pacote getPacote(int id);
+public String getDescricaoPacote(int id);
 public List<Integer> getDependenciasPeca(int id);
 public List<Integer> getIncompatibilidadesPeca(int id);
 public Set<Integer> getIncompatibilidadesPacote(int id);
 
-public boolean validaUtilizador(String userId, String pass);
-public void removerFuncionario(int id);
+public boolean validaUtilizador(int userId, String pass);
+public void removerUtilizador(int id);
+
+public void addEncomenda(Encomenda enc);

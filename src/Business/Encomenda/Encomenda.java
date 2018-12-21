@@ -3,9 +3,7 @@ package Business.Encomenda;
 import Business.Stock.Peca;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Encomenda {
@@ -14,7 +12,7 @@ public class Encomenda {
     private String status;
 
     public Encomenda() {
-        this.status = "";
+        this.status = "Valid";
         this.linhasDeEncomenda = new ArrayList<>();
     }
 
@@ -35,21 +33,20 @@ public class Encomenda {
         this.linhasDeEncomenda.add(lep);
     }
 
+    public void addPecas(List<Peca> ps){
+        for(Peca p: ps)
+            addPeca(p, 1);
+    }
+
 
     public void addPacote(PacoteDeConfiguracao p) {
         LinhaDeEncomendaPacote lep = new LinhaDeEncomendaPacote(linhasDeEncomenda.size()+1, 1, p);
         for(LinhaDeEncomenda le: linhasDeEncomenda)
-            if(le.hasSameProduct(lep))
+            if(le.hasSameProduct(lep)){
+                le.setQuantidade(le.getQuantidade()+1);
                 return;
+            }
         this.linhasDeEncomenda.add(lep);
-    }
-
-    public void addLinhaEmcomenda(LinhaDeEncomenda le) {
-        this.linhasDeEncomenda.add(le);
-    }
-
-    public void removeLinhaEncomenda(LinhaDeEncomenda le) {
-        this.linhasDeEncomenda.remove(le);
     }
 
     public int getId() {
@@ -73,6 +70,60 @@ public class Encomenda {
             this.linhasDeEncomenda.add(le);
     }
 
+
+    public List<Pair<Integer,String>> getLEIncompativeisCom(Peca p){
+        ArrayList<Integer> incom = p.getIncompatibilidades();
+        List<Pair<Integer,String>> res = new ArrayList<>();
+        for(LinhaDeEncomenda le: linhasDeEncomenda)
+            for(Integer inc : incom)
+                if(le.hasPeca(inc))
+                    res.add(new Pair<>(le.getId(), le.getDescricao()));
+        return res;
+    }
+
+    public void removePeca(int id) {
+        for(LinhaDeEncomenda le: linhasDeEncomenda) {
+            if(le.hasPeca(id))
+                this.linhasDeEncomenda.remove(le);
+        }
+    }
+
+    // Se um pacote tiver um item na lista, então o pacote é removido
+    public void removePecas(List<Integer> ids) {
+        for(Integer id: ids)
+            removePeca(id);
+    }
+
+    public void removeLsE(List<Integer> ids){
+        for(LinhaDeEncomenda le : linhasDeEncomenda){
+            if(ids.contains(le.getId()))
+                linhasDeEncomenda.remove(le);
+        }
+    }
+
+    public List<Pair<Integer, String>> getLsEDependentesPacote(PacoteDeConfiguracao p){
+        List<Integer> = p.ge
+        List<Pair<Integer, String>> res = new ArrayList<>();
+        for(LinhaDeEncomenda le: linhasDeEncomenda)
+
+    }
+
+    public float getPreco() {
+        float preco = 0.0f;
+        for(LinhaDeEncomenda le : linhasDeEncomenda)
+            preco += le.getPrecoTotal();
+        return preco;
+    }
+
+    public String getFatura() {
+        StringBuilder sb = new StringBuilder();
+        for(LinhaDeEncomenda le: linhasDeEncomenda)
+            sb.append(le.getDescricao() + " ------- " + le.getQuantidade() + " - " + le.getPrecoTotal() + "\n");
+        return sb.toString();
+    }
+
+
+    /*
     public String checkStatusWhenAdding(Peca p) {
         ArrayList<Integer> dependencias = p.getDependencias();
         ArrayList<Integer> incompatibilidades = p.getIncompatibilidades();
@@ -105,20 +156,7 @@ public class Encomenda {
         if(this.status == "") this.status = "Valid";
         return this.status;
     }
-
-    public void removePeca(int id) {
-        for(LinhaDeEncomenda le: linhasDeEncomenda) {
-            if(le.hasPeca(id))
-                this.linhasDeEncomenda.remove(le);
-        }
-    }
-
-    // Se um pacote tiver um item na lista, então o pacote é removido
-    public void removePecas(List<Integer> ids) {
-        for(Integer id: ids)
-            removePeca(id);
-    }
-
+    */
     public static void main(String[] args) {
 
     }

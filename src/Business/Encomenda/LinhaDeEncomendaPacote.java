@@ -37,4 +37,8 @@ public class LinhaDeEncomendaPacote extends LinhaDeEncomenda {
         }
         return false;
     }
+
+    public String getDescricao() {
+        return pacoteDeConfiguracao.getDescricao();
+    }
 }

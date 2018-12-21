@@ -1,6 +1,7 @@
 package Business;
 
 import Business.Encomenda.Encomenda;
+import Business.Encomenda.PacoteDeConfiguracao;
 import Business.Stock.Peca;
 import Business.Stock.StockInteger;
 import Business.Utilizador.Cliente;
@@ -8,7 +9,9 @@ import Business.Utilizador.Funcionario;
 import Data.*;
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Sistema {
     private DAOFacede facade = new DAOFacede();
@@ -37,10 +40,7 @@ public class Sistema {
         return facade.containsPeca(id);
     }
 
-    // Metodo que verifica as credenciais do utilizador. Deve retornar 0 se for Admin, 1 se for gestor, 2 se for cliente, -1 para credenciais erradas. Luís Macedo
-    public int login(String user, String password){
-        return 0;
-    }
+
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////// Métodos a usar na view //////////////////////////////////////
@@ -50,13 +50,50 @@ public class Sistema {
     ////////////////// Login //////////////////
     ///////////////////////////////////////////
 
-    public boolean login(String user, String pass) {
-        return facade.validaUtilizador(user, pass);
+    // Metodo que verifica as credenciais do utilizador.
+    // Deve retornar 0 se for Admin, 1 se for gestor, 2 se for cliente, -1 para credenciais erradas.
+    public int login(String user, String password){
+        int userId = Integer.parseInt(user);
+        if(!facade.constainsUtilizador(userId))
+            return -1;
+        Funcionario f = facade.getUtilizador(userId);
+        if(f.isPassword(password))
+            switch (f.getTipo()){
+                case "Funcionario": return 2;
+                case "Gestor": return 1;
+                case "Admin" : return 0;
+                default: break;
+            }
+        return -1;
+    }
+
+    ///////////////////////////////////////////
+    ////////// Encomenendar Veículo ////////////
+    ///////////////////////////////////////////
+    public void addEncomenda() {
+        facade.addEncomenda(this.enc);
     }
 
     ///////////////////////////////////////////
     ////////////// Adiciona Peca //////////////
     ///////////////////////////////////////////
+
+    public List<Pair<Integer,String>> getLEIncompativeisComPeca(int id) {
+        Peca p = facade.getPeca(id);
+        List<Pair<Integer,String>> incom = this.enc.getLEIncompativeisCom(p);
+        return incom;
+    }
+
+    public void removeLsE(List<Integer> ids){
+        this.enc.removeLsE(ids);
+    }
+
+    public void addPecas(List<Integer> ids){
+        List<Peca> pecas = new ArrayList<>();
+        for(Integer id : ids)
+            pecas.add(facade.getPeca(id));
+        enc.addPecas(pecas);
+    }
 
     public String checkStatusWhenAddingPeca(int id, int quantidade) {
         Peca peca = facade.getPeca(id);
@@ -81,13 +118,24 @@ public class Sistema {
         this.enc.addPeca(peca, quantidade);
     }
 
+
+    ///////////////////////////////////////////
+    ///////////// Remover Pacote //////////////
+    ///////////////////////////////////////////
+
+    public List<Pair<Integer, String>> getLsEDependentesPacote(int IdPacote){
+        PacoteDeConfiguracao p = facade.getPacote(int idPacote);
+        return this.enc.getLsEDependentes(p);
+    }
+
+
     ///////////////////////////////////////////
     ///////////// Remover Funcionario//////////
     ///////////////////////////////////////////
 
     public void removerFuncionario(int id){
         if(facade.constainsUtilizador(id))
-            facade.removerFuncionario(id);
+            facade.removerUtilizador(id);
     }
 
     ///////////////////////////////////////////
@@ -101,4 +149,20 @@ public class Sistema {
         facade.
     }
 
+    ///////////////////////////////////////////
+    ///////////// Imprimir fatura /////////////
+    ///////////////////////////////////////////
+
+    public String imprimirFatura(int clienteId, String Nif) throws Exception {
+        if(facade.constainsCliente(clienteId))
+            throw new Exception("Cliente não existe");
+        Cliente c = facade.getCliente(clienteId);
+        if(!c.getNif().equals(Nif))
+            throw new Exception("Nif não é do Cliente");
+
+        String fatura = this.enc.getFatura();
+        float preco = this.enc.getPreco();
+        fatura += "Preço total : " + Float.toString(preco) + "\n";
+        return fatura;
+    }
 }

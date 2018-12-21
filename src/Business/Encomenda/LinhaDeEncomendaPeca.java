@@ -40,4 +40,8 @@ public class LinhaDeEncomendaPeca extends LinhaDeEncomenda {
     public int getIdPeca() {
         return peca.getId();
     }
+
+    public String getDescricao(){
+        return peca.getDescricao();
+    }
 }

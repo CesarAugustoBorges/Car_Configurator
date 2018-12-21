@@ -1,5 +1,7 @@
 package Business.Encomenda;
 
+import Business.Stock.Peca;
+
 public abstract class LinhaDeEncomenda {
     private int id;
     private float preco;
@@ -15,7 +17,6 @@ public abstract class LinhaDeEncomenda {
         this.id = id;
         this.quantidade = quantidade;
     }
-
 
     public int getId() {
         return id;
@@ -41,7 +42,14 @@ public abstract class LinhaDeEncomenda {
         this.quantidade = quantidade;
     }
 
+    public float getPrecoTotal() {
+        return preco*quantidade;
+    }
+
     public abstract LinhaDeEncomenda clone();
     public abstract boolean hasSameProduct(LinhaDeEncomenda le);
     public abstract boolean hasPeca(int p);
+    public abstract String getDescricao();
+    public abstract boolean dependeDe(Peca p);
+    public abstract boolean dependeDe(PacoteDeConfiguracao p);
 }

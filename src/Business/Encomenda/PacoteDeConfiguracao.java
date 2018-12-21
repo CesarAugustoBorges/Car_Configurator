@@ -4,7 +4,9 @@ import Business.Stock.Peca;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class PacoteDeConfiguracao {
     private int id;
@@ -36,12 +38,12 @@ public class PacoteDeConfiguracao {
         this.id = id;
     }
 
-    public ArrayList<Peca> getPecas() {
-        return pecas;
-    }
-
     public void setPecas(ArrayList<Peca> pecas) {
         this.pecas = pecas;
+    }
+
+    public List<Integer> getPecas(){
+        return this.pecas.stream().map(Peca::getId).collect(Collectors.toList());
     }
 
     public Set<Integer> getIncompatibilidades(){
