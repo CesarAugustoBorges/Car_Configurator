@@ -39,8 +39,8 @@ public class LoginUI{
                 if(userTxt.getText().equals("gestor")){createJFrame(1, new ManagerUI());}
                 if(userTxt.getText().equals("funcionario")){createJFrame(2, new ClientUI());}
                 frame.dispose();
-                /*         
-                switch(login(userTxt.getText(), passTxt.getText())){
+                /*
+                switch(login(Integer.parseInt(userTxt.getText()), passTxt.getText())){
                 	case 0:     createJFrame(new AdminUI());
                                 frame.dispose();
                 			    break;

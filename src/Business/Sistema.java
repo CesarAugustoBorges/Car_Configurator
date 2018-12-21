@@ -9,7 +9,7 @@ import Data.*;
 import javafx.util.Pair;
 
 import java.util.List;
-/*
+
 public class Sistema {
     private DAOFacede facade = new DAOFacede();
     private Encomenda enc = new Encomenda();
@@ -37,11 +37,6 @@ public class Sistema {
         return facade.containsPeca(id);
     }
 
-    // Metodo que verifica as credenciais do utilizador. Deve retornar 0 se for Admin, 1 se for gestor, 2 se for cliente, -1 para credenciais erradas. Luís Macedo
-    public int login(String user, String password){
-        return 0;
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////// Métodos a usar na view //////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,8 +45,10 @@ public class Sistema {
     ////////////////// Login //////////////////
     ///////////////////////////////////////////
 
-    public boolean login(String user, String pass) {
-        return facade.validaUtilizador(user, pass);
+    // Metodo que verifica as credenciais do utilizador. Deve retornar 0 se for Admin, 1 se for gestor, 2 se for cliente, -1 para credenciais erradas. Luís Macedo
+    public int login(int user, String password){
+        return 0;
+        //return facade.validaUtilizador(user, pass);
     }
 
     ///////////////////////////////////////////
@@ -62,6 +59,7 @@ public class Sistema {
         Peca peca = facade.getPeca(id);
         return this.enc.checkStatusWhenAdding(peca);
     }
+
 
     public void removeIncomapativeisPeca(int id) {
         List<Integer> listaIncompatibilidades = facade.getIncompatibilidadesPeca(id);
@@ -85,6 +83,7 @@ public class Sistema {
     ///////////// Remover Funcionario//////////
     ///////////////////////////////////////////
 
+    //Devolver um Boolean!! Luís Macedo
     public void removerFuncionario(int id){
         if(facade.constainsUtilizador(id))
             facade.removerFuncionario(id);
@@ -94,12 +93,11 @@ public class Sistema {
     /////////// Adicionar Funcionario//////////
     ///////////////////////////////////////////
 
+    //Devolver um Boolean!! Luís Macedo
     public void adicionarFuncionario(int id, String password) throws Exception{
         if(facade.constainsUtilizador(id))
             throw new Exception("Utilizador já existe.");
         Funcionario f = new Funcionario(id, password);
         facade.
     }
-
 }
-*/

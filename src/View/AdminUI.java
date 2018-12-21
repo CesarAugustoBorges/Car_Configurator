@@ -46,7 +46,7 @@ public class AdminUI extends JPanel{
 		remove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(false){//removeFuncionario(Integer.parseInt(userTxt.getText()))){
+                if(false){//removerFuncionario(Integer.parseInt(userTxt.getText()))){
                 	success.setVisible(true);
                 	failure.setVisible(false);
                 }
@@ -87,7 +87,7 @@ public class AdminUI extends JPanel{
         register.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(false){//putFuncionario(Integer.parseInt(userTxt2.getText()), passTxt.getText())){
+                if(false){//adicionarFuncionario(Integer.parseInt(userTxt2.getText()), passTxt.getText())){
                 	success2.setVisible(true);
                 	failure2.setVisible(false);
                 }
@@ -115,12 +115,6 @@ public class AdminUI extends JPanel{
 		panel.add(register);
 		panel.add(success2);
 		panel.add(failure2);
-
-		return panel;
-	}
-
-	private JPanel managerPanel(){
-		JPanel panel = new JPanel();
 
 		return panel;
 	}
