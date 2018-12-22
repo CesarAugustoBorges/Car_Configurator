@@ -44,4 +44,15 @@ public class LinhaDeEncomendaPeca extends LinhaDeEncomenda {
     public String getDescricao(){
         return peca.getDescricao();
     }
+
+    public boolean dependeDe(Peca p) {
+        return this.peca.getDependencias().contains(Integer.valueOf(p.getId()));
+    }
+
+    public boolean dependeDe(PacoteDeConfiguracao pacote) {
+        for(Peca p: pacote.getPecas())
+            if(this.peca.getDependencias().contains(Integer.valueOf(p.getId())))
+                return true;
+        return false;
+    }
 }

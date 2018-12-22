@@ -70,9 +70,20 @@ public class Encomenda {
             this.linhasDeEncomenda.add(le);
     }
 
-
+    // Devolve uma lista com os ids e as descrições das linhas de encomenda que são incompativeis com a peça p
     public List<Pair<Integer,String>> getLEIncompativeisCom(Peca p){
         ArrayList<Integer> incom = p.getIncompatibilidades();
+        List<Pair<Integer,String>> res = new ArrayList<>();
+        for(LinhaDeEncomenda le: linhasDeEncomenda)
+            for(Integer inc : incom)
+                if(le.hasPeca(inc))
+                    res.add(new Pair<>(le.getId(), le.getDescricao()));
+        return res;
+    }
+
+    // Devolve uma lista com os ids e as descrições das linhas de encomenda que são incompativeis com o pacote p
+    public List<Pair<Integer,String>> getLEIncompativeisCom(PacoteDeConfiguracao p){
+        Set<Integer> incom = p.getIncompatibilidades();
         List<Pair<Integer,String>> res = new ArrayList<>();
         for(LinhaDeEncomenda le: linhasDeEncomenda)
             for(Integer inc : incom)
@@ -101,11 +112,24 @@ public class Encomenda {
         }
     }
 
-    public List<Pair<Integer, String>> getLsEDependentesPacote(PacoteDeConfiguracao p){
-        List<Integer> = p.ge
+    public List<Pair<Integer, String>> getLsEDependentes(PacoteDeConfiguracao p){
         List<Pair<Integer, String>> res = new ArrayList<>();
-        for(LinhaDeEncomenda le: linhasDeEncomenda)
+        int count = 0;
+        for(LinhaDeEncomenda le: linhasDeEncomenda){
+            if(le.dependeDe(p))
+                res.add(new Pair<>(le.getId(), le.getDescricao()));
+        }
+        return res;
+    }
 
+    public List<Pair<Integer, String>> getLsEDependentes(Peca p){
+        List<Pair<Integer, String>> res = new ArrayList<>();
+        int count = 0;
+        for(LinhaDeEncomenda le: linhasDeEncomenda){
+            if(le.dependeDe(p))
+                res.add(new Pair<>(le.getId(), le.getDescricao()));
+        }
+        return res;
     }
 
     public float getPreco() {
@@ -158,6 +182,23 @@ public class Encomenda {
     }
     */
     public static void main(String[] args) {
+        ArrayList<Integer> arrP1d = new ArrayList<>(), arrP1I = new ArrayList<>();
+        arrP1d.add(2); arrP1d.add(3);
+        Peca p1 = new Peca(1,10.1f,"motor-1.0", "motor", arrP1d, arrP1I);
+
+        ArrayList<Integer> arrP2d = new ArrayList<>(), arrP2I = new ArrayList<>();
+        Peca p2 = new Peca(2,12.2f,"volante-2.1", "extra", arrP2d, arrP2I);
+
+        ArrayList<Peca> arrPacote1 = new ArrayList<Peca>();
+        arrPacote1.add(p1);
+        PacoteDeConfiguracao pacote1 = new PacoteDeConfiguracao(1, 25.2f, "Pacote desportivo", arrPacote1);
+
+        LinhaDeEncomenda le1 = new LinhaDeEncomendaPeca(1, 1, p1);
+        LinhaDeEncomenda le2 = new LinhaDeEncomendaPeca(2, 1, p2);
+        LinhaDeEncomenda le3 = new LinhaDeEncomendaPacote(3, 1, pacote1);
+
+        System.out.println("Se a le com a peca 1 depende da peca 2: " + le1.dependeDe(p2));
+        System.out.println("Se a le com o pacote 1 depende da peca 2: " + le1.dependeDe(p2));
 
     }
 }

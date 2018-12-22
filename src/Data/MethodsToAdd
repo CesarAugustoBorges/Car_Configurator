@@ -1,15 +1,16 @@
 ---------------------DAOFacade---------------------
 
-public Peca getPeca(int id);
-public String getDescricaoPeca(int id);
-public Pacote getPacote(int id);
-public String getDescricaoPacote(int id);
-public List<Integer> getDependenciasPeca(int id);
-public List<Integer> getIncompatibilidadesPeca(int id);
-public Set<Integer> getIncompatibilidadesPacote(int id);
+public Peca getPeca(int id) throws SQLException;
+public String getDescricaoPeca(int id) throws SQLException;
+public Pacote getPacote(int id) throws SQLException;
+public String getDescricaoPacote(int id) throws SQLException;
+public List<Integer> getDependenciasPeca(int id) throws SQLException;
+public List<Integer> getIncompatibilidadesPeca(int id) throws SQLException;
+public Set<Integer> getIncompatibilidadesPacote(int id) throws SQLException;
 
-public boolean validaUtilizador(int userId, String pass);
-public void removerUtilizador(int id);
+public boolean validaUtilizador(int userId, String pass) throws SQLException;
+public void addUtilizador(Utilizador f) throws SQLException;
+public void removerUtilizador(int id) throws SQLException;
 
-public void addEncomenda(Encomenda enc);
+public void addEncomenda(Encomenda enc) throws SQLException;
 

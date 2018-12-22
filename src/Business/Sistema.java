@@ -68,9 +68,9 @@ public class Sistema {
     ///////////////////////////////////////////
     ////////// Encomenendar Veículo ////////////
     ///////////////////////////////////////////
-    public void addEncomenda() {
-        facade.addEncomenda(this.enc);
-    }
+    //public void addEncomenda() {
+    //    facade.addEncomenda(this.enc);
+    //}
 
     ///////////////////////////////////////////
     ////////////// Adiciona Peca //////////////
@@ -92,7 +92,7 @@ public class Sistema {
             pecas.add(facade.getPeca(id));
         enc.addPecas(pecas);
     }
-
+    /*
     public String checkStatusWhenAddingPeca(int id, int quantidade) {
         Peca peca = facade.getPeca(id);
         return this.enc.checkStatusWhenAdding(peca);
@@ -143,11 +143,12 @@ public class Sistema {
     ///////////////////////////////////////////
 
     //Devolver um Boolean!!
-    public void adicionarFuncionario(int id, String password) throws Exception{
+    public boolean adicionarFuncionario(int id, String password) throws Exception{
         if(facade.constainsUtilizador(id))
-            throw new Exception("Utilizador já existe.");
+            return false;
         Funcionario f = new Funcionario(id, password);
-        facade.
+        facade.addUtilizador(f);
+        return true;
     }
 
     ///////////////////////////////////////////
@@ -166,4 +167,5 @@ public class Sistema {
         fatura += "Preço total : " + Float.toString(preco) + "\n";
         return fatura;
     }
+    */
 }

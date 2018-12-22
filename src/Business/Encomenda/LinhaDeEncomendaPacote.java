@@ -1,5 +1,7 @@
 package Business.Encomenda;
 
+import Business.Stock.Peca;
+
 public class LinhaDeEncomendaPacote extends LinhaDeEncomenda {
     private PacoteDeConfiguracao pacoteDeConfiguracao;
 
@@ -40,5 +42,16 @@ public class LinhaDeEncomendaPacote extends LinhaDeEncomenda {
 
     public String getDescricao() {
         return pacoteDeConfiguracao.getDescricao();
+    }
+
+    public boolean dependeDe(Peca peca){
+        return pacoteDeConfiguracao.getDependencias().contains(Integer.valueOf(peca.getId()));
+    }
+
+    public boolean dependeDe(PacoteDeConfiguracao pacote){
+        for(Integer p : pacote.getPecasIds())
+            if(this.pacoteDeConfiguracao.getDependencias().contains(Integer.valueOf(p)))
+                return true;
+        return false;
     }
 }

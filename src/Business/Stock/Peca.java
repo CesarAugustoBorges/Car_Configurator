@@ -11,6 +11,18 @@ public class Peca {
     private ArrayList<Integer> dependencias;
     private ArrayList<Integer> incompatibilidades;
 
+    public Peca(){
+
+    }
+
+    public Peca(int id, float preco, String descricao, String categoria, ArrayList<Integer> dependencias, ArrayList<Integer> incompatibilidades){
+        this.id = id;
+        this.preco = preco;
+        this.descricao = descricao;
+        this.setIncompatibilidades(incompatibilidades);
+        this.setDependencias(dependencias);
+    }
+
     public int getId() {
         return id;
     }
@@ -51,7 +63,9 @@ public class Peca {
     }
 
     public void setDependencias(ArrayList<Integer> dependencias) {
-        this.dependencias = dependencias;
+        this.dependencias = new ArrayList<>();
+        for(Integer i : dependencias)
+            this.dependencias.add(i);
     }
 
     public ArrayList<Integer> getIncompatibilidades() {
@@ -62,6 +76,8 @@ public class Peca {
     }
 
     public void setIncompatibilidades(ArrayList<Integer> incompatibilidades) {
-        this.incompatibilidades = incompatibilidades;
+        this.incompatibilidades = new ArrayList<>();
+        for(Integer i : incompatibilidades)
+            this.incompatibilidades.add(i);
     }
 }
