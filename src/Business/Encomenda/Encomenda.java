@@ -24,7 +24,8 @@ public class Encomenda {
 
     // adiciona uma peça como uma linha de encomenda, caso a peça já esteja numa LinhaDeEncomendaPeca, a quantidade da LE é incrementada
     public void addPeca(Peca p, int quantidade){
-        LinhaDeEncomendaPeca lep = new LinhaDeEncomendaPeca(linhasDeEncomenda.size()+1, quantidade, p);
+        int id = linhasDeEncomenda.size() > 0 ? linhasDeEncomenda.get(linhasDeEncomenda.size() -1).getId() + 1 : 1;
+        LinhaDeEncomendaPeca lep = new LinhaDeEncomendaPeca(id, quantidade, p);
         for(LinhaDeEncomenda le: linhasDeEncomenda)
             if(le.hasSameProduct(lep)){
                 le.setQuantidade(le.getQuantidade()+quantidade);
@@ -40,7 +41,8 @@ public class Encomenda {
 
 
     public void addPacote(PacoteDeConfiguracao p) {
-        LinhaDeEncomendaPacote lep = new LinhaDeEncomendaPacote(linhasDeEncomenda.size()+1, 1, p);
+        int id = linhasDeEncomenda.size() > 0 ? linhasDeEncomenda.get(linhasDeEncomenda.size() -1).getId() + 1 : 1;
+        LinhaDeEncomendaPacote lep = new LinhaDeEncomendaPacote(id, 1, p);
         for(LinhaDeEncomenda le: linhasDeEncomenda)
             if(le.hasSameProduct(lep)){
                 le.setQuantidade(le.getQuantidade()+1);
@@ -55,6 +57,17 @@ public class Encomenda {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setStatus(String s){
+        this.status = s;
+    }
+
+    public LinhaDeEncomenda getLinhaEncomenda(int id){
+        int i;
+        for(i = 0; i < linhasDeEncomenda.size() && linhasDeEncomenda.get(i).getId() != id; i++);
+        if(i != linhasDeEncomenda.size()) return linhasDeEncomenda.get(i);
+        return null;
     }
 
     public ArrayList<LinhaDeEncomenda> getLinhasDeEncomenda() {
@@ -92,18 +105,30 @@ public class Encomenda {
         return res;
     }
 
-    public void removePeca(int id) {
-        for(LinhaDeEncomenda le: linhasDeEncomenda) {
-            if(le.hasPeca(id))
-                this.linhasDeEncomenda.remove(le);
+    public void removePeca(int id, boolean desfazer) {
+        int i;
+        for(i = 0; i < linhasDeEncomenda.size(); i++) {
+            if(linhasDeEncomenda.get(i).hasPeca(id))
+                if(!desfazer)
+                    break;
+                else break; // alterar o else
         }
+        if(i != linhasDeEncomenda.size())
+            this.linhasDeEncomenda.remove(i);
     }
 
-    // Se um pacote tiver um item na lista, então o pacote é removido
-    public void removePecas(List<Integer> ids) {
-        for(Integer id: ids)
-            removePeca(id);
+    public void removePacote(int id, boolean desfazer) {
+        int i;
+        for(i = 0; i < linhasDeEncomenda.size(); i++) {
+            if(linhasDeEncomenda.get(i).hasPeca(id))
+                if(!desfazer)
+                    break;
+                else break; // alterar o else
+        }
+        if(i != linhasDeEncomenda.size())
+            this.linhasDeEncomenda.remove(i);
     }
+
 
     public void removeLsE(List<Integer> ids){
         for(LinhaDeEncomenda le : linhasDeEncomenda){
@@ -148,6 +173,13 @@ public class Encomenda {
 
 
     /*
+        // Se um pacote tiver um item na lista, então o pacote é removido
+    public void removePecas(List<Integer> ids) {
+        for(Integer id: ids)
+            removePeca(id, false);
+    }
+
+
     public String checkStatusWhenAdding(Peca p) {
         ArrayList<Integer> dependencias = p.getDependencias();
         ArrayList<Integer> incompatibilidades = p.getIncompatibilidades();
@@ -197,8 +229,23 @@ public class Encomenda {
         LinhaDeEncomenda le2 = new LinhaDeEncomendaPeca(2, 1, p2);
         LinhaDeEncomenda le3 = new LinhaDeEncomendaPacote(3, 1, pacote1);
 
+        ArrayList<LinhaDeEncomenda> arrLsE = new ArrayList<>();
+        arrLsE.add(le1); arrLsE.add(le2); arrLsE.add(le3);
+        Encomenda enc = new Encomenda(1, arrLsE);
+        System.out.println(enc.getFatura());
+
         System.out.println("Se a le com a peca 1 depende da peca 2: " + le1.dependeDe(p2));
         System.out.println("Se a le com o pacote 1 depende da peca 2: " + le1.dependeDe(p2));
 
+
+        System.out.println("le1 before update : " + enc.getLinhaEncomenda(1).getQuantidade());
+        enc.addPeca(p1, 2);
+        System.out.println("le1 after update: " + enc.getLinhaEncomenda(1).getQuantidade());
+        enc.removePeca(p1.getId(),false);
+        System.out.println("enc after rem of le1 : " + enc.getLinhasDeEncomenda().size());
+        enc.addPacote(pacote1);
+        System.out.println("enc before update of le3 : " + enc.getLinhaEncomenda(3));
+        enc.removePacote(1, false);
+        System.out.println("enc after rem of le1 : " + enc.getLinhasDeEncomenda().size());
     }
 }

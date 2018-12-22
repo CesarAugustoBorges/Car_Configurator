@@ -48,7 +48,38 @@ id1 INT NOT NULL,
 idincompativel INT NOT NULL,
 PRIMARY Key(id1,idincompativel));
 
-            
+
+-- tabela de encomendas
+CREATE TABLE Encomenda(
+id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+status VARCHAR(45) NOT NULL);
+
+-- tabela de linhas de encomenda
+CREATE TABLE LDEncomenda(
+id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+preco FLOAT NOT NULL,
+quantidade INT NOT NULL,
+idEncomenda int NOT NULL,
+FOREIGN KEY(idEncomenda) REFERENCES Encomenda(id)
+);
+
+
+-- tabela para linha de encomenda peça
+CREATE TABLE LDEPeça(
+idPeca INT NOT NULL,
+idLDEncomenda INT NOT NULL,
+FOREIGN KEY(idPeca) REFERENCES Peça(id),
+FOREIGN KEY(idLDEncomenda) REFERENCES LDEncomenda(id)
+);
+
+-- tabela para linha de encomenda pacote
+CREATE TABLE LDEPacote(
+idpacote INT NOT NULL,
+idLDEncomenda INT NOT NULL,
+FOREIGN KEY(idpacote) REFERENCES Peça(id),
+FOREIGN KEY(idLDEncomenda) REFERENCES LDEncomenda(id)
+);
+
 -- tabel de stoks
 CREATE TABLE Stock(
 qtdisponivel INT NOT NULL,
@@ -57,6 +88,26 @@ idPeça INT NOT NULL,
 PRIMARY KEY(idPeça));
 
 -- inserts
+
+INSERT INTO Encomenda
+(id,status)
+VALUES
+(1,"carro fixe"),
+(2,"carro feio");
+
+INSERT INTO LDEncomenda
+(id,preco,quantidade,idEncomenda)
+VALUES
+(1,10,1,1);
+
+INSERT INTO LDEPeça
+(idPeca,idLDEncomenda)
+VALUES
+(1,1);
+
+select idPeca from Encomenda as E  inner join LDEncomenda as LDE on E.id = LDE.idEncomenda inner join LDEPeça on LDE.id = LDEPeça.idLDEncomenda where E.id = 1;
+		
+
 
 Insert Into Stock
 (qtdisponivel,qtmaxima,idPeça)

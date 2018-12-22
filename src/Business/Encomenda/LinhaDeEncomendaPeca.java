@@ -7,6 +7,10 @@ import java.util.Objects;
 public class LinhaDeEncomendaPeca extends LinhaDeEncomenda {
     private Peca peca;
 
+    public LinhaDeEncomendaPeca(){
+        super();
+    }
+
     public LinhaDeEncomendaPeca(LinhaDeEncomendaPeca le) {
         super(le);
     }

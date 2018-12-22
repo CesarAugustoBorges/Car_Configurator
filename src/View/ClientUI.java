@@ -40,7 +40,7 @@ public class ClientUI extends JPanel{
 
         BufferedImage img = null;
         try{
-            img = ImageIO.read(new File("./garbage2.png"));
+            img = ImageIO.read(new File("View/garbage2.png"));
 
         }
         catch(IOException e){

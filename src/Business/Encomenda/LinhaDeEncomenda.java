@@ -7,6 +7,13 @@ public abstract class LinhaDeEncomenda {
     private float preco;
     private int quantidade;
 
+
+    public LinhaDeEncomenda(){
+        this.id = 0;
+        this.preco = 0;
+        this.quantidade = 0;
+    }
+
     public LinhaDeEncomenda(LinhaDeEncomenda le ) {
         this.id = le.getId();
         this.preco = le.getPreco();
@@ -45,6 +52,8 @@ public abstract class LinhaDeEncomenda {
     public float getPrecoTotal() {
         return preco*quantidade;
     }
+
+
 
     public abstract LinhaDeEncomenda clone();
     public abstract boolean hasSameProduct(LinhaDeEncomenda le);

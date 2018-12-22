@@ -73,6 +73,23 @@ public class Sistema {
     //}
 
     ///////////////////////////////////////////
+    //////////// Encomendar pecas /////////////
+    ///////////////////////////////////////////
+    public void encomendarPeca(int id, int quantia) throws Exception{
+        if(!facade.containsStock(id))
+            throw new Exception("Stock não existe");
+        int quantidade = facade.getQuantidadeAtualStock(id);
+        int quantidadeMaxima = facade.getQuantidadeMaximaStock(id);
+        if(quantidade + quantia <= quantidadeMaxima || quantia <= 0)
+            throw new Exception("Quantidade excedida");
+        facade.setQuantidadeAtualStock(id, quantia + quantidade);
+    }
+
+
+
+
+
+    ///////////////////////////////////////////
     ////////////// Adiciona Peca //////////////
     ///////////////////////////////////////////
 
@@ -91,17 +108,6 @@ public class Sistema {
         for(Integer id : ids)
             pecas.add(facade.getPeca(id));
         enc.addPecas(pecas);
-    }
-    /*
-    public String checkStatusWhenAddingPeca(int id, int quantidade) {
-        Peca peca = facade.getPeca(id);
-        return this.enc.checkStatusWhenAdding(peca);
-    }
-
-
-    public void removeIncomapativeisPeca(int id) {
-        List<Integer> listaIncompatibilidades = facade.getIncompatibilidadesPeca(id);
-        this.enc.removePecas(listaIncompatibilidades);
     }
 
     public void addPecasObrigatorias(int id){
@@ -123,7 +129,7 @@ public class Sistema {
     ///////////////////////////////////////////
 
     public List<Pair<Integer, String>> getLsEDependentesPacote(int IdPacote){
-        PacoteDeConfiguracao p = facade.getPacote(int idPacote);
+        PacoteDeConfiguracao p = facade.getPacote(IdPacote);
         return this.enc.getLsEDependentes(p);
     }
 
@@ -147,7 +153,7 @@ public class Sistema {
         if(facade.constainsUtilizador(id))
             return false;
         Funcionario f = new Funcionario(id, password);
-        facade.addUtilizador(f);
+        facade.putUtilizador(f);
         return true;
     }
 
@@ -156,7 +162,7 @@ public class Sistema {
     ///////////////////////////////////////////
 
     public String imprimirFatura(int clienteId, String Nif) throws Exception {
-        if(facade.constainsCliente(clienteId))
+        if(facade.containsCliente(clienteId))
             throw new Exception("Cliente não existe");
         Cliente c = facade.getCliente(clienteId);
         if(!c.getNif().equals(Nif))
@@ -167,5 +173,4 @@ public class Sistema {
         fatura += "Preço total : " + Float.toString(preco) + "\n";
         return fatura;
     }
-    */
 }

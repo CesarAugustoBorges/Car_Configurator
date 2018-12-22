@@ -19,4 +19,12 @@ public class StockInteger {
     public void setQuantidadeMaxima(int quantidadeMaxima) {
         this.quantidadeMaxima = quantidadeMaxima;
     }
+
+    public boolean addPecas(int quantidade) {
+        if(quantidadeDisponivel + quantidade < quantidadeMaxima) {
+            quantidadeDisponivel += quantidade;
+            return true;
+        }
+        return false;
+    }
 }

@@ -1,5 +1,6 @@
 package Data;
 
+import Business.Encomenda.Encomenda;
 import Business.Encomenda.PacoteDeConfiguracao;
 import Business.Stock.Peca;
 import Business.Utilizador.Cliente;
@@ -16,6 +17,7 @@ public class DAOFacede {
     private final PeçaDAO PDAO = new PeçaDAO();
     private final StockIntegerDAO StockDAO = new StockIntegerDAO();
     private final PacoteDeConfiguracaoDAO PteDAO = new PacoteDeConfiguracaoDAO();
+    private final EncomendaDAO EDAO = new EncomendaDAO();
 
     //devolve um Utilizador, Gestor ou Admin
     public Funcionario getUtilizador(int id) {//done
@@ -57,9 +59,9 @@ public class DAOFacede {
         return PDAO.getPeca(id);
     }
 
-    //remove um funcionário
-    public void removerFuncionario(int id) {
-        UtlDAO.removerFuncionario(id);
+    //remove um utilizador
+    public void removerUtilizador(int id) {
+        UtlDAO.removerUtilizador(id);
     }
 
     //devolve a lista de peças dependentes de uma determinada peça
@@ -87,4 +89,18 @@ public class DAOFacede {
         return UtlDAO.validaUtilizador(userId,pass);
     }
 
+    //adiciona uma peça
+    public void addEncomenda(Encomenda enc){
+        EDAO.addEncomenda(enc);
+    }
+
+    //devolve uma peça
+    public Encomenda getEncomenda(int id){
+        return EDAO.getEncomenda(id);
+    }
+
+    //verifica se contem um determinado cliente
+    public boolean containsCliente(int id){
+        return ClDAO.containsCliente(id);
+    }
 }

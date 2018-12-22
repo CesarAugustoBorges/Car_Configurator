@@ -45,6 +45,13 @@ public class ClienteDAO{
 
     }
 
+    public boolean containsCliente(int id){
+        if(getCliente(id)!=null){
+            return true;
+        }
+        return false;
+    }
+
 
     public void showClients(){
 
