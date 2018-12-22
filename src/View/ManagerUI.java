@@ -7,7 +7,7 @@ import java.awt.event.*;
 
 public class ManagerUI extends JPanel{
 	private JLabel seing;
-	private JComboBox choose;
+	private JComboBox<String> choose;
 
 	//Lista de Encomendas
 	private JLabel filterLabel;
@@ -39,7 +39,7 @@ public class ManagerUI extends JPanel{
 		seing = new JLabel("Visualizar:");
 		seing.setBounds(20,15,80,15);
 		String[] choices = {"Lista de Encomendas", "Stock"};
-		choose = new JComboBox(choices);
+		choose = new JComboBox<>(choices);
 		choose.setBounds(15,30,190,30);
 
 		//Componentes da Lista de Encomendas

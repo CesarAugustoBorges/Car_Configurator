@@ -1,5 +1,4 @@
-package View;
-
+import View.*;
 import javax.swing.*;
 
 public class Main{
