@@ -75,6 +75,7 @@ public class Sistema {
     ///////////////////////////////////////////
     //////////// Encomendar pecas /////////////
     ///////////////////////////////////////////
+    /*
     public void encomendarPeca(int id, int quantia) throws Exception{
         if(!facade.containsStock(id))
             throw new Exception("Stock não existe");
@@ -84,6 +85,7 @@ public class Sistema {
             throw new Exception("Quantidade excedida");
         facade.setQuantidadeAtualStock(id, quantia + quantidade);
     }
+    */
 
 
 
