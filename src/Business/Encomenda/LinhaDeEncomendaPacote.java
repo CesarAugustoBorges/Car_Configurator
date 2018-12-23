@@ -21,7 +21,7 @@ public class LinhaDeEncomendaPacote extends LinhaDeEncomenda {
     }
 
     public PacoteDeConfiguracao getPacoteDeConfiguracao() {
-        return pacoteDeConfiguracao;
+        return pacoteDeConfiguracao.clone();
     }
 
     public void setPacoteDeConfiguracao(PacoteDeConfiguracao pacoteDeConfiguracao) {

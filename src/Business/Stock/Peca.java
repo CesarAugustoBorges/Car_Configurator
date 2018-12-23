@@ -12,7 +12,14 @@ public class Peca {
     private ArrayList<Integer> incompatibilidades;
 
     public Peca(){
+    }
 
+    public Peca(Peca p){
+        this.id = p.getId();
+        this.preco = p.getPreco();
+        this.descricao = p.getDescricao();
+        this.setDependencias(p.getDependencias());
+        this.setIncompatibilidades(p.getIncompatibilidades());
     }
 
     public Peca(int id, float preco, String descricao, String categoria, ArrayList<Integer> dependencias, ArrayList<Integer> incompatibilidades){
@@ -79,5 +86,9 @@ public class Peca {
         this.incompatibilidades = new ArrayList<>();
         for(Integer i : incompatibilidades)
             this.incompatibilidades.add(i);
+    }
+
+    public Peca clone(){
+        return new Peca(this);
     }
 }

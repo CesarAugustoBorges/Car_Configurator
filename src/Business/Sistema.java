@@ -1,6 +1,7 @@
 package Business;
 
 import Business.Encomenda.Encomenda;
+import Business.Encomenda.LinhaDeEncomenda;
 import Business.Encomenda.PacoteDeConfiguracao;
 import Business.Stock.Peca;
 import Business.Stock.StockInteger;
@@ -75,8 +76,12 @@ public class Sistema {
     ///////////////////////////////////////////
     //////////// Encomendar pecas /////////////
     ///////////////////////////////////////////
+<<<<<<< HEAD
     /*
     public void encomendarPeca(int id, int quantia) throws Exception{
+=======
+    /*public void encomendarPeca(int id, int quantia) throws Exception{
+>>>>>>> f365d6ae13be9fac34d737669b0390fe74e5bcf7
         if(!facade.containsStock(id))
             throw new Exception("Stock não existe");
         int quantidade = facade.getQuantidadeAtualStock(id);
@@ -84,11 +89,15 @@ public class Sistema {
         if(quantidade + quantia <= quantidadeMaxima || quantia <= 0)
             throw new Exception("Quantidade excedida");
         facade.setQuantidadeAtualStock(id, quantia + quantidade);
+<<<<<<< HEAD
     }
     */
 
 
 
+=======
+    }*/
+>>>>>>> f365d6ae13be9fac34d737669b0390fe74e5bcf7
 
 
     ///////////////////////////////////////////
@@ -102,7 +111,8 @@ public class Sistema {
     }
 
     public void removeLsE(List<Integer> ids){
-        this.enc.removeLsE(ids);
+        for(Integer id: ids)
+            this.enc.removeLinhaEncomenda(id);
     }
 
     public void addPecas(List<Integer> ids){
@@ -174,5 +184,32 @@ public class Sistema {
         float preco = this.enc.getPreco();
         fatura += "Preço total : " + Float.toString(preco) + "\n";
         return fatura;
+    }
+
+
+
+
+    public void removeLsEDependentesDePacote(List<Pair<Integer, Boolean>> les, int idPacote){
+        PacoteDeConfiguracao pacote = facade.getPacote(idPacote);
+        for(Pair<Integer, Boolean> p : les)
+            this.enc.removeLEDependenteDe(p.getKey(), p.getValue(), pacote);
+    }
+
+    public void removeLsEIncompativeisComPacote(List<Pair<Integer, Boolean>> les, int idPacote){
+        PacoteDeConfiguracao pacote = facade.getPacote(idPacote);
+        for(Pair<Integer, Boolean> p : les)
+            this.enc.removeLEIncompativelCom(p.getKey(), p.getValue(), pacote);
+    }
+
+    public void removeLsEDependentesDePeca(List<Pair<Integer, Boolean>> les, int idPeca){
+        Peca peca = facade.getPeca(idPeca);
+        for(Pair<Integer, Boolean> p : les)
+            this.enc.removeLEDependenteDe(p.getKey(), p.getValue(), peca);
+    }
+
+    public void removeLsEIncompativeisComPeca(List<Pair<Integer, Boolean>> les, int idPeca){
+        Peca peca = facade.getPeca(idPeca);
+        for(Pair<Integer, Boolean> p : les)
+            this.enc.removeLEIncompativelCom(p.getKey(), p.getValue(), peca);
     }
 }

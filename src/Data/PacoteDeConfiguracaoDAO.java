@@ -5,6 +5,7 @@ import Business.Stock.Peca;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,7 +41,7 @@ public class PacoteDeConfiguracaoDAO {
                     peças.add(aux);
                 }
 
-                pc.setPecas(peças);
+                pc.setPecas(new HashMap<>());
 
             }catch (SQLException e){
                 e.printStackTrace();
