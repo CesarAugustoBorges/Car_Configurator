@@ -1,5 +1,2 @@
 ---------------------DAOFacade---------------------
-public boolean containsStock(int id);
-public int getQuantidadeAtualStock(int id);
-public int getQuantidadeMaximaStock(int id);
-public int setQuantidadeAtualStock(int id);
+

@@ -49,31 +49,31 @@ public class EncomendaDAO {
 
                 while(rs.next()){
                     enc.setId(rs.getInt("id"));
-                    enc.setStatus(rs.getString("status"));
+                    enc.setStatus(rs.getString("estado"));
                 }
 
                 //todas as linhas de encomenda peças
-                ps = con.prepareStatement("select LDE.preco , LDE.quantidade , LDEPeça.id from Encomenda as E  inner join LDEncomenda as LDE on E.id = LDE.idEncomenda inner join LDEPeça on LDE.id = LDEPeça.idLDEncomenda where E.id = ?;");
+                ps = con.prepareStatement("select LDE.preco , LDE.quantidade , LDEPeça.idPeca from Encomenda as E  inner join LDEncomenda as LDE on E.id = LDE.idEncomenda inner join LDEPeça on LDE.id = LDEPeça.idLDEncomenda where E.id = ?;");
                 ps.setInt(1,id);
                 rs = ps.executeQuery();
 
                 while(rs.next()){
                     LinhaDeEncomendaPeca ldp = new LinhaDeEncomendaPeca();
                     ldp.setQuantidade(rs.getInt("quantidade"));
-                    ldp.setId(rs.getInt("id"));
+                    ldp.setId(rs.getInt("idPeca"));
                     ldp.setPreco(rs.getFloat("preco"));
                     l.add(ldp);
                 }
 
                 //todas as linahs de encomenda pacotes
-                ps = con.prepareStatement("select LDE.preco , LDE.quantidade , LDEPacote.id from Encomenda as E  inner join LDEncomenda as LDE on E.id = LDE.idEncomenda inner join LDEPacote on LDE.id = LDEPacote.idLDEncomenda where E.id = ?;");
+                ps = con.prepareStatement("select LDE.preco , LDE.quantidade , LDEPacote.idPacote from Encomenda as E  inner join LDEncomenda as LDE on E.id = LDE.idEncomenda inner join LDEPacote on LDE.id = LDEPacote.idLDEncomenda where E.id = ?;");
                 ps.setInt(1,id);
                 rs = ps.executeQuery();
 
                 while(rs.next()){
                     LinhaDeEncomendaPacote ldp = new LinhaDeEncomendaPacote();
                     ldp.setQuantidade(rs.getInt("quantidade"));
-                    ldp.setId(rs.getInt("id"));
+                    ldp.setId(rs.getInt("idPacote"));
                     ldp.setPreco(rs.getFloat("preco"));
                     l.add(ldp);
                 }

@@ -103,4 +103,21 @@ public class DAOFacede {
     public boolean containsCliente(int id){
         return ClDAO.containsCliente(id);
     }
+
+    public int getQuantidadeAtualStock(int id){
+        return StockDAO.getQuantidadeStock(id,"qtdisponivel");
+    }
+
+    public int getQuantidadeMaximaStock(int id){
+        return StockDAO.getQuantidadeStock(id,"qtmaxima");
+    }
+
+    public void setQuantidadeAtualStock(int id,int quantidade){
+        StockDAO.setQuantidadeStock(id,"qtdisponivel",10);
+    }
+
+    public void setQuantidadeStock(int id,String info,int quantidade) {
+        StockDAO.setQuantidadeStock(id,"qtmaxima",10);
+    }
+
 }

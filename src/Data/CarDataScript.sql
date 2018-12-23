@@ -1,7 +1,8 @@
-DROP DATABASE CarData;
-
+DROP DATABASE IF EXISTS CarData;
 CREATE DATABASE CarData; 
 Use CarData;
+
+
 
 
 -- tabela de clientes
@@ -10,6 +11,7 @@ CREATE TABLE `Cliente` (
  `nif` VARCHAR(45) NOT NULL,
  `nome` VARCHAR(45) NOT NULL,
  PRIMARY KEY (`id`));
+
 
 -- tabela de funcionarios
 CREATE TABLE Funcionario(
@@ -32,27 +34,37 @@ PRIMARY KEY(id));
  CREATE TABLE Peça(
  id INT NOT NULL AUTO_INCREMENT,
  categoria VARCHAR(45) NOT NULL,
- idpacote INT ,
- PRIMARY KEY(id),
- FOREIGN KEY(idpacote) REFERENCES Pacote(id));
+ PRIMARY KEY(id));
+ 
+ 
+ -- tabela de Peças do Pacote
+ CREATE TABLE PeçaDoPacote(
+ idPacote INT NOT NULL,
+ idPeca INT NOT NULL,
+ primary key(idPacote,idPeca),
+ FOREIGN KEY (idPacote) REFERENCES Pacote(id),
+ FOREIGN KEY (idPeca) references Peça(id));
+ 
  
  -- tabela de Peças dependentes
 CREATE TABLE PeçasDependentes(
 id1 INT NOT  NULL,
 iddependente INT NOT NULL,
-Primary Key(id1,iddependente));
+Primary Key(id1,iddependente),
+FOREIGN KEY (id1) references Peça(id));
 
 -- tabela de peças incompativeis
 CREATE TABLE PeçasIncompativeis(
 id1 INT NOT NULL,
 idincompativel INT NOT NULL,
-PRIMARY Key(id1,idincompativel));
+PRIMARY Key(id1,idincompativel),
+FOREIGN KEY (id1) references Peça(id));
 
 
 -- tabela de encomendas
 CREATE TABLE Encomenda(
 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-status VARCHAR(45) NOT NULL);
+estado VARCHAR(45) NOT NULL);
 
 -- tabela de linhas de encomenda
 CREATE TABLE LDEncomenda(
@@ -68,6 +80,7 @@ FOREIGN KEY(idEncomenda) REFERENCES Encomenda(id)
 CREATE TABLE LDEPeça(
 idPeca INT NOT NULL,
 idLDEncomenda INT NOT NULL,
+PRIMARY KEY(idPeca,idLDEncomenda),
 FOREIGN KEY(idPeca) REFERENCES Peça(id),
 FOREIGN KEY(idLDEncomenda) REFERENCES LDEncomenda(id)
 );
@@ -76,7 +89,8 @@ FOREIGN KEY(idLDEncomenda) REFERENCES LDEncomenda(id)
 CREATE TABLE LDEPacote(
 idpacote INT NOT NULL,
 idLDEncomenda INT NOT NULL,
-FOREIGN KEY(idpacote) REFERENCES Peça(id),
+PRIMARY KEY(idPacote,idLDEncomenda),
+FOREIGN KEY(idpacote) REFERENCES Pacote(id),
 FOREIGN KEY(idLDEncomenda) REFERENCES LDEncomenda(id)
 );
 
@@ -85,29 +99,35 @@ CREATE TABLE Stock(
 qtdisponivel INT NOT NULL,
 qtmaxima INT NOT NULL,
 idPeça INT NOT NULL,
-PRIMARY KEY(idPeça));
+PRIMARY KEY(idPeça),
+FOREIGN Key(idPeça) references Peça(id));
 
--- inserts
 
+
+
+-- POVOVAMENTO DAS TABELAS
 INSERT INTO Encomenda
-(id,status)
+(id,estado)
 VALUES
 (1,"carro fixe"),
 (2,"carro feio");
 
-INSERT INTO LDEncomenda
-(id,preco,quantidade,idEncomenda)
-VALUES
-(1,10,1,1);
 
-INSERT INTO LDEPeça
-(idPeca,idLDEncomenda)
-VALUES
-(1,1);
+ 
+ INSERT Into Pacote
+ (id,preco,descricao)
+ VALUES
+ (1,10,"Pacote Desportivo"),
+ (2,5,"Pacote Incompleto");
+ 
+-- select idPeca from Encomenda as E  inner join LDEncomenda as LDE on E.id = LDE.idEncomenda inner join LDEPeça on LDE.id = LDEPeça.idLDEncomenda where E.id = 1;
+	
 
-select idPeca from Encomenda as E  inner join LDEncomenda as LDE on E.id = LDE.idEncomenda inner join LDEPeça on LDE.id = LDEPeça.idLDEncomenda where E.id = 1;
-		
 
+ Insert Into Peça
+ (categoria)
+ VALUES
+ ("Roda"), ("Volante"),("Porta"),("Vidro"),("Jante"),("motor"),("tubo"),("pintura"),("espelho"),("capo");
 
 Insert Into Stock
 (qtdisponivel,qtmaxima,idPeça)
@@ -117,20 +137,25 @@ VALUES
 (30,50,4),
 (10,500,5);
  
- INSERT Into Pacote
- (id,preco,descricao)
- VALUES
- (1,10,"Pacote Desportivo"),
- (2,5,"Pacote Incompleto");
- 
+  
+ Insert Into Cliente 
+	(nif,nome)
+    VALUES
+    ("123456789","André Guilherme"),
+    ("123456788","César Augusto"),
+    ("123456777","Mini J"),
+    ("123456666","Discipulo");
+
+
+Insert Into Funcionario
+(nif,nome,tipo,passe)
+VALUES
+("123456789","Vedeta","Gestor","vedeta"),
+("123456788","Draven","Gestor","axes"),
+("123456777","Lux","Gestor","narnia"),
+("123456666","Defenido","Admin","bolos");
  
 
- Insert Into Peça
- (categoria,idpacote)
- VALUES
- ("Roda",1), ("Volante",2),("Porta",null),("Vidro",null),("Jante",null),("motor",null),("tubo",null),("pintura",null),("espelho",null),("capo",null);
-
- 
  
  INSERT INTO PeçasDependentes
  (id1,iddependente)
@@ -142,22 +167,20 @@ VALUES
  (id1,idincompativel)
  VALUES
  (1,4),(1,1);
-
  
- Insert Into Cliente 
-	(nif,nome)
-    VALUES
-    ("123456789","André Guilherme"),
-    ("123456788","César Augusto"),
-    ("123456777","Mini J"),
-    ("123456666","Discipulo");
--- select * from Cliente;
-
-
-Insert Into Funcionario
-(nif,nome,tipo,passe)
+ 
+INSERT INTO LDEncomenda
+(id,preco,quantidade,idEncomenda)
 VALUES
-("123456789","Vedeta","Gestor","vedeta"),
-("123456788","Draven","Gestor","axes"),
-("123456777","Lux","Gestor","narnia"),
-("123456666","Defenido","Admin","bolos");
+(1,10,1,1);
+
+INSERT INTO LDEPeça
+(idPeca,idLDEncomenda)
+VALUES
+(1,1);
+
+INSERT INTO PeçaDoPacote
+(idPacote,idPeca)
+VALUES
+(1,1),(1,2),(1,3),(1,4),
+(2,1),(2,2);

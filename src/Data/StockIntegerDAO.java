@@ -51,4 +51,50 @@ public class StockIntegerDAO {
 
         return false;
     }
+
+    public int getQuantidadeStock(int id,String info){
+
+        con = Connect.connect();
+        int res = 0;
+
+        if(con!=null){
+            try {
+                PreparedStatement ps = con.prepareStatement("Select " + info + " from Stock where idPeça = ?");
+                ps.setInt(1,id);
+                ResultSet rs = ps.executeQuery();
+
+                while(rs.next()){
+                        res = rs.getInt(info);
+                }
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else Connect.close(con);
+
+        return res;
+    }
+
+    public int setQuantidadeStock(int id,String info,int quantidade){
+        con = Connect.connect();
+        int res = 0;
+
+        if(con!=null){
+            try {
+                PreparedStatement ps = con.prepareStatement("UPDATE Stock SET " + id + " = ? where idPeça = ?;");
+                ps.setInt(1,quantidade);
+                ps.setInt(2,id);
+                int a = ps.executeUpdate();
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else Connect.close(con);
+
+        return res;
+    }
+
+
+
+
 }

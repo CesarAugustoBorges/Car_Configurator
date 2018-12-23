@@ -59,8 +59,8 @@ public class PacoteDeConfiguracaoDAO {
         if (con != null) {
 
             try {
-                PreparedStatement ps = con.prepareStatement(" select Pi.idincompativel from Peça as P inner join PeçasIncompativeis as Pi " +
-                        "on P.id = Pi.id1 where P.idPacote = ?;");
+                PreparedStatement ps = con.prepareStatement("select Pi.idincompativel from Peça as P inner join PeçasIncompativeis as Pi " +
+                        "on P.id = Pi.id1 inner join PeçaDoPacote as PP on PP.idPeca = P.id where PP.idPacote = ?;");
                 ps.setInt(1, id);
                 ResultSet rs = ps.executeQuery();
 

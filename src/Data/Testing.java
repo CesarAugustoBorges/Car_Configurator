@@ -12,19 +12,10 @@ import java.util.Scanner;
 public class Testing {
     public static void main(String args[]) throws Exception {
 
-        // System.out.println(new ClienteDAO().getCliente(1).getName()); -> método 1
-        // System.out.println(new ClienteDAO().getUtilizador(1).getNome()); -> método 2
-        //System.out.println(new ClienteDAO().constainsUtilizador(1)); -> método 3
-        //new ClienteDAO().putUtilizador(new Funcionario("asd","sad","asd")); -> método 4
-        //new DAOFacede().getStock().forEach(integerStringPair -> System.out.println(integerStringPair.getValue())); -> método 5
-        //System.out.println(new DAOFacede().containsPeca(7)); -> método 6
-        //new DAOFacede().getIncompatibilidadesPeca(1).forEach(integer -> System.out.println(integer));
-        //System.out.println(new DAOFacede().validaUtilizador(1,"vedeta"));
-        //new DAOFacede().getIncompatibilidadesPacote(1).forEach(integer -> System.out.println(integer));
+
+        System.out.println(new DAOFacede().getQuantidadeAtualStock(1));
 
 
 
-        // NEED TO TEST THIS | WAIT FOR CESAR INPUTS
-        new DAOFacede().getEncomenda(1).getLinhasDeEncomenda().forEach(linhaDeEncomenda -> System.out.println(linhaDeEncomenda.getQuantidade()));
     }
 }
