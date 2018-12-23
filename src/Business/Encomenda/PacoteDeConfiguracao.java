@@ -2,23 +2,27 @@ package Business.Encomenda;
 
 import Business.Stock.Peca;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PacoteDeConfiguracao {
     private int id;
     private float preco;
     private String descricao;
-    private ArrayList<Peca> pecas;
+    private Map<Peca, Integer> pecas;
 
     public PacoteDeConfiguracao(){
 
     }
 
-    public PacoteDeConfiguracao(int id, float preco, String descricao, ArrayList<Peca> pecas){
+    public PacoteDeConfiguracao(PacoteDeConfiguracao p){
+        this.id = p.getId();
+        this.preco = p.getPreco();
+        this.descricao = p.getDescricao();
+        this.setPecas(p.getPecas());
+    }
+
+    public PacoteDeConfiguracao(int id, float preco, String descricao, Map<Peca, Integer> pecas){
         this.id = id;
         this.preco = preco;
         this.descricao = descricao;
@@ -49,25 +53,25 @@ public class PacoteDeConfiguracao {
         this.id = id;
     }
 
-    public void setPecas(ArrayList<Peca> pecas) {
-        this.pecas = new ArrayList<>();
-        for(Peca p : pecas)
-            this.pecas.add(p);
+    public void setPecas(Map<Peca, Integer> pecas) {
+        this.pecas = new HashMap<Peca, Integer>();
+        for(Peca p : pecas.keySet())
+            this.pecas.put(p, pecas.get(p));
     }
 
     public List<Integer> getPecasIds(){
-        return this.pecas.stream().map(Peca::getId).collect(Collectors.toList());
+        return this.pecas.keySet().stream().map(Peca::getId).collect(Collectors.toList());
     }
 
-    public List<Peca> getPecas(){
-        List<Peca> res = new ArrayList<>();
-        for(Peca p : pecas) res.add(p);
+    public Map<Peca, Integer> getPecas(){
+        Map<Peca, Integer> res = new HashMap<>();
+        for(Peca p : pecas.keySet()) res.put(p.clone(), pecas.get(p));
         return res;
     }
 
     public Set<Integer> getIncompatibilidades(){
         HashSet<Integer> res = new HashSet<>();
-        for(Peca p: pecas) {
+        for(Peca p: pecas.keySet()) {
             ArrayList<Integer> incom = p.getIncompatibilidades();
             for(Integer inc : incom) res.add(inc);
         }
@@ -76,7 +80,7 @@ public class PacoteDeConfiguracao {
 
     public Set<Integer> getDependencias(){
         HashSet<Integer> res = new HashSet<>();
-        for(Peca p: pecas) {
+        for(Peca p: pecas.keySet()) {
             ArrayList<Integer> incom = p.getDependencias();
             for(Integer inc : incom) res.add(inc);
         }
@@ -84,9 +88,13 @@ public class PacoteDeConfiguracao {
     }
 
     public boolean hasPeca(int id){
-        for(Peca p: pecas)
+        for(Peca p: pecas.keySet())
             if(p.getId() == id)
                 return  true;
         return false;
+    }
+
+    public PacoteDeConfiguracao clone(){
+        return new PacoteDeConfiguracao(this);
     }
 }

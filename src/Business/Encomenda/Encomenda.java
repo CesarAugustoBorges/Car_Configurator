@@ -130,12 +130,76 @@ public class Encomenda {
     }
 
 
-    public void removeLsE(List<Integer> ids){
-        for(LinhaDeEncomenda le : linhasDeEncomenda){
-            if(ids.contains(le.getId()))
-                linhasDeEncomenda.remove(le);
-        }
+    public void removeLinhaEncomenda(Integer id){
+        int i;
+        for(i = 0; i < linhasDeEncomenda.size() && linhasDeEncomenda.get(i).getId() != id; i++);
+        if(i != linhasDeEncomenda.size())
+            linhasDeEncomenda.remove(i);
     }
+
+    public void removeLEDependenteDe(int idle, boolean desfazer, PacoteDeConfiguracao p){
+        LinhaDeEncomenda le = getLinhaEncomenda(idle);
+        if(le != null && le instanceof LinhaDeEncomendaPacote && desfazer){
+            LinhaDeEncomendaPacote lep = (LinhaDeEncomendaPacote) le;
+            Map<Peca, Integer> pecas = lep.getPacoteDeConfiguracao().getPecas();
+            List<Integer> deps = p.getPecasIds();
+            for(Peca peca : pecas.keySet()){
+                boolean toAdd = true;
+                for(int i = 0; i < deps.size() && toAdd; i++)
+                    if(peca.getDependencias().contains(Integer.valueOf(deps.get(i))))
+                        toAdd = false;
+                if(toAdd)
+                    addPeca(peca, pecas.get(peca));
+            }
+        }
+        removeLinhaEncomenda(idle);
+    }
+
+    public void removeLEIncompativelCom(int idle, boolean desfazer, PacoteDeConfiguracao p){
+        LinhaDeEncomenda le = getLinhaEncomenda(idle);
+        if(le != null && le instanceof LinhaDeEncomendaPacote && desfazer){
+            LinhaDeEncomendaPacote lep = (LinhaDeEncomendaPacote) le;
+            Map<Peca, Integer> pecas = lep.getPacoteDeConfiguracao().getPecas();
+            List<Integer> deps = p.getPecasIds();
+            for(Peca peca : pecas.keySet()){
+                boolean toAdd = true;
+                for(int i = 0; i < deps.size() && toAdd; i++)
+                    if(peca.getIncompatibilidades().contains(Integer.valueOf(deps.get(i)))
+                            || p.getIncompatibilidades().contains(Integer.valueOf(p.getId())))
+                        toAdd = false;
+                if(toAdd)
+                    addPeca(peca, pecas.get(peca));
+            }
+        }
+        removeLinhaEncomenda(idle);
+    }
+
+    public void removeLEDependenteDe(int idle, boolean desfazer, Peca p){
+        LinhaDeEncomenda le = getLinhaEncomenda(idle);
+        if(le != null && le instanceof LinhaDeEncomendaPacote && desfazer){
+            LinhaDeEncomendaPacote lep = (LinhaDeEncomendaPacote) le;
+            Map<Peca, Integer> pecas = lep.getPacoteDeConfiguracao().getPecas();
+            for(Peca peca : pecas.keySet())
+                if(!peca.getDependencias().contains(Integer.valueOf(p.getId())))
+                    addPeca(peca, pecas.get(peca));
+        }
+        removeLinhaEncomenda(idle);
+    }
+
+
+    public void removeLEIncompativelCom(int idle, boolean desfazer, Peca p){
+        LinhaDeEncomenda le = getLinhaEncomenda(idle);
+        if(le != null && le instanceof LinhaDeEncomendaPacote && desfazer){
+            LinhaDeEncomendaPacote lep = (LinhaDeEncomendaPacote) le;
+            Map<Peca, Integer> pecas = lep.getPacoteDeConfiguracao().getPecas();
+            for(Peca peca : pecas.keySet())
+                if(!peca.getIncompatibilidades().contains(Integer.valueOf(p.getId()))
+                    || p.getIncompatibilidades().contains(Integer.valueOf(peca.getId())))
+                    addPeca(peca, pecas.get(peca));
+        }
+        removeLinhaEncomenda(idle);
+    }
+
 
     public List<Pair<Integer, String>> getLsEDependentes(PacoteDeConfiguracao p){
         List<Pair<Integer, String>> res = new ArrayList<>();
@@ -165,9 +229,18 @@ public class Encomenda {
     }
 
     public String getFatura() {
+        int width = 40;
         StringBuilder sb = new StringBuilder();
-        for(LinhaDeEncomenda le: linhasDeEncomenda)
-            sb.append(le.getDescricao() + " ------- " + le.getQuantidade() + " - " + le.getPrecoTotal() + "\n");
+        for(LinhaDeEncomenda le: linhasDeEncomenda){
+            int descSize = le.getDescricao().length();
+            int quantSize = Integer.toString(le.getQuantidade()).length();
+            int precoSize = Float.toString(le.getPrecoTotal()).length();
+            int nTraços = width - descSize - quantSize - precoSize - 5;
+            sb.append(le.getDescricao() + " ");
+            for(int i = 0; i < nTraços; i++) sb.append("-");
+            sb.append(" " +  le.getQuantidade() + " - " + le.getPrecoTotal() + "\n");
+        }
+        sb.append("Preco ----------------------------- " + getPreco() +"\n");
         return sb.toString();
     }
 
@@ -215,37 +288,38 @@ public class Encomenda {
     */
     public static void main(String[] args) {
         ArrayList<Integer> arrP1d = new ArrayList<>(), arrP1I = new ArrayList<>();
-        arrP1d.add(2); arrP1d.add(3);
-        Peca p1 = new Peca(1,10.1f,"motor-1.0", "motor", arrP1d, arrP1I);
+        arrP1d.add(2);
+        Peca p1 = new Peca(1,10.12f,"motor-1.0", "motor", arrP1d, arrP1I);
 
         ArrayList<Integer> arrP2d = new ArrayList<>(), arrP2I = new ArrayList<>();
-        Peca p2 = new Peca(2,12.2f,"volante-2.1", "extra", arrP2d, arrP2I);
+        Peca p2 = new Peca(2,12.20f,"volante-2.1", "extra", arrP2d, arrP2I);
 
-        ArrayList<Peca> arrPacote1 = new ArrayList<Peca>();
-        arrPacote1.add(p1);
-        PacoteDeConfiguracao pacote1 = new PacoteDeConfiguracao(1, 25.2f, "Pacote desportivo", arrPacote1);
+        ArrayList<Integer> arrP3d = new ArrayList<>(), arrP3I = new ArrayList<>();
+        Peca p3 = new Peca( 3, 25.20f, "radio", "extras", arrP3d, arrP3I);
+
+        Map<Peca, Integer> arrPacote1 = new HashMap<>();
+        arrPacote1.put(p1, 2); arrPacote1.put(p3, 1);
+        PacoteDeConfiguracao pacote1 = new PacoteDeConfiguracao(1, 25.20f, "Pacote desportivo", arrPacote1);
+
+        Map<Peca, Integer> arrPacote2 = new HashMap<>();
+        arrPacote2.put(p2, 2);
+        PacoteDeConfiguracao pacote2 = new PacoteDeConfiguracao(2, 23.20f, "Pacote smooths", arrPacote2);
 
         LinhaDeEncomenda le1 = new LinhaDeEncomendaPeca(1, 1, p1);
         LinhaDeEncomenda le2 = new LinhaDeEncomendaPeca(2, 1, p2);
         LinhaDeEncomenda le3 = new LinhaDeEncomendaPacote(3, 1, pacote1);
+        LinhaDeEncomenda le4 = new LinhaDeEncomendaPacote(4, 1, pacote2);
 
         ArrayList<LinhaDeEncomenda> arrLsE = new ArrayList<>();
-        arrLsE.add(le1); arrLsE.add(le2); arrLsE.add(le3);
+        arrLsE.add(le1); arrLsE.add(le2); arrLsE.add(le3); arrLsE.add(le4);
         Encomenda enc = new Encomenda(1, arrLsE);
+
+        //System.out.println("Se a le com a peca 1 depende da peca 2: " + le1.dependeDe(p2));
+        //System.out.println("Se a le com o pacote 1 depende do pacote 2: " + le3.dependeDe(pacote2));
+
+        enc.removeLEDependenteDe(3, true, pacote2);
         System.out.println(enc.getFatura());
 
-        System.out.println("Se a le com a peca 1 depende da peca 2: " + le1.dependeDe(p2));
-        System.out.println("Se a le com o pacote 1 depende da peca 2: " + le1.dependeDe(p2));
 
-
-        System.out.println("le1 before update : " + enc.getLinhaEncomenda(1).getQuantidade());
-        enc.addPeca(p1, 2);
-        System.out.println("le1 after update: " + enc.getLinhaEncomenda(1).getQuantidade());
-        enc.removePeca(p1.getId(),false);
-        System.out.println("enc after rem of le1 : " + enc.getLinhasDeEncomenda().size());
-        enc.addPacote(pacote1);
-        System.out.println("enc before update of le3 : " + enc.getLinhaEncomenda(3));
-        enc.removePacote(1, false);
-        System.out.println("enc after rem of le1 : " + enc.getLinhasDeEncomenda().size());
     }
 }

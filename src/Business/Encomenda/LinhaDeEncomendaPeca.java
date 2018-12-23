@@ -54,7 +54,7 @@ public class LinhaDeEncomendaPeca extends LinhaDeEncomenda {
     }
 
     public boolean dependeDe(PacoteDeConfiguracao pacote) {
-        for(Peca p: pacote.getPecas())
+        for(Peca p: pacote.getPecas().keySet())
             if(this.peca.getDependencias().contains(Integer.valueOf(p.getId())))
                 return true;
         return false;
