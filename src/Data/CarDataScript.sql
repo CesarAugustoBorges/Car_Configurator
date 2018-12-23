@@ -34,6 +34,7 @@ PRIMARY KEY(id));
  CREATE TABLE Peça(
  id INT NOT NULL AUTO_INCREMENT,
  categoria VARCHAR(45) NOT NULL,
+ descricao VARCHAR(45) NOT NULL,
  PRIMARY KEY(id));
  
  
@@ -125,9 +126,9 @@ VALUES
 
 
  Insert Into Peça
- (categoria)
+ (categoria,descricao)
  VALUES
- ("Roda"), ("Volante"),("Porta"),("Vidro"),("Jante"),("motor"),("tubo"),("pintura"),("espelho"),("capo");
+ ("Roda","a"), ("Volante","ro"),("Porta","p"),("Vidro","v"),("Jante","j"),("motor","m"),("tubo","t"),("pintura","p"),("espelho","e"),("capo","c");
 
 Insert Into Stock
 (qtdisponivel,qtmaxima,idPeça)

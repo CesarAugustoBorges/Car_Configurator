@@ -8,6 +8,7 @@ import Business.Utilizador.Funcionario;
 import javafx.util.Pair;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class DAOFacede {
@@ -39,14 +40,19 @@ public class DAOFacede {
         UtlDAO.putUtilizador(user);
     }
 
-    // Devolve uma lista de pares, sendo o inteiro o id e a String o nome da peça.
-    public List<Pair<Integer,String>> getStock(){
-        return PDAO.getStock();
+    //Devolve todas as peças do sistema
+    public Map<String,Pair<Integer,String>> getAllPecas(){
+        return PDAO.getAllPecas();
     }
 
-    // Devolve a quantidade disponivel e máxima como um par
+    //Devolve a quantidade disponivel e máxima como um par
     public Pair<Integer,Integer> getInfoOfPeca(int id){
         return StockDAO.getInfoOfPeca(id);
+    }
+
+    //Devolve todas as encomendas do Sistema
+    public  Map<String, Pair<Integer, String>> getAllEncomendas(){
+        return EDAO.getAllEncomendas();
     }
 
     //verifica se existe uma peça em stock

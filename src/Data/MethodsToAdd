@@ -1,12 +1,3 @@
 ---------------------DAOFacade---------------------
-<<<<<<< HEAD
 
-=======
-public boolean containsStock(int id);
-public int getQuantidadeAtualStock(int id);
-public int getQuantidadeMaximaStock(int id);
-public int setQuantidadeAtualStock(int id);
 
-public Map<String, Pair<Integer, String>> getAllPecas(); // Map<Descricao, Pair<Id, Categoria>>
-public  Map<String, Pair<Integer, String>> getAllEncomendas(); // Map<Descricao, Pair<Id, Categoria>>
->>>>>>> f365d6ae13be9fac34d737669b0390fe74e5bcf7

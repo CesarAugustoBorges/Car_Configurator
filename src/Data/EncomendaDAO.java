@@ -4,17 +4,17 @@ import Business.Encomenda.Encomenda;
 import Business.Encomenda.LinhaDeEncomenda;
 import Business.Encomenda.LinhaDeEncomendaPacote;
 import Business.Encomenda.LinhaDeEncomendaPeca;
+import javafx.util.Pair;
 
 import java.awt.geom.RectangularShape;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class EncomendaDAO {
+
     Connection con;
 
     public void addEncomenda(Encomenda enc){
@@ -88,6 +88,32 @@ public class EncomendaDAO {
         }else Connect.close(con);
 
         return enc;
+    }
+
+    //Map<Descricao, Pair<Id, Categoria>>
+    public Map<String, Pair<Integer, String>> getAllEncomendas(){
+
+        con = Connect.connect();
+        Map<String, Pair<Integer, String>> result = new HashMap<>();
+
+        if(con!=null){
+            try{
+                PreparedStatement ps = con.prepareStatement("Select * from Encomenda");
+                ResultSet rs = ps.executeQuery();
+
+                while(rs.next()){
+                    result.put(rs.getString("estado"),rs.getInt("id"));
+                }
+
+
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+
+
+        }else Connect.close(con);
+
+        return result;
     }
 
 }

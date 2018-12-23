@@ -9,11 +9,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PeçaDAO {
 
-    Connection con;
+    private Connection con;
 
     public List<Pair<Integer, String>> getStock() {
         con = Connect.connect();
@@ -37,6 +39,31 @@ public class PeçaDAO {
         return result;
     }
 
+    public Map<String, Pair<Integer, String>> getAllPecas() { // Map<Descricao, Pair<Id, Categoria>>
+
+        con = Connect.connect();
+        Map<String, Pair<Integer, String>> result = new HashMap<>();
+
+        if (con != null) {
+            try {
+
+                PreparedStatement ps = con.prepareStatement("Select * from Peça");
+                ResultSet rs = ps.executeQuery();
+
+                while(rs.next()){
+                    result.put(rs.getString("descricao"), new Pair<>(rs.getInt("id"),rs.getString("categoria")));
+                }
+
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        } else Connect.close(con);
+
+        return result;
+
+    }
+
+
     public Peca getPeca(int id){
         con = Connect.connect();
         Peca p = null;
@@ -55,6 +82,7 @@ public class PeçaDAO {
                 while  (rs.next()){
                     p.setId(rs.getInt("id"));
                     p.setCategoria(rs.getString("categoria"));
+                    p.setDescricao(rs.getString("descricao"));
                 }
 
                 //trata das peças dependentes
