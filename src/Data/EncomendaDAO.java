@@ -21,9 +21,10 @@ public class EncomendaDAO {
         con = Connect.connect();
         if(con!=null){
             try{
-                PreparedStatement ps = con.prepareStatement("Insert into Encomenda (id,status) VALUES (?,?)");
+                PreparedStatement ps = con.prepareStatement("Insert into Encomenda (id,estado,descricao) VALUES (?,?,?)");
                 ps.setInt(1,enc.getId());
-                //ps.setString(2,enc.getStatus());
+                ps.setString(2,enc.getStatus());
+                ps.setString(3,enc.getDescricao());
                 int a = ps.executeUpdate();
 
             }catch (SQLException e){
@@ -50,6 +51,7 @@ public class EncomendaDAO {
                 while(rs.next()){
                     enc.setId(rs.getInt("id"));
                     enc.setStatus(rs.getString("estado"));
+                    enc.setDescricao(rs.getString("descricao"));
                 }
 
                 //todas as linhas de encomenda peças
@@ -102,7 +104,7 @@ public class EncomendaDAO {
                 ResultSet rs = ps.executeQuery();
 
                 while(rs.next()){
-                    result.put(rs.getString("estado"),rs.getInt("id"));
+                    result.put(rs.getString("estado"),new Pair<>(rs.getInt("id"),rs.getString("descricao")));
                 }
 
 
@@ -114,6 +116,43 @@ public class EncomendaDAO {
         }else Connect.close(con);
 
         return result;
+    }
+
+
+    public void removeEncomenda(int id){
+
+        con = Connect.connect();
+
+        if(con!=null){
+            try{
+
+
+                PreparedStatement ps = con.prepareStatement("Delete from LDEPeça where idLDEncomenda in ( select LD.id from Encomenda as E inner join LDEncomenda  AS LD on E.id = LD.idEncomenda where E.id = ?);");
+                ps.setInt(1,id);
+                ps.executeUpdate();
+
+
+                ps = con.prepareStatement("Delete from LDEPacote where idLDEncomenda in ( select LD.id from Encomenda as E inner join LDEncomenda  AS LD on E.id = LD.idEncomenda where E.id = ?);");
+                ps.setInt(1,id);
+                ps.executeUpdate();
+
+                ps = con.prepareStatement("Delete from LDEncomenda where idEncomenda = ?");
+                ps.setInt(1,id);
+                ps.executeUpdate();
+
+                ps = con.prepareStatement("Delete from Encomenda where id = ?");
+                ps.setInt(1,id);
+                ps.executeUpdate();
+
+
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+
+
+        }else Connect.close(con);
+
+
     }
 
 }

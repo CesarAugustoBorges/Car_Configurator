@@ -110,20 +110,33 @@ public class DAOFacede {
         return ClDAO.containsCliente(id);
     }
 
+    //quantidade atual de uma peça em stock
     public int getQuantidadeAtualStock(int id){
         return StockDAO.getQuantidadeStock(id,"qtdisponivel");
     }
 
+    //quantidade maxima de uma peça em stock
     public int getQuantidadeMaximaStock(int id){
         return StockDAO.getQuantidadeStock(id,"qtmaxima");
     }
 
+    //define a quantidade atual de uma peça em stock
     public void setQuantidadeAtualStock(int id,int quantidade){
         StockDAO.setQuantidadeStock(id,"qtdisponivel",10);
     }
 
-    public void setQuantidadeStock(int id,String info,int quantidade) {
+    //define a qt maxima de uma peça em stock
+    public void setQuantidadeMaximaStock(int id,String info,int quantidade) {
         StockDAO.setQuantidadeStock(id,"qtmaxima",10);
     }
 
+    //remove uma encomenda do sistema
+    public void removeEncomenda(int id){
+        EDAO.removeEncomenda(id);
+    }
+
+    //devolve a lista de stock
+    public List<Pair<Integer, String>> getStock() {
+        return PDAO.getStock();
+    }
 }

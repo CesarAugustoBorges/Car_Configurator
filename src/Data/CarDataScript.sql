@@ -2,9 +2,6 @@ DROP DATABASE IF EXISTS CarData;
 CREATE DATABASE CarData; 
 Use CarData;
 
-
-
-
 -- tabela de clientes
 CREATE TABLE `Cliente` (
  `id` INT NOT NULL AUTO_INCREMENT,
@@ -24,7 +21,7 @@ CREATE TABLE Funcionario(
 
 -- tabela de Pacotes
 CREATE TABLE Pacote(
-id INT NOT NULL AUTO_INCREMENT,
+id INT NOT NULL ,
 preco FLOAT NOT NULL,
 descricao VARCHAR(45) NOT NULL,
 PRIMARY KEY(id));
@@ -65,7 +62,8 @@ FOREIGN KEY (id1) references Peça(id));
 -- tabela de encomendas
 CREATE TABLE Encomenda(
 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-estado VARCHAR(45) NOT NULL);
+estado VARCHAR(45) NOT NULL,
+descricao VARCHAR(45) NOT NULL);
 
 -- tabela de linhas de encomenda
 CREATE TABLE LDEncomenda(
@@ -108,10 +106,10 @@ FOREIGN Key(idPeça) references Peça(id));
 
 -- POVOVAMENTO DAS TABELAS
 INSERT INTO Encomenda
-(id,estado)
+(id,estado,descricao)
 VALUES
-(1,"carro fixe"),
-(2,"carro feio");
+(1,"carro fixe","ads"),
+(2,"carro feio","sd");
 
 
  
@@ -120,9 +118,7 @@ VALUES
  VALUES
  (1,10,"Pacote Desportivo"),
  (2,5,"Pacote Incompleto");
- 
--- select idPeca from Encomenda as E  inner join LDEncomenda as LDE on E.id = LDE.idEncomenda inner join LDEPeça on LDE.id = LDEPeça.idLDEncomenda where E.id = 1;
-	
+ 	
 
 
  Insert Into Peça
@@ -164,6 +160,9 @@ VALUES
  (1,1),(1,2),(1,3);
  
  
+ 
+ 
+ 
  INSERT INTO PeçasIncompativeis
  (id1,idincompativel)
  VALUES
@@ -173,12 +172,19 @@ VALUES
 INSERT INTO LDEncomenda
 (id,preco,quantidade,idEncomenda)
 VALUES
-(1,10,1,1);
+(1,10,1,1),
+(2,20,3,1);
 
 INSERT INTO LDEPeça
 (idPeca,idLDEncomenda)
 VALUES
 (1,1);
+
+INSERT INTO LDEPacote
+(idPacote,idLDEncomenda)
+VALUES
+(1,1),(1,2);
+
 
 INSERT INTO PeçaDoPacote
 (idPacote,idPeca)

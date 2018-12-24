@@ -10,10 +10,20 @@ public class Encomenda {
     private int id;
     private List<LinhaDeEncomenda> linhasDeEncomenda;
     private String status;
+    private String descricao;
 
     public Encomenda() {
+        this.descricao = "";
         this.status = "Valid";
         this.linhasDeEncomenda = new ArrayList<>();
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     public Encomenda(int id, ArrayList<LinhaDeEncomenda> les) {
@@ -70,10 +80,15 @@ public class Encomenda {
         return null;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
     public ArrayList<LinhaDeEncomenda> getLinhasDeEncomenda() {
         ArrayList<LinhaDeEncomenda> res = new ArrayList<>();
         for(LinhaDeEncomenda le : this.linhasDeEncomenda)
             res.add(le.clone());
+
         return res;
     }
 

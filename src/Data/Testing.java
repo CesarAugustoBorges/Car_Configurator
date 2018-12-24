@@ -23,7 +23,7 @@ public class Testing {
         new DAOFacede().getIncompatibilidadesPacote(1).forEach(integer -> System.out.println(integer));
         new DAOFacede().getEncomenda(1).getLinhasDeEncomenda().forEach(linhaDeEncomenda -> System.out.println(linhaDeEncomenda.getQuantidade()));
         System.out.println(new DAOFacede().getQuantidadeAtualStock(1));
-
+        new DAOFacede().removeEncomenda(1);
 
 
     }

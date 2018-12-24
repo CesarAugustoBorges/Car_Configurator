@@ -2,6 +2,7 @@ package Data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -28,6 +29,9 @@ public class Connect {
         try{
             Class.forName("com.mysql.jdbc.Driver");
             Connection cn  = DriverManager.getConnection("jdbc:"+bd+"://localhost:"+localhost+"/"+db,properties);
+            PreparedStatement ps = cn.prepareStatement("SET SQL_SAFE_UPDATES = 0;");
+            ps.execute();
+
             return cn;
         }catch (ClassNotFoundException e){
             //unable to connect
