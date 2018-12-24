@@ -12,6 +12,7 @@ import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class Sistema {
@@ -29,7 +30,7 @@ public class Sistema {
         facade.putUtilizador(novo);
     }
 
-    public List<Pair<Integer,String>> getStock() {
+    public Map<Integer,String>> getStock() {
         return facade.getStock();
     }
 
@@ -67,24 +68,41 @@ public class Sistema {
     }
 
     ///////////////////////////////////////////
-    ////////// Encomenendar Veículo ////////////
+    ////////// Encomendar Veículo ////////////
     ///////////////////////////////////////////
     //public void addEncomenda() {
     //    facade.addEncomenda(this.enc);
     //}
 
     ///////////////////////////////////////////
+    ////////// Rejeitar Encomenda ////////////
+    ///////////////////////////////////////////
+    //public void rejeitarEncomenda(id) {
+    //    facade.removeEncomenda(id);
+    //}
+
+    ///////////////////////////////////////////
     //////////// Encomendar pecas /////////////
     ///////////////////////////////////////////
 
+<<<<<<< HEAD
     public void encomendarPeca(int id, int quantia) throws Exception{
         if(!facade.containsPeca(id))
+=======
+
+    public void encomendarPeca(int id, int quantia) throws Exception{
+        if(!facade.containsStock(id))
+>>>>>>> 50f0773a75de74dd1bad2337eeaf5642e42a5c79
             throw new Exception("Stock não existe");
         int quantidade = facade.getQuantidadeAtualStock(id);
         int quantidadeMaxima = facade.getQuantidadeMaximaStock(id);
         if(quantidade + quantia <= quantidadeMaxima || quantia <= 0)
             throw new Exception("Quantidade excedida");
         facade.setQuantidadeAtualStock(id, quantia + quantidade);
+<<<<<<< HEAD
+=======
+    }
+>>>>>>> 50f0773a75de74dd1bad2337eeaf5642e42a5c79
 
     }
 
@@ -175,7 +193,9 @@ public class Sistema {
     }
 
 
-
+    public Map<String, Pair<Integer,String>> getAllEncomendas(){
+        return facade.getAllEncomendas();
+    }
 
     public void removeLsEDependentesDePacote(List<Pair<Integer, Boolean>> les, int idPacote){
         PacoteDeConfiguracao pacote = facade.getPacote(idPacote);
@@ -199,5 +219,12 @@ public class Sistema {
         Peca peca = facade.getPeca(idPeca);
         for(Pair<Integer, Boolean> p : les)
             this.enc.removeLEIncompativelCom(p.getKey(), p.getValue(), peca);
+    }
+
+    public Pair<Integer, Integer> getStock(int id){
+        int quantidadeAtual = facade.getQuantidadeAtualStock(id);
+        int quantidadeMaxima = facade.getQuantidadeMaximaStock(id);
+        Pair<Integer, Integer> res = new Pair<>(quantidadeAtual, quantidadeMaxima);
+        return res;
     }
 }

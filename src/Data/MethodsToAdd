@@ -1,3 +1,8 @@
 ---------------------DAOFacade---------------------
 
+public boolean containsStock(int idPeca); //Se tem uma peça no stock, diferente de ter uma peça no sistema
+public Map<String,Integer> getStock(); //Devolve todas pecas em stock, descrição e id
 
+public void removeEncomenda(int id);
+public List<Integer> getEncomendasDeCliente(int id);
+public Map<String, Map<Integer, Integer>> getInfoForOtimização (); // Devolve um map em que tendo a categoria de uma peça, têm-se o Map em que endo o id de uma peça consegue-se o seu preço
