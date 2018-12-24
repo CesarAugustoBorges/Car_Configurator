@@ -7,7 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StockIntegerDAO {
 
@@ -39,18 +41,7 @@ public class StockIntegerDAO {
     }
 
 
-    public boolean containsPeca(int id){
 
-        con = Connect.connect();
-
-        if(con!=null){
-
-            if(getInfoOfPeca(id)!=null) return true;
-
-        }else Connect.close(con);
-
-        return false;
-    }
 
     public int getQuantidadeStock(int id,String info){
 
@@ -94,7 +85,46 @@ public class StockIntegerDAO {
         return res;
     }
 
+    public boolean containsStock(int idPeca){
+        con = Connect.connect();
+        int res = 0;
 
+        if(con!=null){
+            try {
+                PreparedStatement ps = con.prepareStatement("Select idPeça from Stock where idPeça = ?");
+                ps.setInt(1,idPeca);
+                ResultSet rs = ps.executeQuery();
+                if(rs != null){
+                    return true;
+                }
 
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else Connect.close(con);
 
+        return false;
+    }
+
+    public Map<Integer,String> getStock() {
+        con = Connect.connect();
+        Map<Integer,String> result = new HashMap<>();
+
+        if (con != null) {
+            try {
+
+                PreparedStatement ps = con.prepareStatement("Select id,categoria from Stock inner join Peça as P on P.id = Stock.idPeça");
+                ResultSet rs = ps.executeQuery();
+
+                while(rs.next()){
+                    result.put(rs.getInt("id") ,rs.getString("categoria"));
+                }
+
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        } else Connect.close(con);
+
+        return result;
+    }
 }

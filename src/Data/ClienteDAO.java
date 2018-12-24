@@ -4,6 +4,8 @@ import Business.Utilizador.Cliente;
 import Business.Utilizador.Funcionario;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 //Save - put(k : Object, o : Object) : void
 //Get - get(key : Object) : Object
@@ -76,5 +78,31 @@ public class ClienteDAO{
 
     }
 
+    public List<Integer> getEncomendasDeCliente(int id){
+
+        con = Connect.connect();
+        List<Integer> x = new ArrayList<>();
+
+        if(con!=null){
+            try {
+                PreparedStatement ps = con.prepareCall("SELECT idEncomenda FROM EncomendaCliente where idCliente = ?");
+                ps.setInt(1,id);
+                ResultSet rs = ps.executeQuery();
+
+                while(rs.next()){
+                    x.add(rs.getInt("idEncomenda"));
+                }
+                Connect.close(con);
+
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+
+        }else{
+            Connect.close(con);
+        }
+
+        return x;
+    }
 
 }

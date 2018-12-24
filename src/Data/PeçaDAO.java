@@ -17,28 +17,6 @@ public class PeçaDAO {
 
     private Connection con;
 
-    public List<Pair<Integer, String>> getStock() {
-        con = Connect.connect();
-        List<Pair<Integer, String>> result = new ArrayList<>();
-
-        if (con != null) {
-            try {
-
-                PreparedStatement ps = con.prepareStatement("Select id,categoria from Peça");
-                ResultSet rs = ps.executeQuery();
-
-                while(rs.next()){
-                    result.add(new Pair<>(rs.getInt("id"),rs.getString("categoria")));
-                }
-
-            }catch (SQLException e){
-                e.printStackTrace();
-            }
-        } else Connect.close(con);
-
-        return result;
-    }
-
     public Map<String, Pair<Integer, String>> getAllPecas() { // Map<Descricao, Pair<Id, Categoria>>
 
         con = Connect.connect();
@@ -63,6 +41,19 @@ public class PeçaDAO {
 
     }
 
+    public boolean containsPeca(int id){
+
+        con = Connect.connect();
+
+        if(con!=null){
+
+            if(getPeca(id)!=null) return true;
+
+        }else Connect.close(con);
+
+        return false;
+    }
+
 
     public Peca getPeca(int id){
         con = Connect.connect();
@@ -81,6 +72,7 @@ public class PeçaDAO {
                 //trata da informação da peça
                 while  (rs.next()){
                     p.setId(rs.getInt("id"));
+                    p.setPreco(rs.getFloat("preco"));
                     p.setCategoria(rs.getString("categoria"));
                     p.setDescricao(rs.getString("descricao"));
                 }
@@ -114,6 +106,37 @@ public class PeçaDAO {
         }else Connect.close(con);
 
         return p;
+    }
+
+    public Map<String, Map<Integer, Float>> getInfoForOtimização(){
+
+        con = Connect.connect();
+        Map<String, Map<Integer, Float>>  result = new HashMap<>();
+
+        if (con != null) {
+            try {
+
+                PreparedStatement ps = con.prepareStatement("Select * from Peça");
+                ResultSet rs = ps.executeQuery();
+
+                while(rs.next()){
+                    String desc = rs.getString("descricao");
+                    if(result.containsKey(desc)){//se já contiver a desrição
+                        result.get(desc).put(rs.getInt("id"),rs.getFloat("preco"));
+                    }else{
+                        Map<Integer,Float> x = new HashMap<>();
+                        x.put(rs.getInt("id"),rs.getFloat("preco"));
+                        result.put(desc,x);
+                    }
+                }
+
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        } else Connect.close(con);
+
+        return result;
+
     }
 
 }

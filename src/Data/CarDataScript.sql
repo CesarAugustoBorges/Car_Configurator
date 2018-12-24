@@ -9,6 +9,21 @@ CREATE TABLE `Cliente` (
  `nome` VARCHAR(45) NOT NULL,
  PRIMARY KEY (`id`));
 
+-- tabela de encomendas
+CREATE TABLE Encomenda(
+id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+estado VARCHAR(45) NOT NULL,
+descricao VARCHAR(45) NOT NULL,
+idCliente INT NOT NULL,
+FOREIGN KEY (idCliente) references Cliente(id));
+
+-- tabela de encomendas de um cliente
+CREATE TABLE EncomendaCliente(
+idCliente INT NOT NULL,
+idEncomenda INT NOT NULL,
+Primary Key(idCliente,idEncomenda),
+FOREIGN Key (idCliente) REFERENCES Cliente(id),
+FOREIGN KEY(idEncomenda) REFERENCES Encomenda(id));
 
 -- tabela de funcionarios
 CREATE TABLE Funcionario(
@@ -30,6 +45,7 @@ PRIMARY KEY(id));
 -- tabela de Peças
  CREATE TABLE Peça(
  id INT NOT NULL AUTO_INCREMENT,
+ preco FLOAT NOT NULL,
  categoria VARCHAR(45) NOT NULL,
  descricao VARCHAR(45) NOT NULL,
  PRIMARY KEY(id));
@@ -57,13 +73,6 @@ id1 INT NOT NULL,
 idincompativel INT NOT NULL,
 PRIMARY Key(id1,idincompativel),
 FOREIGN KEY (id1) references Peça(id));
-
-
--- tabela de encomendas
-CREATE TABLE Encomenda(
-id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-estado VARCHAR(45) NOT NULL,
-descricao VARCHAR(45) NOT NULL);
 
 -- tabela de linhas de encomenda
 CREATE TABLE LDEncomenda(
@@ -105,15 +114,7 @@ FOREIGN Key(idPeça) references Peça(id));
 
 
 -- POVOVAMENTO DAS TABELAS
-INSERT INTO Encomenda
-(id,estado,descricao)
-VALUES
-(1,"carro fixe","ads"),
-(2,"carro feio","sd");
-
-
- 
- INSERT Into Pacote
+INSERT Into Pacote
  (id,preco,descricao)
  VALUES
  (1,10,"Pacote Desportivo"),
@@ -122,9 +123,9 @@ VALUES
 
 
  Insert Into Peça
- (categoria,descricao)
+ (categoria,descricao,preco)
  VALUES
- ("Roda","a"), ("Volante","ro"),("Porta","p"),("Vidro","v"),("Jante","j"),("motor","m"),("tubo","t"),("pintura","p"),("espelho","e"),("capo","c");
+ ("Roda","a",10), ("Volante","ro",20),("Porta","p",30),("Vidro","v",4),("Jante","j",4),("motor","m",22),("tubo","t",10.2),("pintura","p,",123.2),("espelho","e",123),("capo","c",213);
 
 Insert Into Stock
 (qtdisponivel,qtmaxima,idPeça)
@@ -136,12 +137,24 @@ VALUES
  
   
  Insert Into Cliente 
-	(nif,nome)
-    VALUES
+(nif,nome)
+VALUES
     ("123456789","André Guilherme"),
     ("123456788","César Augusto"),
     ("123456777","Mini J"),
     ("123456666","Discipulo");
+
+INSERT INTO Encomenda
+(id,estado,descricao,idCliente)
+VALUES
+(1,"carro fixe","ads",1),
+(2,"carro feio","sd",1);
+
+INSERT Into EncomendaCliente
+(idCliente,idEncomenda)
+VALUES
+(1,1),
+(2,1);
 
 
 Insert Into Funcionario
@@ -158,8 +171,6 @@ VALUES
  (id1,iddependente)
  VALUES
  (1,1),(1,2),(1,3);
- 
- 
  
  
  
