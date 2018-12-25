@@ -88,6 +88,15 @@ public class Peca {
             this.incompatibilidades.add(i);
     }
 
+    public boolean incompativelCom(Peca p){
+        return incompativelCom(p.getId());
+    }
+
+    public boolean incompativelCom(Integer p){
+        return incompatibilidades.contains(Integer.valueOf(p));
+    }
+
+
     public Peca clone(){
         return new Peca(this);
     }

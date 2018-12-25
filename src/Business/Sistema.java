@@ -101,8 +101,14 @@ public class Sistema {
     ////////////// Adiciona Peca //////////////
     ///////////////////////////////////////////
 
-    public List<Pair<Integer,String>> getLEIncompativeisComPeca(int id) {
+    public List<Pair<Integer,String>> getLsEIncompativeisComPeca(int id) {
         Peca p = facade.getPeca(id);
+        List<Pair<Integer,String>> incom = this.enc.getLEIncompativeisCom(p);
+        return incom;
+    }
+
+    public List<Pair<Integer,String>> getLsEIncompativeisComPacote(int id) {
+        PacoteDeConfiguracao p = facade.getPacote(id);
         List<Pair<Integer,String>> incom = this.enc.getLEIncompativeisCom(p);
         return incom;
     }
@@ -117,6 +123,11 @@ public class Sistema {
         for(Integer id : ids)
             pecas.add(facade.getPeca(id));
         enc.addPecas(pecas);
+    }
+
+    public List<Integer> getPecasObrigatorias(int id){
+        Peca p = facade.getPeca(id);
+        return this.enc.getPecasObrigatorias(p);
     }
 
     public void addPecasObrigatorias(int id){

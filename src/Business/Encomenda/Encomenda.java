@@ -208,8 +208,7 @@ public class Encomenda {
             LinhaDeEncomendaPacote lep = (LinhaDeEncomendaPacote) le;
             Map<Peca, Integer> pecas = lep.getPacoteDeConfiguracao().getPecas();
             for(Peca peca : pecas.keySet())
-                if(!peca.getIncompatibilidades().contains(Integer.valueOf(p.getId()))
-                    || p.getIncompatibilidades().contains(Integer.valueOf(peca.getId())))
+                if(!peca.incompativelCom(p) || p.incompativelCom(peca))
                     addPeca(peca, pecas.get(peca));
         }
         removeLinhaEncomenda(idle);
@@ -259,6 +258,17 @@ public class Encomenda {
         return sb.toString();
     }
 
+    public List<Integer> getPecasObrigatorias(Peca p){
+        List<Integer> dep = p.getDependencias();
+        List<Integer> res = new ArrayList<>();
+        int j = 0;
+        for(int i = 0; i < dep.size(); i++, j++){
+            for(LinhaDeEncomenda le : linhasDeEncomenda)
+                if(le.hasPeca(res.get(i)))
+                    dep.remove(i);
+        }
+        return dep;
+    }
 
     /*
         // Se um pacote tiver um item na lista, então o pacote é removido
@@ -303,7 +313,7 @@ public class Encomenda {
     */
     public static void main(String[] args) {
         ArrayList<Integer> arrP1d = new ArrayList<>(), arrP1I = new ArrayList<>();
-        arrP1d.add(2);
+        arrP1d.add(2); arrP1d.add(4);
         Peca p1 = new Peca(1,10.12f,"motor-1.0", "motor", arrP1d, arrP1I);
 
         ArrayList<Integer> arrP2d = new ArrayList<>(), arrP2I = new ArrayList<>();
@@ -320,15 +330,20 @@ public class Encomenda {
         arrPacote2.put(p2, 2);
         PacoteDeConfiguracao pacote2 = new PacoteDeConfiguracao(2, 23.20f, "Pacote smooths", arrPacote2);
 
-        LinhaDeEncomenda le1 = new LinhaDeEncomendaPeca(1, 1, p1);
+        //LinhaDeEncomenda le1 = new LinhaDeEncomendaPeca(1, 1, p1);
         LinhaDeEncomenda le2 = new LinhaDeEncomendaPeca(2, 1, p2);
-        LinhaDeEncomenda le3 = new LinhaDeEncomendaPacote(3, 1, pacote1);
-        LinhaDeEncomenda le4 = new LinhaDeEncomendaPacote(4, 1, pacote2);
+        //LinhaDeEncomenda le3 = new LinhaDeEncomendaPacote(3, 1, pacote1);
+        //LinhaDeEncomenda le4 = new LinhaDeEncomendaPacote(4, 1, pacote2);
 
         ArrayList<LinhaDeEncomenda> arrLsE = new ArrayList<>();
-        arrLsE.add(le1); arrLsE.add(le2); arrLsE.add(le3); arrLsE.add(le4);
+        //arrLsE.add(le1);
+        arrLsE.add(le2);
+        //arrLsE.add(le3);
+        //arrLsE.add(le4);
         Encomenda enc = new Encomenda(1, arrLsE);
 
+        for(Integer i : enc.getPecasObrigatorias(p2))
+            System.out.println("Peca obrigatorioa :" +i);
         //System.out.println("Se a le com a peca 1 depende da peca 2: " + le1.dependeDe(p2));
         //System.out.println("Se a le com o pacote 1 depende do pacote 2: " + le3.dependeDe(pacote2));
 
