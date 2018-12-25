@@ -16,7 +16,7 @@ public class Testing {
         System.out.println(new UtilizadorDAO().getUtilizador(1).getNome());// -> método 2
         System.out.println(new UtilizadorDAO().constainsUtilizador(1)); //-> método 3
         new UtilizadorDAO().putUtilizador(new Funcionario("asd","sad","asd")); //-> método 4
-        new DAOFacede().getStock().forEach(integerStringPair -> System.out.println(integerStringPair.getValue())); //-> método 5
+        new DAOFacede().getStock().forEach((integer, s) -> System.out.println(integer));
         System.out.println(new DAOFacede().containsPeca(7)); //-> método 6
         new DAOFacede().getIncompatibilidadesPeca(1).forEach(integer -> System.out.println(integer));
         System.out.println(new DAOFacede().validaUtilizador(1,"vedeta"));
