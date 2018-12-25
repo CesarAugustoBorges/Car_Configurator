@@ -30,7 +30,7 @@ public class Sistema {
         facade.putUtilizador(novo);
     }
 
-    public Map<Integer,String>> getStock() {
+    public Map<Integer,String> getStock() {
         return facade.getStock();
     }
 
@@ -85,25 +85,15 @@ public class Sistema {
     //////////// Encomendar pecas /////////////
     ///////////////////////////////////////////
 
-<<<<<<< HEAD
-    public void encomendarPeca(int id, int quantia) throws Exception{
-        if(!facade.containsPeca(id))
-=======
 
     public void encomendarPeca(int id, int quantia) throws Exception{
         if(!facade.containsStock(id))
->>>>>>> 50f0773a75de74dd1bad2337eeaf5642e42a5c79
             throw new Exception("Stock não existe");
         int quantidade = facade.getQuantidadeAtualStock(id);
         int quantidadeMaxima = facade.getQuantidadeMaximaStock(id);
         if(quantidade + quantia <= quantidadeMaxima || quantia <= 0)
             throw new Exception("Quantidade excedida");
         facade.setQuantidadeAtualStock(id, quantia + quantidade);
-<<<<<<< HEAD
-=======
-    }
->>>>>>> 50f0773a75de74dd1bad2337eeaf5642e42a5c79
-
     }
 
     ///////////////////////////////////////////
@@ -128,10 +118,8 @@ public class Sistema {
     }
 
     public void addPecas(List<Integer> ids){
-        List<Peca> pecas = new ArrayList<>();
         for(Integer id : ids)
-            pecas.add(facade.getPeca(id));
-        enc.addPecas(pecas);
+            enc.addPeca(facade.getPeca(id), 1);
     }
 
     public List<Integer> getPecasObrigatorias(int id){
@@ -237,5 +225,15 @@ public class Sistema {
         int quantidadeMaxima = facade.getQuantidadeMaximaStock(id);
         Pair<Integer, Integer> res = new Pair<>(quantidadeAtual, quantidadeMaxima);
         return res;
+    }
+
+    public Pair<Integer, String> checkPacotes(){
+        int nPacotes = facade.getNumberOfPacotes();
+        for(int i = 0; i < nPacotes; i++){
+            PacoteDeConfiguracao pacote = facade.getNthPacote(i);
+            if(this.enc.canCreatePacote(pacote))
+                return new Pair<>(pacote.getId(), pacote.getDescricao());
+        }
+        return null;
     }
 }

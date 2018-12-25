@@ -94,6 +94,20 @@ public class PacoteDeConfiguracao {
         return false;
     }
 
+    public boolean incompativelCom(Integer id){
+        for(Peca peca : pecas.keySet())
+            if(peca.incompativelCom(id))
+                return true;
+        return false;
+    }
+
+    public boolean incompativelCom(Peca p){
+        for(Peca peca : pecas.keySet())
+            if(peca.incompativelCom(p))
+                return true;
+        return false;
+    }
+
     public PacoteDeConfiguracao clone(){
         return new PacoteDeConfiguracao(this);
     }

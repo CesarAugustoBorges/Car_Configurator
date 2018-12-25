@@ -1,1 +1,11 @@
 ---------------------DAOFacade---------------------
+public int getNumberOfPacotes()
+public Pacote getNthPacote(int nth); retorna o nth pacote, não é o mesmo que o id,
+/*
+Se tivermos os seguintes ids dos pacotes {1,2,3,6,8}
+
+getNthPacote(1) -> pacote com id 1
+getNthPacote(3) -> pacote com id 3
+getNthPacote(4) -> pacote com id 6
+getNthPacote(4) -> pacote com id 8
+*/

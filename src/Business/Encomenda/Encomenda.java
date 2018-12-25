@@ -4,6 +4,7 @@ import Business.Stock.Peca;
 import javafx.util.Pair;
 
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Encomenda {
@@ -161,7 +162,7 @@ public class Encomenda {
             for(Peca peca : pecas.keySet()){
                 boolean toAdd = true;
                 for(int i = 0; i < deps.size() && toAdd; i++)
-                    if(peca.getDependencias().contains(Integer.valueOf(deps.get(i))))
+                    if(peca.dependeDe(deps.get(i)))
                         toAdd = false;
                 if(toAdd)
                     addPeca(peca, pecas.get(peca));
@@ -179,8 +180,7 @@ public class Encomenda {
             for(Peca peca : pecas.keySet()){
                 boolean toAdd = true;
                 for(int i = 0; i < deps.size() && toAdd; i++)
-                    if(peca.getIncompatibilidades().contains(Integer.valueOf(deps.get(i)))
-                            || p.getIncompatibilidades().contains(Integer.valueOf(p.getId())))
+                    if(peca.incompativelCom(deps.get(i)) || p.incompativelCom(peca))
                         toAdd = false;
                 if(toAdd)
                     addPeca(peca, pecas.get(peca));
@@ -195,7 +195,7 @@ public class Encomenda {
             LinhaDeEncomendaPacote lep = (LinhaDeEncomendaPacote) le;
             Map<Peca, Integer> pecas = lep.getPacoteDeConfiguracao().getPecas();
             for(Peca peca : pecas.keySet())
-                if(!peca.getDependencias().contains(Integer.valueOf(p.getId())))
+                if(!peca.dependeDe(p))
                     addPeca(peca, pecas.get(peca));
         }
         removeLinhaEncomenda(idle);
@@ -260,14 +260,26 @@ public class Encomenda {
 
     public List<Integer> getPecasObrigatorias(Peca p){
         List<Integer> dep = p.getDependencias();
-        List<Integer> res = new ArrayList<>();
-        int j = 0;
-        for(int i = 0; i < dep.size(); i++, j++){
+        for(int i = 0; i < dep.size(); i++){
             for(LinhaDeEncomenda le : linhasDeEncomenda)
-                if(le.hasPeca(res.get(i)))
+                if(le.hasPeca(dep.get(i)))
                     dep.remove(i);
         }
         return dep;
+    }
+
+
+    public boolean canCreatePacote(PacoteDeConfiguracao pacote){
+        List<LinhaDeEncomenda> leps = linhasDeEncomenda.stream().filter(l -> l instanceof LinhaDeEncomendaPeca).collect(Collectors.toList());
+        List<Integer> pecasDoPacote = pacote.getPecasIds();
+        for(LinhaDeEncomenda l : leps){
+            int idPeca = ((LinhaDeEncomendaPeca) l).getIdPeca();
+            if(pacote.hasPeca(idPeca))
+                pecasDoPacote.remove(Integer.valueOf(idPeca));
+        }
+        if(pecasDoPacote.size() == 0)
+            return true;
+        return false;
     }
 
     /*
@@ -342,7 +354,7 @@ public class Encomenda {
         //arrLsE.add(le4);
         Encomenda enc = new Encomenda(1, arrLsE);
 
-        for(Integer i : enc.getPecasObrigatorias(p2))
+        for(Integer i : enc.getPecasObrigatorias(p1))
             System.out.println("Peca obrigatorioa :" +i);
         //System.out.println("Se a le com a peca 1 depende da peca 2: " + le1.dependeDe(p2));
         //System.out.println("Se a le com o pacote 1 depende do pacote 2: " + le3.dependeDe(pacote2));

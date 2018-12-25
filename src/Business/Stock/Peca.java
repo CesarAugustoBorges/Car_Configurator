@@ -96,6 +96,15 @@ public class Peca {
         return incompatibilidades.contains(Integer.valueOf(p));
     }
 
+    public boolean dependeDe(Peca p){
+        return dependeDe(p.getId());
+    }
+
+    public boolean dependeDe(Integer p){
+        return dependencias.contains(Integer.valueOf(p));
+    }
+
+
 
     public Peca clone(){
         return new Peca(this);
