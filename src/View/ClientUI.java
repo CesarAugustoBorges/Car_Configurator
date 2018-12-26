@@ -46,6 +46,7 @@ public class ClientUI extends JPanel{
         catch(IOException e){
             System.err.println("Caught IOException: " + e.getMessage());
         }
+
         Image tmp = img.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
         BufferedImage dimg = new BufferedImage(25, 25, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = dimg.createGraphics();

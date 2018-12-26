@@ -1,14 +1,21 @@
 package View;
 
+import Business.Encomenda.Encomenda;
+import Business.Sistema;
+import Business.Stock.Peca;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ManagerUI extends JPanel{
 	private JLabel seing;
 	private JComboBox<String> choose;
-
+	private Sistema s;
 	//Lista de Encomendas
 	private JLabel filterLabel;
 	private JTextField filter;
@@ -27,9 +34,9 @@ public class ManagerUI extends JPanel{
 	private JList infoStockList;
 	private JButton moreStock;
 
-	public ManagerUI(){
+	public ManagerUI(Sistema x){
 		this.setLayout(null);
-
+		this.s = x;
 		createComp();
 		createListeners();
 		addAll();
@@ -55,12 +62,25 @@ public class ManagerUI extends JPanel{
 		encs = new JList();
 		encs.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 		encs.setBounds(15,90,227,365);
-		
+
+		List<String> x = s.getAllEncomendas().keySet().stream().collect(Collectors.toList());
+		DefaultListModel modelo = new DefaultListModel();
+		for (String a : x ) {
+			modelo.addElement(a);
+		}
+
+		encs.setModel(modelo);
+
+
 		infoEncLabel = new JLabel("Informação da Encomenda:");
 		infoEncLabel.setBounds(263,70,190,15);
 		infoEncTree = new JTree();
 		infoEncTree.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 		infoEncTree.setBounds(258,90,227,325);
+
+
+
+
 		
 		accept = new JButton("Validar");
 		accept.setBounds(345,425,65,30);
@@ -73,6 +93,9 @@ public class ManagerUI extends JPanel{
 		stockLabel.setVisible(false);
 		stockTree = new JList();
 		stockTree.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+
+
+
 		stockTree.setBounds(15,90,227,365);
 		stockTree.setVisible(false);
 
@@ -139,6 +162,9 @@ public class ManagerUI extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e){
                 //Stuff here
+				//Lista de encomendas
+
+
                 System.out.println("Filter");
             }
         });
@@ -155,6 +181,9 @@ public class ManagerUI extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e){
                 //declineEnc(encs.getSelectedValue());
+
+
+
                 System.out.println("Decline");
             }
         });

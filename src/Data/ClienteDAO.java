@@ -18,26 +18,21 @@ public class ClienteDAO{
 
     private Connection con;
 
-    public Cliente getCliente(int id){
+    public Cliente getCliente(int id) throws Exception{
         con = Connect.connect();
         Cliente c = null;
 
-        if(con!=null){
+        if(con!=null) {
 
-            try{
-                PreparedStatement ps = con.prepareStatement("Select * from Cliente Where id = ?");
-                ps.setInt(1,id);
-                ResultSet rs = ps.executeQuery();
+            PreparedStatement ps = con.prepareStatement("Select * from Cliente Where id = ?");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
 
-                while(rs.next()){
-                    c = new Cliente();
-                    c.setName(rs.getString("nome"));
-                    c.setId(rs.getInt("id"));
-                    c.setNif(rs.getString("nif"));
-                }
-
-            }catch (SQLException e){
-                e.printStackTrace();
+            while (rs.next()) {
+                c = new Cliente();
+                c.setName(rs.getString("nome"));
+                c.setId(rs.getInt("id"));
+                c.setNif(rs.getString("nif"));
             }
 
 
@@ -47,7 +42,7 @@ public class ClienteDAO{
 
     }
 
-    public boolean containsCliente(int id){
+    public boolean containsCliente(int id) throws Exception{
         if(getCliente(id)!=null){
             return true;
         }
@@ -55,48 +50,39 @@ public class ClienteDAO{
     }
 
 
-    public void showClients(){
+    public void showClients() throws Exception{
 
         con = Connect.connect();
-        if(con!=null){
-            try {
-                PreparedStatement ps = con.prepareCall("SELECT * FROM Cliente");
-                ResultSet rs = ps.executeQuery();
+        if(con!=null) {
 
-                while(rs.next()){
-                    System.out.println(rs.getString("nome"));
-                }
-                Connect.close(con);
+            PreparedStatement ps = con.prepareCall("SELECT * FROM Cliente");
+            ResultSet rs = ps.executeQuery();
 
-            }catch (SQLException e){
-                e.printStackTrace();
+            while (rs.next()) {
+                System.out.println(rs.getString("nome"));
             }
-
-        }else{
+            Connect.close(con);
+        } else{
             Connect.close(con);
         }
 
     }
 
-    public List<Integer> getEncomendasDeCliente(int id){
+    public List<Integer> getEncomendasDeCliente(int id) throws Exception{
 
         con = Connect.connect();
         List<Integer> x = new ArrayList<>();
 
-        if(con!=null){
-            try {
-                PreparedStatement ps = con.prepareCall("SELECT idEncomenda FROM EncomendaCliente where idCliente = ?");
-                ps.setInt(1,id);
-                ResultSet rs = ps.executeQuery();
+        if(con!=null) {
 
-                while(rs.next()){
-                    x.add(rs.getInt("idEncomenda"));
-                }
-                Connect.close(con);
+            PreparedStatement ps = con.prepareCall("SELECT idEncomenda FROM EncomendaCliente where idCliente = ?");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
 
-            }catch (SQLException e){
-                e.printStackTrace();
+            while (rs.next()) {
+                x.add(rs.getInt("idEncomenda"));
             }
+            Connect.close(con);
 
         }else{
             Connect.close(con);

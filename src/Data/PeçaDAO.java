@@ -17,31 +17,27 @@ public class PeçaDAO {
 
     private Connection con;
 
-    public Map<String, Pair<Integer, String>> getAllPecas() { // Map<Descricao, Pair<Id, Categoria>>
+    public Map<String, Pair<Integer, String>> getAllPecas() throws Exception{ // Map<Descricao, Pair<Id, Categoria>>
 
         con = Connect.connect();
         Map<String, Pair<Integer, String>> result = new HashMap<>();
 
         if (con != null) {
-            try {
 
-                PreparedStatement ps = con.prepareStatement("Select * from Peça");
-                ResultSet rs = ps.executeQuery();
 
-                while(rs.next()){
-                    result.put(rs.getString("descricao"), new Pair<>(rs.getInt("id"),rs.getString("categoria")));
-                }
+            PreparedStatement ps = con.prepareStatement("Select * from Peça");
+            ResultSet rs = ps.executeQuery();
 
-            }catch (SQLException e){
-                e.printStackTrace();
+            while (rs.next()) {
+                result.put(rs.getString("descricao"), new Pair<>(rs.getInt("id"), rs.getString("categoria")));
             }
-        } else Connect.close(con);
+        }else Connect.close(con);
 
         return result;
 
     }
 
-    public boolean containsPeca(int id){
+    public boolean containsPeca(int id) throws Exception{
 
         con = Connect.connect();
 
@@ -55,12 +51,12 @@ public class PeçaDAO {
     }
 
 
-    public Peca getPeca(int id){
+    public Peca getPeca(int id) throws Exception{
         con = Connect.connect();
         Peca p = null;
 
         if(con!=null){
-            try {
+
                 p = new Peca();
                 ArrayList<Integer> dependencia = new ArrayList<>();
                 ArrayList<Integer> incompatibilidade = new ArrayList<>();
@@ -100,39 +96,33 @@ public class PeçaDAO {
                 p.setIncompatibilidades(incompatibilidade);
 
 
-            }catch (SQLException e){
-                e.printStackTrace();
-            }
         }else Connect.close(con);
 
         return p;
     }
 
-    public Map<String, Map<Integer, Float>> getInfoForOtimização(){
+    public Map<String, Map<Integer, Float>> getInfoForOtimização() throws Exception{
 
         con = Connect.connect();
         Map<String, Map<Integer, Float>>  result = new HashMap<>();
 
         if (con != null) {
-            try {
 
-                PreparedStatement ps = con.prepareStatement("Select * from Peça");
-                ResultSet rs = ps.executeQuery();
 
-                while(rs.next()){
-                    String desc = rs.getString("descricao");
-                    if(result.containsKey(desc)){//se já contiver a desrição
-                        result.get(desc).put(rs.getInt("id"),rs.getFloat("preco"));
-                    }else{
-                        Map<Integer,Float> x = new HashMap<>();
-                        x.put(rs.getInt("id"),rs.getFloat("preco"));
-                        result.put(desc,x);
-                    }
+            PreparedStatement ps = con.prepareStatement("Select * from Peça");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String desc = rs.getString("descricao");
+                if (result.containsKey(desc)) {//se já contiver a desrição
+                    result.get(desc).put(rs.getInt("id"), rs.getFloat("preco"));
+                } else {
+                    Map<Integer, Float> x = new HashMap<>();
+                    x.put(rs.getInt("id"), rs.getFloat("preco"));
+                    result.put(desc, x);
                 }
-
-            }catch (SQLException e){
-                e.printStackTrace();
             }
+
         } else Connect.close(con);
 
         return result;
