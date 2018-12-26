@@ -10,10 +10,7 @@ import Business.Utilizador.Funcionario;
 import Data.*;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Sistema {
     private DAOFacede facade = new DAOFacede();
@@ -227,13 +224,4 @@ public class Sistema {
         return res;
     }
 
-    public Pair<Integer, String> checkPacotes(){
-        int nPacotes = facade.getNumberOfPacotes();
-        for(int i = 0; i < nPacotes; i++){
-            PacoteDeConfiguracao pacote = facade.getNthPacote(i);
-            if(this.enc.canCreatePacote(pacote))
-                return new Pair<>(pacote.getId(), pacote.getDescricao());
-        }
-        return null;
-    }
 }
