@@ -1,1 +1,2 @@
 ---------------------DAOFacade---------------------
+public List<PacoteDeConfiguracao> pacotesComPeca(int id)

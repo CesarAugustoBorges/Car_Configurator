@@ -10,10 +10,7 @@ import Business.Utilizador.Funcionario;
 import Data.*;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Sistema {
     private DAOFacede facade = new DAOFacede();
@@ -84,16 +81,26 @@ public class Sistema {
     ///////////////////////////////////////////
     //////////// Encomendar pecas /////////////
     ///////////////////////////////////////////
+<<<<<<< HEAD
     public void encomendarPeca(int id, int quantia) throws Exception{
         if(!facade.containsStock(id))
 
+=======
+
+
+    public void encomendarPeca(int id, int quantia) throws Exception{
+        if(!facade.containsStock(id))
+>>>>>>> e6de535ad2ae8b260ccfcebe53ea6e98c4f8f638
             throw new Exception("Stock não existe");
         int quantidade = facade.getQuantidadeAtualStock(id);
         int quantidadeMaxima = facade.getQuantidadeMaximaStock(id);
         if(quantidade + quantia <= quantidadeMaxima || quantia <= 0)
             throw new Exception("Quantidade excedida");
         facade.setQuantidadeAtualStock(id, quantia + quantidade);
+<<<<<<< HEAD
 
+=======
+>>>>>>> e6de535ad2ae8b260ccfcebe53ea6e98c4f8f638
     }
 
 
@@ -103,8 +110,14 @@ public class Sistema {
     ////////////// Adiciona Peca //////////////
     ///////////////////////////////////////////
 
-    public List<Pair<Integer,String>> getLEIncompativeisComPeca(int id) {
+    public List<Pair<Integer,String>> getLsEIncompativeisComPeca(int id) {
         Peca p = facade.getPeca(id);
+        List<Pair<Integer,String>> incom = this.enc.getLEIncompativeisCom(p);
+        return incom;
+    }
+
+    public List<Pair<Integer,String>> getLsEIncompativeisComPacote(int id) {
+        PacoteDeConfiguracao p = facade.getPacote(id);
         List<Pair<Integer,String>> incom = this.enc.getLEIncompativeisCom(p);
         return incom;
     }
@@ -115,10 +128,13 @@ public class Sistema {
     }
 
     public void addPecas(List<Integer> ids){
-        List<Peca> pecas = new ArrayList<>();
         for(Integer id : ids)
-            pecas.add(facade.getPeca(id));
-        enc.addPecas(pecas);
+            enc.addPeca(facade.getPeca(id), 1);
+    }
+
+    public List<Integer> getPecasObrigatorias(int id){
+        Peca p = facade.getPeca(id);
+        return this.enc.getPecasObrigatorias(p);
     }
 
     public void addPecasObrigatorias(int id){
@@ -220,4 +236,5 @@ public class Sistema {
         Pair<Integer, Integer> res = new Pair<>(quantidadeAtual, quantidadeMaxima);
         return res;
     }
+
 }
