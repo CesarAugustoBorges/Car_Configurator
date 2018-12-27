@@ -2,6 +2,9 @@ DROP DATABASE IF EXISTS CarData;
 CREATE DATABASE CarData; 
 Use CarData;
 
+
+
+
 -- tabela de clientes
 CREATE TABLE `Cliente` (
  `id` INT NOT NULL AUTO_INCREMENT,
@@ -123,7 +126,7 @@ INSERT Into Pacote
 
 
  Insert Into Peça
- (categoria,descricao,preco)
+ (descricao,categoria,preco)
  VALUES
  ("Roda","a",10), ("Volante","ro",20),("Porta","p",30),("Vidro","v",4),("Jante","j",4),("motor","m",22),("tubo","t",10.2),("pintura","p,",123.2),("espelho","e",123),("capo","c",213);
 
@@ -135,6 +138,8 @@ VALUES
 (30,50,4),
 (10,500,5);
  
+
+select * from Encomenda;
   
  Insert Into Cliente 
 (nif,nome)
@@ -145,16 +150,16 @@ VALUES
     ("123456666","Discipulo");
 
 INSERT INTO Encomenda
-(id,estado,descricao,idCliente)
+(id,descricao,estado,idCliente)
 VALUES
-(1,"carro fixe","ads",1),
-(2,"carro feio","sd",1);
+(1,"carro fixe","por validar",1),
+(2,"carro feio","por validar",1);
 
 INSERT Into EncomendaCliente
 (idCliente,idEncomenda)
 VALUES
 (1,1),
-(2,1);
+(2,2);
 
 
 Insert Into Funcionario
