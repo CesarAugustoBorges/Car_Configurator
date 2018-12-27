@@ -16,6 +16,7 @@ public class ManagerUI extends JPanel{
 	private JLabel seing;
 	private JComboBox<String> choose;
 	private Sistema s;
+
 	//Lista de Encomendas
 	private JLabel filterLabel;
 	private JTextField filter;
@@ -78,10 +79,6 @@ public class ManagerUI extends JPanel{
 		infoEncTree.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 		infoEncTree.setBounds(258,90,227,325);
 
-
-
-
-		
 		accept = new JButton("Validar");
 		accept.setBounds(345,425,65,30);
 		decline = new JButton("Recusar");
@@ -152,7 +149,6 @@ public class ManagerUI extends JPanel{
 		                catch(NumberFormatException ex){
 		                    error.setVisible(true);
 		                }
-		                //
 		            }
 		        });
             }
@@ -162,9 +158,6 @@ public class ManagerUI extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e){
                 //Stuff here
-				//Lista de encomendas
-
-
                 System.out.println("Filter");
             }
         });
@@ -181,9 +174,6 @@ public class ManagerUI extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e){
                 //declineEnc(encs.getSelectedValue());
-
-
-
                 System.out.println("Decline");
             }
         });
