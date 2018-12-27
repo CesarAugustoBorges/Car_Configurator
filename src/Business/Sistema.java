@@ -133,6 +133,13 @@ public class Sistema {
         return -1;
     }
 
+   public void setStatusEncomenda(int id,String x) throws Exception {
+        try {
+            facade.setStatusEncomenda(id,x);
+        }catch (Exception e){
+            System.out.println("Encomenda inválida");
+        }
+   }
 
     ///////////////////////////////////////////
     ////////// Encomendar Veículo ////////////

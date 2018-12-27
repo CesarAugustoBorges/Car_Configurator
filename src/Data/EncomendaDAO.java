@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.locks.Condition;
 
 public class EncomendaDAO {
 
@@ -143,7 +144,20 @@ public class EncomendaDAO {
         }else Connect.close(con);
 
         return false;
+    }
 
+    public void setStatusEncomenda(int id,String x) throws Exception{
+
+        con = Connect.connect();
+
+        if(con!=null) {
+
+            PreparedStatement ps = con.prepareStatement("Update Encomenda Set estado = ? where id = ?");
+            ps.setString(1,x);
+            ps.setInt(2, id);
+            int a = ps.executeUpdate();
+
+        }else Connect.close(con);
     }
 
 }

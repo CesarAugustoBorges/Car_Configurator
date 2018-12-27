@@ -160,5 +160,9 @@ public class DAOFacede {
         return PteDAO.pacotesComPeca(id);
     }
 
+    public void setStatusEncomenda(int id,String x) throws Exception{
+        EDAO.setStatusEncomenda(id,x);
+    }
+
 
 }

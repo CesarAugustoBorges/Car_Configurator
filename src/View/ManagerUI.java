@@ -255,8 +255,13 @@ public class ManagerUI extends JPanel{
         this.accept.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-				((DefaultListModel) encs.getModel()).remove(encs.getSelectedIndex());
+            	try {
+					s.setStatusEncomenda(s.getIdEncomenda(encs.getSelectedValue().toString()), "Valida");
+					((DefaultListModel) encs.getModel()).remove(encs.getSelectedIndex());
 
+				}catch (Exception a){
+            		System.out.println(a);
+				}
             }
         });
 

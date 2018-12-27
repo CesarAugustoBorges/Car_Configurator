@@ -15,7 +15,9 @@ public class Testing {
         //System.out.println(new PeçaDAO().getPeca(1).getDescricao());
 
 
-       new DAOFacede().removeEncomenda(1);
+     new DAOFacede().setStatusEncomenda(2, "Valida");
+
+       //new DAOFacede().removeEncomenda(1);
 
        // new DAOFacede().setQuantidadeAtualStock(1,new DAOFacede().getQuantidadeAtualStock(1)+2);
 
