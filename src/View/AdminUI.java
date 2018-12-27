@@ -53,10 +53,9 @@ public class AdminUI extends JPanel{
 		remove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(false){
-                	s.removerFuncionario(Integer.parseInt(userTxt.getText()));
-                	//success.setVisible(true);
-                	//failure.setVisible(false);
+                if(s.removerFuncionario(Integer.parseInt(userTxt.getText()))){
+                	success.setVisible(true);
+                	failure.setVisible(false);
                 }
                 else{
                 	failure.setVisible(true);
