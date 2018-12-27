@@ -6,6 +6,8 @@ import Business.Stock.Peca;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
@@ -35,7 +37,7 @@ public class ManagerUI extends JPanel{
 	private JList infoStockList;
 	private JButton moreStock;
 
-	public ManagerUI(Sistema x){
+	public ManagerUI(Sistema x) throws Exception{
 		this.setLayout(null);
 		this.s = x;
 		createComp();
@@ -43,7 +45,7 @@ public class ManagerUI extends JPanel{
 		addAll();
 	}
 
-	private void createComp(){
+	private void createComp() throws Exception{
 		seing = new JLabel("Visualizar:");
 		seing.setBounds(20,15,80,15);
 		String[] choices = {"Lista de Encomendas", "Stock"};
@@ -91,6 +93,16 @@ public class ManagerUI extends JPanel{
 		stockTree = new JList();
 		stockTree.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 
+		List<String> peça = s.getStock().values().stream().collect(Collectors.toList());
+		modelo = new DefaultListModel();
+		for (String a : peça ) {
+			modelo.addElement(a);
+		}
+
+		stockTree.setModel(modelo);
+
+
+
 
 
 		stockTree.setBounds(15,90,227,365);
@@ -104,12 +116,53 @@ public class ManagerUI extends JPanel{
 		infoStockList.setBounds(258,90,227,325);
 		infoStockList.setVisible(false);
 
+
+
+
+
 		moreStock = new JButton("Encomendar Mais");
 		moreStock.setBounds(315,425,170,30);
 		moreStock.setVisible(false);
 	}
 
 	private void createListeners(){
+
+		this.encs.addListSelectionListener(new ListSelectionListener() {
+
+			public void valueChanged(ListSelectionEvent e) {
+
+
+			}
+		});
+
+
+		this.stockTree.addListSelectionListener(new ListSelectionListener() {
+
+			public void valueChanged(ListSelectionEvent e) {
+
+				if (stockTree.getSelectedValue() != null) {
+
+					String peça = stockTree.getSelectedValue().toString();
+					try {
+						int idpeca = s.getIdPeça(peça);
+						System.out.println(idpeca);
+
+						String maximo = ("Máximo = " + s.getInfoOfPeca( s.getIdPeça(peça)).getKey() + " da mesma.");
+						String disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca( s.getIdPeça(peça)).getValue();
+
+
+						DefaultListModel modelo = new DefaultListModel();
+						modelo.addElement(maximo);
+						modelo.addElement(disponibilidade);
+						infoStockList.setModel(modelo);
+
+					}catch (Exception a){
+						System.out.println(a);
+					}
+				}
+			}
+		});
+
 		this.moreStock.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
@@ -143,10 +196,24 @@ public class ManagerUI extends JPanel{
 		            @Override
 		            public void actionPerformed(ActionEvent e){
 		                try{
+							String peça = stockTree.getSelectedValue().toString();
 		                    int value = Integer.parseInt(txtBox.getText());
+
+		                    s.addPeca(s.getIdPeça(peça),value);
+
+
+							String maximo = ("Máximo = " + s.getInfoOfPeca( s.getIdPeça(peça)).getKey() + " da mesma.");
+							String disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca( s.getIdPeça(peça)).getValue();
+
+
+							DefaultListModel mod = new DefaultListModel();
+							mod.addElement(maximo);
+							mod.addElement(disponibilidade);
+							infoStockList.setModel(mod);
+
 		                    more.dispose();
 		                }
-		                catch(NumberFormatException ex){
+		                catch(Exception ex){
 		                    error.setVisible(true);
 		                }
 		            }
@@ -156,25 +223,55 @@ public class ManagerUI extends JPanel{
 
         this.goFilter.addActionListener(new ActionListener(){
             @Override
-            public void actionPerformed(ActionEvent e){
-                //Stuff here
-                System.out.println("Filter");
-            }
+            public void actionPerformed(ActionEvent e) {
+				//Stuff here
+				System.out.println("Filter");
+				try {
+					if(filter.getText().equals("")){
+						List<String> encomendas = s.getAllEncomendas().keySet().stream().collect(Collectors.toList());
+						DefaultListModel mod = new DefaultListModel();
+						for (String tmp : encomendas) {
+							mod.addElement(tmp);
+						}
+
+						encs.setModel(mod);
+					}else {
+						List<Integer> x = s.getEncomendasDeCliente(Integer.parseInt(filter.getText()));
+
+						DefaultListModel mod = new DefaultListModel();
+						for (Integer tmp : x) {
+							mod.addElement(s.getEncomenda(tmp).getDescricao());
+						}
+
+						encs.setModel(mod);
+					}
+
+				}catch (Exception a){
+					System.out.println(a);
+				}
+			}
         });
 
         this.accept.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-                //acceptEnc(encs.getSelectedValue());
-                System.out.println("Accept");
+				((DefaultListModel) encs.getModel()).remove(encs.getSelectedIndex());
+
             }
         });
 
         this.decline.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-                //declineEnc(encs.getSelectedValue());
-                System.out.println("Decline");
+            	try {
+
+					s.rejeitarEncomenda(s.getIdEncomenda(encs.getSelectedValue().toString()));
+
+					((DefaultListModel) encs.getModel()).remove(encs.getSelectedIndex());
+
+				}catch (Exception a){
+            		System.out.println(a);
+				}
             }
         });
 
@@ -184,6 +281,10 @@ public class ManagerUI extends JPanel{
                 String selected = (String) choose.getSelectedItem();
                 if(selected.equals("Stock")){
                 	hideEncs();
+
+                	//adiciona aqui
+					//System.out.println(stockTree.getLeadSelectionIndex());
+
                 }
                 else{
                 	hideStock();

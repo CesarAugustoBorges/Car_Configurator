@@ -8,15 +8,16 @@ import java.awt.event.*;
 
 public class AdminUI extends JPanel{
 
-	private Sistema s;
+	private Sistema sistema;
 
-	public AdminUI(Sistema s){
+	public AdminUI(Sistema s) throws Exception{
+
 		this.setLayout(null);
-		this.s = s;
+		this.sistema = s;
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.add("Admin",adminPanel());
 		tabbedPane.add("Gestor",new ManagerUI(s));
-		tabbedPane.add("ConfiguraFácil",new ClientUI());
+		//tabbedPane.add("ConfiguraFácil",new ClientUI());
 		tabbedPane.setBounds(0,0,520,640);
 
 		add(tabbedPane);
@@ -53,15 +54,18 @@ public class AdminUI extends JPanel{
 		remove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(s.removerFuncionario(Integer.parseInt(userTxt.getText()))){
-                	success.setVisible(true);
-                	failure.setVisible(false);
-                }
-                else{
-                	failure.setVisible(true);
-                	success.setVisible(false);
-                }
-            }
+				try {
+					if (sistema.removerFuncionario(Integer.parseInt(userTxt.getText()))!=false) {
+						success.setVisible(true);
+						failure.setVisible(false);
+					} else {
+						failure.setVisible(true);
+						success.setVisible(false);
+					}
+				}catch (Exception b){
+					b.printStackTrace();
+				}
+			}
         });
 
 		JLabel info2 = new JLabel("Registar Fucionário");
@@ -94,15 +98,20 @@ public class AdminUI extends JPanel{
         register.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(false){//adicionarFuncionario(Integer.parseInt(userTxt2.getText()), passTxt.getText())){
-                	success2.setVisible(true);
-                	failure2.setVisible(false);
-                }
-                else{
-                	failure2.setVisible(true);
-                	success2.setVisible(false);
-                }
-            }
+				try {
+					//PRECISO DE RECEBER  TIPO DE FUNCIONARIO E A PASSE
+					// sistema.adicionarFuncionario(Integer.parseInt(userTxt2.getText()), passTxt.getText()) != false
+					if (1==1) {
+						success2.setVisible(true);
+						failure2.setVisible(false);
+					} else {
+						failure2.setVisible(true);
+						success2.setVisible(false);
+					}
+				} catch (Exception b) {
+					b.printStackTrace();
+				}
+			}
         });
 
         panel.add(info1);

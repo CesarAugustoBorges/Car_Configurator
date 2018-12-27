@@ -1,8 +1,8 @@
-compile="javac Main.java"
+compile="javac Teste.java"
 echo $compile
 $compile
 
-exec="java Main"
+exec="java Teste"
 echo $exec
 $exec
 

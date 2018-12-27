@@ -95,7 +95,7 @@ public class EncomendaDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                result.put(rs.getString("estado"), new Pair<>(rs.getInt("id"), rs.getString("descricao")));
+                result.put(rs.getString("descricao"), new Pair<>(rs.getInt("id"), rs.getString("estado")));
             }
 
         }else Connect.close(con);
@@ -110,7 +110,7 @@ public class EncomendaDAO {
 
         if(con!=null) {
 
-            PreparedStatement ps = con.prepareStatement("select * Encomenda where id = ?");
+            PreparedStatement ps = con.prepareStatement("select * from Encomenda where id = ?");
             ps.setInt(1,id);
             ResultSet rs = ps.executeQuery();
             if(rs==null){
@@ -128,6 +128,10 @@ public class EncomendaDAO {
 
             ps = con.prepareStatement("Delete from LDEncomenda where idEncomenda = ?");
             ps.setInt(1, id);
+            ps.executeUpdate();
+
+            ps = con.prepareStatement("Delete from EncomendaCliente where idEncomenda =?");
+            ps.setInt(1,id);
             ps.executeUpdate();
 
             ps = con.prepareStatement("Delete from Encomenda where id = ?");

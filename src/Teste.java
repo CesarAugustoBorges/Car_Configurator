@@ -1,7 +1,7 @@
 import View.*;
 import javax.swing.*;
 
-public class Main{
+public class Teste {
 
     public static void main(String[] args){
         try {

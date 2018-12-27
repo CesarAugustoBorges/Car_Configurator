@@ -87,23 +87,27 @@ public class UtilizadorDAO {
         return  false;
     }
 
-    public void removerUtilizador(int id) throws Exception{
+    public boolean removerUtilizador(int id) throws Exception{
         if(getUtilizador(id)!=null){
             con = Connect.connect();
             Funcionario c = null;
 
             if(con!=null) {
+                if(getUtilizador(id)!=null) {
 
-                PreparedStatement ps = con.prepareStatement("Delete from Funcionario where id = ?");
-                ps.setInt(1, id);
 
-                //numeros de rows modificadas
-                int a = ps.executeUpdate();
+                    PreparedStatement ps = con.prepareStatement("Delete from Funcionario where id = ?");
+                    ps.setInt(1, id);
+
+                    //numeros de rows modificadas
+                    int a = ps.executeUpdate();
+                }else  return false;
 
             }else{
                 Connect.close(con);
             }
         }
+        return true;
     }
 
 }

@@ -65,7 +65,7 @@ public class StockIntegerDAO {
 
         if(con!=null) {
 
-            PreparedStatement ps = con.prepareStatement("UPDATE Stock SET " + id + " = ? where idPeça = ?;");
+            PreparedStatement ps = con.prepareStatement("UPDATE Stock SET " + info + " = ? where idPeça = ?;");
             ps.setInt(1, quantidade);
             ps.setInt(2, id);
             int a = ps.executeUpdate();
@@ -99,11 +99,11 @@ public class StockIntegerDAO {
 
         if (con != null) {
 
-            PreparedStatement ps = con.prepareStatement("Select id,categoria from Stock inner join Peça as P on P.id = Stock.idPeça");
+            PreparedStatement ps = con.prepareStatement("Select P.id,P.descricao from Stock as S inner join Peça as P on P.id = S.idPeça");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                result.put(rs.getInt("id"), rs.getString("categoria"));
+                result.put(rs.getInt("id"), rs.getString("descricao"));
             }
 
         } else Connect.close(con);
