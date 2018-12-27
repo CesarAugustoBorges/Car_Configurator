@@ -53,9 +53,10 @@ public class LoginUI{
 
 
                 //Exemplo de admin, nome: 4; pass :bolos
-                //Exemplo de gestor , nome : 1, pass :vedeta
+                //Exemplo de gestor , nome : 5, pass :vedeta
+                //Exemplo de funcionário , nome : 4 , pass : gui
                 try {
-                    System.out.println();
+
                     switch (sistema.login(userTxt.getText(), new String(passTxt.getPassword()) )) {
 
                         case 0:
@@ -66,6 +67,9 @@ public class LoginUI{
                             createJFrame(1,new ManagerUI(sistema));
                             frame.dispose();
                             break;
+                        case 2:
+                            createJFrame(2,new ClientUI(sistema));
+                            frame.dispose();
                         default:
                             wrongInput.setVisible(true);
                             break;

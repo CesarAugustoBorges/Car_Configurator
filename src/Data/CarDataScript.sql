@@ -1,9 +1,7 @@
 DROP DATABASE IF EXISTS CarData;
 CREATE DATABASE CarData; 
 Use CarData;
-
-
-
+Use CarData;
 
 -- tabela de clientes
 CREATE TABLE `Cliente` (
@@ -138,8 +136,6 @@ VALUES
 (30,50,4),
 (10,500,5);
  
-
-select * from Encomenda;
   
  Insert Into Cliente 
 (nif,nome)
@@ -161,6 +157,7 @@ VALUES
 (1,1),
 (2,2);
 
+select * from Funcionario;
 
 Insert Into Funcionario
 (nif,nome,tipo,passe)
@@ -168,6 +165,7 @@ VALUES
 ("123456789","Vedeta","Gestor","vedeta"),
 ("123456788","Draven","Gestor","axes"),
 ("123456777","Lux","Gestor","narnia"),
+("123456777","Guilherme","Funcionario","gui"),
 ("123456666","Defenido","Admin","bolos");
  
 
