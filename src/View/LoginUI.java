@@ -53,12 +53,12 @@ public class LoginUI{
 
 
                 //Exemplo , nome: 4; pass :bolos
-                if(x.getFuncionario(Integer.parseInt(userTxt.getText())).getTipo().equals("Admin")){
+                if(x.getFuncionario(Integer.parseInt(userTxt.getText())).getTipo().equals("admin")){
                     createJFrame(0, new AdminUI(x));
                 }
 
                 //Exemplo , nome : 1 , pass : vedeta
-                if(x.getFuncionario(Integer.parseInt(userTxt.getText())).getTipo().equals("Gestor")){
+                if(x.getFuncionario(Integer.parseInt(userTxt.getText())).getTipo().equals("gestor")){
                     createJFrame(1, new ManagerUI(x));
                 }
 
