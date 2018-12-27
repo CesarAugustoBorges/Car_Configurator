@@ -16,13 +16,13 @@ public class Sistema {
     private DAOFacede facade = new DAOFacede();
     private Encomenda enc = new Encomenda();
 
-    public Funcionario getFuncionario(int id) {
+    public Funcionario getFuncionario(int id) throws Exception {
         if(facade.constainsUtilizador(id))
             return facade.getUtilizador(id);
         return null;
     }
 
-    public void putFuncionario(int id, String password) {
+    public void putFuncionario(int id, String password)  {
         Funcionario novo = new Funcionario(id, password);
         facade.putUtilizador(novo);
     }
@@ -81,26 +81,14 @@ public class Sistema {
     ///////////////////////////////////////////
     //////////// Encomendar pecas /////////////
     ///////////////////////////////////////////
-<<<<<<< HEAD
-    public void encomendarPeca(int id, int quantia) throws Exception{
-        if(!facade.containsStock(id))
-
-=======
-
-
-    public void encomendarPeca(int id, int quantia) throws Exception{
-        if(!facade.containsStock(id))
->>>>>>> e6de535ad2ae8b260ccfcebe53ea6e98c4f8f638
+    public void encomendarPeca(int id, int quantia) throws Exception {
+        if (!facade.containsStock(id))
             throw new Exception("Stock não existe");
         int quantidade = facade.getQuantidadeAtualStock(id);
         int quantidadeMaxima = facade.getQuantidadeMaximaStock(id);
-        if(quantidade + quantia <= quantidadeMaxima || quantia <= 0)
+        if (quantidade + quantia <= quantidadeMaxima || quantia <= 0)
             throw new Exception("Quantidade excedida");
         facade.setQuantidadeAtualStock(id, quantia + quantidade);
-<<<<<<< HEAD
-
-=======
->>>>>>> e6de535ad2ae8b260ccfcebe53ea6e98c4f8f638
     }
 
 
@@ -123,7 +111,7 @@ public class Sistema {
     }
 
     public void removeLsE(List<Integer> ids){
-        for(Integer id: ids)
+        for(Integer id : ids)
             this.enc.removeLinhaEncomenda(id);
     }
 
