@@ -253,10 +253,11 @@ public class Sistema {
     ///////////////////////////////////////////
 
     //Devolver um Boolean!!
-    public boolean adicionarFuncionario(int id, String password) throws Exception{
+    public boolean adicionarFuncionario(String nome ,int id, String password , String tipo,String nif) throws Exception{
+
         if(facade.constainsUtilizador(id))
             return false;
-        Funcionario f = new Funcionario(id, password);
+        Funcionario f = new Funcionario(id,nome, password,tipo,nif);
         facade.putUtilizador(f);
         return true;
     }

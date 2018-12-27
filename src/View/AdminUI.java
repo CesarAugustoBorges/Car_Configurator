@@ -76,6 +76,13 @@ public class AdminUI extends JPanel{
 
         JLabel password = new JLabel("Senha:");
         password.setBounds(295,110,60,15);
+
+		JLabel tipo = new JLabel("Tipo:");
+		tipo.setBounds(295,170,60,15);
+
+		JLabel identifcador = new JLabel("Identificador:");
+		identifcador.setBounds(295,240,60,15);
+
         
         JTextField userTxt2 = new JTextField();
         userTxt2.setBounds(290,60,190,30);
@@ -83,8 +90,14 @@ public class AdminUI extends JPanel{
         JTextField passTxt = new JTextField();
         passTxt.setBounds(290,130,190,30);
 
+		JTextField TipoTxt = new JTextField();
+		TipoTxt.setBounds(290,200,190,30);
+
+		JTextField identificadorTxtx = new JTextField();
+		identificadorTxtx.setBounds(290,270,190,30);
+
         JLabel success2 = new JLabel("Funcionário registado com sucesso");
-		success2.setBounds(255,220,240,30);
+		success2.setBounds(255,300,240,30);
 		success2.setForeground(Color.green);
 		success2.setVisible(false);
 
@@ -94,14 +107,13 @@ public class AdminUI extends JPanel{
 		failure2.setVisible(false);
         
         JButton register = new JButton("Registar");
-        register.setBounds(380,180,100,30);
+        register.setBounds(380,300,100,30);
         register.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 				try {
-					//PRECISO DE RECEBER  TIPO DE FUNCIONARIO E A PASSE
-					// sistema.adicionarFuncionario(Integer.parseInt(userTxt2.getText()), passTxt.getText()) != false
-					if (1==1) {
+
+					if (sistema.adicionarFuncionario(userTxt2.getText(), Integer.parseInt(identificadorTxtx.getText()) ,passTxt.getText(),TipoTxt.getText(),"123456789")) {
 						success2.setVisible(true);
 						failure2.setVisible(false);
 					} else {
@@ -126,8 +138,12 @@ public class AdminUI extends JPanel{
 		panel.add(info2);
 		panel.add(user2);
 		panel.add(password);
+		panel.add(tipo);
+		panel.add(identifcador);
 		panel.add(userTxt2);
 		panel.add(passTxt);
+		panel.add(identificadorTxtx);
+		panel.add(TipoTxt);
 		panel.add(register);
 		panel.add(success2);
 		panel.add(failure2);

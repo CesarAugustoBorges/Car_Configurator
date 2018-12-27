@@ -15,12 +15,12 @@ public class UtilizadorDAO {
         con = Connect.connect();
         if(con!=null) {
 
-            PreparedStatement insertUser = con.prepareStatement("Insert Into Funcionario (id,nome,nif,tipo,passe) VALUES (?,?,?,?,?);");
+            PreparedStatement insertUser = con.prepareStatement("Insert Into Funcionario (id,nome,tipo,passe,nif) VALUES (?,?,?,?,?);");
             insertUser.setInt(1, user.getId());
             insertUser.setString(2, user.getNome());
-            insertUser.setString(3, user.getNif());
-            insertUser.setString(4, user.getTipo());
-            insertUser.setString(5, user.getPasse());
+            insertUser.setString(3, user.getTipo());
+            insertUser.setString(4, user.getPasse());
+            insertUser.setString(5,user.getTipo());
 
 
             //p representa o número de rows afetados
