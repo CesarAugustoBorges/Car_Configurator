@@ -1,11 +1,14 @@
 package View;
 
+import Business.Sistema;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public class LoginUI{
 	public LoginUI(){
+        Sistema x = new Sistema();
         JLabel wrongInput = new JLabel("Credenciais erradas!");
         wrongInput.setBounds(50,15,140,15);
         wrongInput.setVisible(false);
@@ -34,13 +37,37 @@ public class LoginUI{
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
+
+
+        frame.add(wrongInput);
+        frame.add(user);
+        frame.add(userTxt);
+        frame.add(password);
+        frame.add(passTxt);
+        frame.add(login);
+
+
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
-                if(userTxt.getText().equals("admin")){createJFrame(0, new AdminUI());}
-                if(userTxt.getText().equals("gestor")){createJFrame(1, new ManagerUI());}
+
+
+                //Exemplo , nome: 4; pass :bolos
+                if(x.getFuncionario(Integer.parseInt(userTxt.getText())).getTipo().equals("Admin")){
+                    createJFrame(0, new AdminUI(x));
+                }
+
+                //Exemplo , nome : 1 , pass : vedeta
+                if(x.getFuncionario(Integer.parseInt(userTxt.getText())).getTipo().equals("Gestor")){
+                    createJFrame(1, new ManagerUI(x));
+                }
+
+
                 if(userTxt.getText().equals("funcionario")){createJFrame(2, new ClientUI());}
+
                 frame.dispose();
+
+
                 /*
                 switch(login(Integer.parseInt(userTxt.getText()), passTxt.getText())){
                 	case 0:     createJFrame(new AdminUI());
@@ -60,13 +87,10 @@ public class LoginUI{
             }
         });
 
-        frame.add(wrongInput);
-        frame.add(user);
-        frame.add(userTxt);
-        frame.add(password);
-        frame.add(passTxt);
-        frame.add(login);
 	}
+
+
+
 
     private void createJFrame(int i, JPanel panel){
         int w = 0, h = 0;

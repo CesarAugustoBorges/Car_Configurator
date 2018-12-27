@@ -82,17 +82,30 @@ public class Sistema {
     ///////////////////////////////////////////
     //////////// Encomendar pecas /////////////
     ///////////////////////////////////////////
+<<<<<<< HEAD
+    public void encomendarPeca(int id, int quantia) throws Exception{
+        if(!facade.containsStock(id))
+
+=======
 
 
     public void encomendarPeca(int id, int quantia) throws Exception{
         if(!facade.containsStock(id))
+>>>>>>> e6de535ad2ae8b260ccfcebe53ea6e98c4f8f638
             throw new Exception("Stock não existe");
         int quantidade = facade.getQuantidadeAtualStock(id);
         int quantidadeMaxima = facade.getQuantidadeMaximaStock(id);
         if(quantidade + quantia <= quantidadeMaxima || quantia <= 0)
             throw new Exception("Quantidade excedida");
         facade.setQuantidadeAtualStock(id, quantia + quantidade);
+<<<<<<< HEAD
+
+=======
+>>>>>>> e6de535ad2ae8b260ccfcebe53ea6e98c4f8f638
     }
+
+
+
 
     ///////////////////////////////////////////
     ////////////// Adiciona Peca //////////////

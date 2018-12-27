@@ -1,14 +1,21 @@
 package View;
 
+import Business.Encomenda.Encomenda;
+import Business.Sistema;
+import Business.Stock.Peca;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ManagerUI extends JPanel{
 	private JLabel seing;
 	private JComboBox<String> choose;
-
+	private Sistema s;
 	//Lista de Encomendas
 	private JLabel filterLabel;
 	private JTextField filter;
@@ -22,14 +29,14 @@ public class ManagerUI extends JPanel{
 
 	//Stock
 	private JLabel stockLabel;
-	private JTree stockTree;
+	private JList stockTree;
 	private JLabel infoStockLabel;
 	private JList infoStockList;
 	private JButton moreStock;
 
-	public ManagerUI(){
+	public ManagerUI(Sistema x){
 		this.setLayout(null);
-
+		this.s = x;
 		createComp();
 		createListeners();
 		addAll();
@@ -55,12 +62,25 @@ public class ManagerUI extends JPanel{
 		encs = new JList();
 		encs.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 		encs.setBounds(15,90,227,365);
-		
+
+		List<String> x = s.getAllEncomendas().keySet().stream().collect(Collectors.toList());
+		DefaultListModel modelo = new DefaultListModel();
+		for (String a : x ) {
+			modelo.addElement(a);
+		}
+
+		encs.setModel(modelo);
+
+
 		infoEncLabel = new JLabel("Informação da Encomenda:");
 		infoEncLabel.setBounds(263,70,190,15);
 		infoEncTree = new JTree();
 		infoEncTree.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 		infoEncTree.setBounds(258,90,227,325);
+
+
+
+
 		
 		accept = new JButton("Validar");
 		accept.setBounds(345,425,65,30);
@@ -71,8 +91,11 @@ public class ManagerUI extends JPanel{
 		stockLabel = new JLabel("Itens do Stock:");
 		stockLabel.setBounds(20,70,100,15);
 		stockLabel.setVisible(false);
-		stockTree = new JTree();
+		stockTree = new JList();
 		stockTree.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+
+
+
 		stockTree.setBounds(15,90,227,365);
 		stockTree.setVisible(false);
 
@@ -90,7 +113,82 @@ public class ManagerUI extends JPanel{
 	}
 
 	private void createListeners(){
-		this.choose.addActionListener(new ActionListener(){
+		this.moreStock.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+            	System.out.println("Ola");
+                JFrame more = new JFrame("Encomendar mais");
+                more.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		        more.setLayout(null);
+		        more.setSize(325,175);
+		        more.setResizable(false);
+		        more.setLocationRelativeTo(null);
+		        more.setVisible(true);
+
+		        JLabel label = new JLabel("Quantidade:");
+		        JLabel error = new JLabel("Valor errado!");
+		        JTextField txtBox = new JTextField();
+		        JButton done = new JButton("Feito");
+
+		        label.setBounds(55,25,90,30);
+		        error.setBounds(180,25,90,30);
+		        error.setForeground(Color.red);
+		        error.setVisible(false);
+		        txtBox.setBounds(50,50,220,30);
+		        done.setBounds(180,100,90,30);
+
+		        more.add(label);
+		        more.add(error);
+		        more.add(txtBox);
+		        more.add(done);
+
+		        done.addActionListener(new ActionListener(){
+		            @Override
+		            public void actionPerformed(ActionEvent e){
+		                try{
+		                    int value = Integer.parseInt(txtBox.getText());
+		                    more.dispose();
+		                }
+		                catch(NumberFormatException ex){
+		                    error.setVisible(true);
+		                }
+		                //
+		            }
+		        });
+            }
+        });
+
+        this.goFilter.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                //Stuff here
+				//Lista de encomendas
+
+
+                System.out.println("Filter");
+            }
+        });
+
+        this.accept.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                //acceptEnc(encs.getSelectedValue());
+                System.out.println("Accept");
+            }
+        });
+
+        this.decline.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                //declineEnc(encs.getSelectedValue());
+
+
+
+                System.out.println("Decline");
+            }
+        });
+
+        this.choose.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
                 String selected = (String) choose.getSelectedItem();
@@ -100,34 +198,6 @@ public class ManagerUI extends JPanel{
                 else{
                 	hideStock();
                 }
-            }
-        });
-
-        this.goFilter.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                //Stuff here
-            }
-        });
-
-        this.accept.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                //Stuff here
-            }
-        });
-
-        this.decline.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                //Stuff here
-            }
-        });
-
-        this.moreStock.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                //Stuff here
             }
         });
 	}

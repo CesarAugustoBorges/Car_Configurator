@@ -1,16 +1,21 @@
 package  View;
 
+import Business.Sistema;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public class AdminUI extends JPanel{
-	public AdminUI(){
-		this.setLayout(null);
 
+	private Sistema s;
+
+	public AdminUI(Sistema s){
+		this.setLayout(null);
+		this.s = s;
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.add("Admin",adminPanel());
-		tabbedPane.add("Gestor",new ManagerUI());
+		tabbedPane.add("Gestor",new ManagerUI(s));
 		tabbedPane.add("ConfiguraFácil",new ClientUI());
 		tabbedPane.setBounds(0,0,520,640);
 
@@ -48,9 +53,10 @@ public class AdminUI extends JPanel{
 		remove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(false){//removerFuncionario(Integer.parseInt(userTxt.getText()))){
-                	success.setVisible(true);
-                	failure.setVisible(false);
+                if(false){
+                	s.removerFuncionario(Integer.parseInt(userTxt.getText()));
+                	//success.setVisible(true);
+                	//failure.setVisible(false);
                 }
                 else{
                 	failure.setVisible(true);
