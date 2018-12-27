@@ -54,24 +54,41 @@ public class Sistema {
     }
 
     public boolean containsPeca(int id) throws Exception {
-        return facade.containsPeca(id);
+        try{
+            return facade.containsPeca(id);
+        }catch (Exception e){
+            throw  new Exception("Erro ao verificar a peça: " + id);
+        }
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////// Métodos a usar na view //////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////
+    public Peca getPeca(int id) throws Exception {
+        try{
+            return facade.getPeca(id);
+        } catch(Exception e){
+            throw  new Exception("Erro ao buscar informação sobre a peça: " + id);
+        }
+    }
 
-    ///////////////////////////////////////////
-    ////////////////// Login //////////////////
-    ///////////////////////////////////////////
-
+    public PacoteDeConfiguracao getPacote(int id) throws  Exception {
+        try{
+            return facade.getPacote(id);
+        }catch (Exception e){
+            throw new Exception("Erro ao buscar informação sobre o pacote: " + id);
+        }
+    }
     // Metodo que verifica as credenciais do utilizador.
     // Deve retornar 0 se for Admin, 1 se for gestor, 2 se for cliente, -1 para credenciais erradas.
     public int login(String user, String password) throws Exception {
         int userId = Integer.parseInt(user);
-        if(!facade.constainsUtilizador(userId))
-            return -1;
-        Funcionario f = facade.getUtilizador(userId);
+        Funcionario f;
+        try{
+            if(!facade.constainsUtilizador(userId))
+                return -1;
+            f = facade.getUtilizador(userId);
+        } catch(Exception e){
+            throw new Exception("Erro em obter dados da base de dados");
+        }
+
         if(f.isPassword(password))
             switch (f.getTipo()){
                 case "Funcionario": return 2;
@@ -82,23 +99,14 @@ public class Sistema {
         return -1;
     }
 
-    ///////////////////////////////////////////
-    ////////// Encomendar Veículo ////////////
-    ///////////////////////////////////////////
     public void addEncomenda() throws Exception  {
         facade.addEncomenda(this.enc);
     }
 
-    ///////////////////////////////////////////
-    ////////// Rejeitar Encomenda ////////////
-    ///////////////////////////////////////////
     public void rejeitarEncomenda(int id)throws Exception  {
         facade.removeEncomenda(id);
     }
 
-    ///////////////////////////////////////////
-    //////////// Encomendar pecas /////////////
-    ///////////////////////////////////////////
     public void encomendarPeca(int id, int quantia) throws Exception{
         if(!facade.containsStock(id))
             throw new Exception("Stock não existe");
@@ -108,13 +116,6 @@ public class Sistema {
             throw new Exception("Quantidade excedida");
         facade.setQuantidadeAtualStock(id, quantia + quantidade);
     }
-
-
-
-
-    ///////////////////////////////////////////
-    ////////////// Adiciona Peca //////////////
-    ///////////////////////////////////////////
 
     public List<Pair<Integer,String>> getLsEIncompativeisComPeca(int id) throws Exception {
         Peca p = facade.getPeca(id);
@@ -152,16 +153,14 @@ public class Sistema {
     }
 
     public void addPeca(int id, int quantidade) throws Exception{
-        Peca peca = facade.getPeca(id);
-        if(peca == null) throw new Exception("Peca não existe");
+        Peca peca = getPeca(id);
         else this.enc.addPeca(peca, quantidade);
     }
 
 
     public void addPacote(int id) throws  Exception{
-        PacoteDeConfiguracao pacote = facade.getPacote(id);
-        if(pacote == null) throw new Exception("Pacote nao existe");
-        else this.enc.addPacote(pacote);
+        PacoteDeConfiguracao pacote = getPacote(id);
+        this.enc.addPacote(pacote);
     }
 
     ///////////////////////////////////////////
@@ -179,9 +178,12 @@ public class Sistema {
     ///////////////////////////////////////////
 
     //Devolver um Boolean!!
-    public void removerFuncionario(int id) throws Exception {
-        if(facade.constainsUtilizador(id))
+    public boolean removerFuncionario(int id) throws Exception {
+        if(facade.constainsUtilizador(id)){
             facade.removerUtilizador(id);
+            return true;
+        }
+        return false;
     }
 
     ///////////////////////////////////////////
@@ -215,38 +217,47 @@ public class Sistema {
 
 
     public Map<String, Pair<Integer,String>> getAllEncomendas() throws Exception {
-        return facade.getAllEncomendas();
+        try{
+            return facade.getAllEncomendas();
+        } catch (Exception e){
+            throw  new Exception("Erro ao buscar os dados das encomendas");
+        }
+
     }
 
     public void removeLsEDependentesDePacote(List<Pair<Integer, Boolean>> les, int idPacote) throws Exception {
-        PacoteDeConfiguracao pacote = facade.getPacote(idPacote);
+        PacoteDeConfiguracao pacote = getPacote(idPacote);
         for(Pair<Integer, Boolean> p : les)
             this.enc.removeLEDependenteDe(p.getKey(), p.getValue(), pacote);
     }
 
     public void removeLsEIncompativeisComPacote(List<Pair<Integer, Boolean>> les, int idPacote) throws Exception {
-        PacoteDeConfiguracao pacote = facade.getPacote(idPacote);
+        PacoteDeConfiguracao pacote = getPacote(idPacote);
         for(Pair<Integer, Boolean> p : les)
             this.enc.removeLEIncompativelCom(p.getKey(), p.getValue(), pacote);
     }
 
     public void removeLsEDependentesDePeca(List<Pair<Integer, Boolean>> les, int idPeca) throws Exception {
-        Peca peca = facade.getPeca(idPeca);
+        Peca peca = getPeca(idPeca);
         for(Pair<Integer, Boolean> p : les)
             this.enc.removeLEDependenteDe(p.getKey(), p.getValue(), peca);
     }
 
     public void removeLsEIncompativeisComPeca(List<Pair<Integer, Boolean>> les, int idPeca) throws Exception {
-        Peca peca = facade.getPeca(idPeca);
+        Peca peca = getPeca(idPeca);
         for(Pair<Integer, Boolean> p : les)
             this.enc.removeLEIncompativelCom(p.getKey(), p.getValue(), peca);
     }
 
     public Pair<Integer, Integer> getStock(int id) throws Exception {
-        int quantidadeAtual = facade.getQuantidadeAtualStock(id);
-        int quantidadeMaxima = facade.getQuantidadeMaximaStock(id);
-        Pair<Integer, Integer> res = new Pair<>(quantidadeAtual, quantidadeMaxima);
-        return res;
+        try{
+            int quantidadeAtual = facade.getQuantidadeAtualStock(id);
+            int quantidadeMaxima = facade.getQuantidadeMaximaStock(id);
+            Pair<Integer, Integer> res = new Pair<>(quantidadeAtual, quantidadeMaxima);
+            return res;
+        }catch (Exception e){
+            throw new Exception("Erro ao obter dados sobre o stock de: " + id);
+        }
     }
 
     public static void main(String[] args) {
