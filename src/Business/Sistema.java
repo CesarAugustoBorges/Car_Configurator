@@ -2,6 +2,7 @@ package Business;
 
 import Business.Encomenda.Encomenda;
 import Business.Encomenda.LinhaDeEncomenda;
+import Business.Encomenda.LinhaDeEncomendaPeca;
 import Business.Encomenda.PacoteDeConfiguracao;
 import Business.Stock.Peca;
 import Business.Stock.StockInteger;
@@ -67,16 +68,16 @@ public class Sistema {
     ///////////////////////////////////////////
     ////////// Encomendar Veículo ////////////
     ///////////////////////////////////////////
-    //public void addEncomenda() {
-    //    facade.addEncomenda(this.enc);
-    //}
+    public void addEncomenda() {
+        facade.addEncomenda(this.enc);
+    }
 
     ///////////////////////////////////////////
     ////////// Rejeitar Encomenda ////////////
     ///////////////////////////////////////////
-    //public void rejeitarEncomenda(id) {
-    //    facade.removeEncomenda(id);
-    //}
+    public void rejeitarEncomenda(int id) {
+        facade.removeEncomenda(id);
+    }
 
     ///////////////////////////////////////////
     //////////// Encomendar pecas /////////////
@@ -132,11 +133,18 @@ public class Sistema {
         }
     }
 
-    public void addPeca(int id, int quantidade){
+    public void addPeca(int id, int quantidade) throws Exception{
         Peca peca = facade.getPeca(id);
-        this.enc.addPeca(peca, quantidade);
+        if(peca == null) throw new Exception("Peca não existe");
+        else this.enc.addPeca(peca, quantidade);
     }
 
+
+    public void addPacote(int id) throws  Exception{
+        PacoteDeConfiguracao pacote = facade.getPacote(id);
+        if(pacote == null) throw new Exception("Pacote nao existe");
+        else this.enc.addPacote(pacote);
+    }
 
     ///////////////////////////////////////////
     ///////////// Remover Pacote //////////////
@@ -176,15 +184,14 @@ public class Sistema {
     ///////////////////////////////////////////
 
     public String imprimirFatura(int clienteId, String Nif) throws Exception {
-        if(facade.containsCliente(clienteId))
+        if(!facade.containsCliente(clienteId))
             throw new Exception("Cliente não existe");
         Cliente c = facade.getCliente(clienteId);
         if(!c.getNif().equals(Nif))
             throw new Exception("Nif não é do Cliente");
 
         String fatura = this.enc.getFatura();
-        float preco = this.enc.getPreco();
-        fatura += "Preço total : " + Float.toString(preco) + "\n";
+        fatura += "Nome: " + c.getName() + " --- NIF: " + c.getNif();
         return fatura;
     }
 
@@ -224,4 +231,61 @@ public class Sistema {
         return res;
     }
 
+    public static void main(String[] args) {
+        try{
+            Sistema sis = new Sistema();
+            sis.addPeca(1,1);
+            sis.addPeca(2, 1);
+            sis.addPeca(3, 1);
+            List<Integer> leToRemove = new ArrayList<>();
+            leToRemove.add(5);
+            sis.removeLsE(leToRemove);
+            //sis.addPeca(1000,1);
+            System.out.println(sis.imprimirFatura(1, "123456789"));
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+
+        /*
+        ArrayList<Integer> arrP1d = new ArrayList<>(), arrP1I = new ArrayList<>();
+        arrP1d.add(2); arrP1d.add(4);
+        Peca p1 = new Peca(1,10.12f,"motor-1.0", "motor", arrP1d, arrP1I);
+
+        ArrayList<Integer> arrP2d = new ArrayList<>(), arrP2I = new ArrayList<>();
+        Peca p2 = new Peca(2,12.20f,"volante-2.1", "extra", arrP2d, arrP2I);
+
+        ArrayList<Integer> arrP3d = new ArrayList<>(), arrP3I = new ArrayList<>();
+        Peca p3 = new Peca( 3, 25.20f, "radio", "extras", arrP3d, arrP3I);
+
+        Map<Peca, Integer> arrPacote1 = new HashMap<>();
+        arrPacote1.put(p1, 2); arrPacote1.put(p3, 1);
+        PacoteDeConfiguracao pacote1 = new PacoteDeConfiguracao(1, 25.20f, "Pacote desportivo", arrPacote1);
+
+        Map<Peca, Integer> arrPacote2 = new HashMap<>();
+        arrPacote2.put(p2, 2);
+        PacoteDeConfiguracao pacote2 = new PacoteDeConfiguracao(2, 23.20f, "Pacote smooths", arrPacote2);
+
+        //LinhaDeEncomenda le1 = new LinhaDeEncomendaPeca(1, 1, p1);
+        LinhaDeEncomenda le2 = new LinhaDeEncomendaPeca(2, 1, p2);
+        //LinhaDeEncomenda le3 = new LinhaDeEncomendaPacote(3, 1, pacote1);
+        //LinhaDeEncomenda le4 = new LinhaDeEncomendaPacote(4, 1, pacote2);
+
+        ArrayList<LinhaDeEncomenda> arrLsE = new ArrayList<>();
+        //arrLsE.add(le1);
+        arrLsE.add(le2);
+        //arrLsE.add(le3);
+        //arrLsE.add(le4);
+        Encomenda enc = new Encomenda(1, arrLsE);
+
+        for(Integer i : enc.getPecasObrigatorias(p1))
+            System.out.println("Peca obrigatorioa :" +i);
+        //System.out.println("Se a le com a peca 1 depende da peca 2: " + le1.dependeDe(p2));
+        //System.out.println("Se a le com o pacote 1 depende do pacote 2: " + le3.dependeDe(pacote2));
+
+        enc.removeLEDependenteDe(3, true, pacote2);
+        System.out.println(enc.getFatura());
+
+        */
+    }
 }
