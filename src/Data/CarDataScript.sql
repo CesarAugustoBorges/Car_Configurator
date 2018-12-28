@@ -2,14 +2,6 @@ DROP DATABASE IF EXISTS CarData;
 CREATE DATABASE CarData; 
 Use CarData;
 
-<<<<<<< HEAD
-select * from Funcionario;
-=======
-Select PA.descricao, PE.descricao from Pacote as PA
-	Inner Join PeçaDoPacote as PD on PA.id = PD.idPacote
-    INNER JOIN Peça as PE on PD.idPeca = PE.id;
->>>>>>> 6a3166f865a2b1b8f8b01ccdb0bfd0cd5d1f51ad
-
 -- tabela de clientes
 CREATE TABLE `Cliente` (
  `id` INT NOT NULL AUTO_INCREMENT,
@@ -133,7 +125,7 @@ INSERT Into Pacote
  Insert Into Peça
  (categoria,descricao,preco)
  VALUES
- ("Roda","a",10), ("Volante","ro",20),("Porta","p",30),("Vidro","v",4),("Jante","j",4),("motor","m",22),("tubo","t",10.2),("pintura","p,",123.2),("espelho","e",123),("capo","c",213);
+ ("Roda","roda x",10), ("Volante","volante x",20),("Porta","porta l",30),("Vidro","vidro da frente",4),("Vidro","vidro da frente",4),("Motor","motor",22),("Vidro","vidro de tras",10.2),("Pintura","vermelhor,",123.2),("Vidro","retrovisres",123);
 
 Insert Into Stock
 (qtdisponivel,qtmaxima,idPeça)
@@ -155,8 +147,11 @@ VALUES
 INSERT INTO Encomenda
 (id,estado,descricao,idCliente)
 VALUES
-(1,"carro fixe","ads",1),
-(2,"carro feio","sd",1);
+(1,"Em espera","Encomenda topo de gama",1),
+(2,"Em espera","Encomenda carro de luxo",1),
+(3,"Em espera","Encomenda desportiva",2),
+(4,"Em espera","Encomenda caroxa",2),
+(5,"Em espera","Encomenda desportiva",3);
 
 INSERT Into EncomendaCliente
 (idCliente,idEncomenda)
