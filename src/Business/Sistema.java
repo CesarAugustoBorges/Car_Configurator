@@ -10,12 +10,98 @@ import Business.Utilizador.Cliente;
 import Business.Utilizador.Funcionario;
 import Data.*;
 import javafx.util.Pair;
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 import java.util.*;
 
 public class Sistema {
     private DAOFacede facade = new DAOFacede();
     private Encomenda enc = new Encomenda();
+
+    //Encomenda, tal como Peça não pode ter nomes repetidos
+
+    //Métodos -> Importante para não estar a repetir
+
+    /**
+     *  public int getIdEncomenda(String nome) -> devolve o id através do nome da encomenda
+     *  public int getIdPeça(String nome) -> devolve o id da peça através do nome da peça
+     *  public Funcionario getFuncionario(int id) -> devolve um funcionario
+     *  public void putFuncionario(int id, String password) -> adiciona um novo funcionario
+     *  public Map<Integer,String> getStock() -> devolve o stock do sistema
+     *  public Pair<Integer, Integer> getInfoOfPeca(int id) -> devolve o stock atual e maximo de uma peça
+     *  public boolean containsPeca(int id) -> verifica se uma peça existe
+     *  public Peca getPeca(int id)
+     *  public PacoteDeConfiguracao getPacote(int id)
+     *  public int login(String user, String password)
+     *  public void setStatusEncomenda(int id,String x)
+     *  public void addEncomenda()
+     *  public void rejeitarEncomenda(int id)
+     *  public void encomendarPeca(int id, int quantia)
+     *  public List<Pair<Integer,String>> getLsEIncompativeisComPeca(int id)
+     *  public List<Pair<Integer,String>> getLsEIncompativeisComPacote(int id)
+     *  public void removeLsE(List<Integer> ids)
+     *  public Pair<Integer, Integer> getStock(int id)
+     *  public void removeLsEDependentesDePacote(List<Pair<Integer, Boolean>> les, int idPacote)
+     *  public void removeLsEIncompativeisComPacote(List<Pair<Integer, Boolean>> les, int idPacote)
+     *  public void removeLsEDependentesDePeca(List<Pair<Integer, Boolean>> les, int idPeca)
+     *  public void removeLsEIncompativeisComPeca(List<Pair<Integer, Boolean>> les, int idPeca)
+     *  public List<Peca> getPecaOfEncomenda(int x)
+     *  public List<PacoteDeConfiguracao> getPacoteOfEncomenda(int x)
+     *  public String imprimirFatura(int clienteId, String Nif)
+     *  public Map<String, Pair<Integer,String>> getAllEncomendas()
+     *  public Encomenda getEncomenda(int id)
+     *  public List<Integer> getEncomendasDeCliente(int id)
+     *
+     * FALTAM MAIS FUNCÇOES
+     */
+
+    public Map<String, Pair<Integer, String>> getPecaOfEncomenda(int x){
+        try {
+            return facade.getPeçasEncomenda(x);
+        }
+        catch (Exception e){
+            System.out.println("Encomenda inexistente na base de dados");
+        }
+        return null;
+    }
+
+    public List<PacoteDeConfiguracao> getPacoteOfEncomenda(int x){
+        try {
+            return facade.getPacotesEncomenda(x);
+        }catch (Exception e){
+            System.out.println("Encomenda inexistente na base de dados");
+        }
+        return null;
+    }
+
+
+
+    public int getIdEncomenda(String nome){
+        try{
+            for(String x : facade.getAllEncomendas().keySet()){
+                if(x.equals(nome)){
+                    return facade.getAllEncomendas().get(nome).getKey();
+                }
+
+            }
+        }catch (Exception e){
+            System.out.println("Encomenda " + nome + " não existe");
+        }
+        return -1;
+    }
+
+    public int getIdPeça(String nome){
+        try {
+            for (Integer x : getStock().keySet()) {
+                if(getPeca(x).getDescricao().equals(nome)){
+                    return  x;
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return -1;
+    }
 
     public Funcionario getFuncionario(int id) throws Exception{
         try{
@@ -34,6 +120,7 @@ public class Sistema {
         } catch (Exception e){
             throw new Exception("Funcionário não foi inserido: " + id);
         }
+
     }
 
     public Map<Integer,String> getStock() throws Exception{
@@ -81,6 +168,8 @@ public class Sistema {
     public int login(String user, String password) throws Exception {
         int userId = Integer.parseInt(user);
         Funcionario f;
+        System.out.println(userId + " " + password);
+
         try{
             if(!facade.constainsUtilizador(userId))
                 return -1;
@@ -99,6 +188,31 @@ public class Sistema {
         return -1;
     }
 
+   public void setStatusEncomenda(int id,String x) throws Exception {
+        try {
+            facade.setStatusEncomenda(id,x);
+        }catch (Exception e){
+            System.out.println("Encomenda inválida");
+        }
+   }
+
+    ///////////////////////////////////////////
+    ////////// Encomendar Veículo ////////////
+    ///////////////////////////////////////////
+    //public void addEncomenda() {
+    //    facade.addEncomenda(this.enc);
+    //}
+
+    ///////////////////////////////////////////
+    ////////// Rejeitar Encomenda ////////////
+    ///////////////////////////////////////////
+    //public void rejeitarEncomenda(id) {
+    //    facade.removeEncomenda(id);
+    //}
+
+    ///////////////////////////////////////////
+    //////////// Encomendar pecas /////////////
+    ///////////////////////////////////////////
     public void addEncomenda() throws Exception  {
         facade.addEncomenda(this.enc);
     }
@@ -112,7 +226,7 @@ public class Sistema {
             throw new Exception("Stock não existe");
         int quantidade = facade.getQuantidadeAtualStock(id);
         int quantidadeMaxima = facade.getQuantidadeMaximaStock(id);
-        if(quantidade + quantia <= quantidadeMaxima || quantia <= 0)
+        if (quantidade + quantia <= quantidadeMaxima || quantia <= 0)
             throw new Exception("Quantidade excedida");
         facade.setQuantidadeAtualStock(id, quantia + quantidade);
     }
@@ -130,7 +244,7 @@ public class Sistema {
     }
 
     public void removeLsE(List<Integer> ids){
-        for(Integer id: ids)
+        for(Integer id : ids)
             this.enc.removeLinhaEncomenda(id);
     }
 
@@ -153,8 +267,11 @@ public class Sistema {
     }
 
     public void addPeca(int id, int quantidade) throws Exception{
+        System.out.println("id da peça " + id);
         Peca peca = getPeca(id);
-        else this.enc.addPeca(peca, quantidade);
+        facade.setQuantidadeAtualStock(id,facade.getQuantidadeAtualStock(id)+quantidade);
+
+        this.enc.addPeca(peca, quantidade);
     }
 
 
@@ -179,10 +296,11 @@ public class Sistema {
     }
 
     //Devolver um Boolean!!
-    public boolean adicionarFuncionario(int id, String password) throws Exception{
+    public boolean adicionarFuncionario(String nome ,int id, String password , String tipo,String nif) throws Exception{
+
         if(facade.constainsUtilizador(id))
             return false;
-        Funcionario f = new Funcionario(id, password);
+        Funcionario f = new Funcionario(id,nome, password,tipo,nif);
         facade.putUtilizador(f);
         return true;
     }
@@ -207,6 +325,24 @@ public class Sistema {
             throw  new Exception("Erro ao buscar os dados das encomendas");
         }
 
+    }
+
+    public Encomenda getEncomenda(int id) throws Exception{
+        try {
+            return facade.getEncomenda(id);
+        }catch (Exception e){
+            System.out.println("Encomenda inválida");
+        }
+        return null;
+    }
+
+
+    public List<Integer> getEncomendasDeCliente(int id) throws Exception{
+        try{
+            return facade.getEncomendasDeCliente(id);
+        } catch (Exception e){
+            throw  new Exception("Cliente + " + id + " não tem encomendas");
+        }
     }
 
     public void removeLsEDependentesDePacote(List<Pair<Integer, Boolean>> les, int idPacote) throws Exception {

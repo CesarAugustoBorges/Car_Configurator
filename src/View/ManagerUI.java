@@ -1,13 +1,17 @@
 package View;
 
-import Business.Encomenda.Encomenda;
 import Business.Sistema;
-import Business.Stock.Peca;
+import javafx.util.Pair;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,6 +32,9 @@ public class ManagerUI extends JPanel{
 	private JButton accept;
 	private JButton decline;
 
+	private Map<String, Pair<Integer,String>> allEncs;
+	private DefaultMutableTreeNode root;
+
 	//Stock
 	private JLabel stockLabel;
 	private JList stockTree;
@@ -35,7 +42,7 @@ public class ManagerUI extends JPanel{
 	private JList infoStockList;
 	private JButton moreStock;
 
-	public ManagerUI(Sistema x){
+	public ManagerUI(Sistema x) throws Exception{
 		this.setLayout(null);
 		this.s = x;
 		createComp();
@@ -43,7 +50,7 @@ public class ManagerUI extends JPanel{
 		addAll();
 	}
 
-	private void createComp(){
+	private void createComp() throws Exception{
 		seing = new JLabel("Visualizar:");
 		seing.setBounds(20,15,80,15);
 		String[] choices = {"Lista de Encomendas", "Stock"};
@@ -64,7 +71,10 @@ public class ManagerUI extends JPanel{
 		encs.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 		encs.setBounds(15,90,227,365);
 
-		List<String> x = s.getAllEncomendas().keySet().stream().collect(Collectors.toList());
+		//Map<Descricao, Pair<Id, Categoria>>
+		allEncs = s.getAllEncomendas();
+
+		List<String> x = allEncs.keySet().stream().collect(Collectors.toList());
 		DefaultListModel modelo = new DefaultListModel();
 		for (String a : x ) {
 			modelo.addElement(a);
@@ -75,7 +85,8 @@ public class ManagerUI extends JPanel{
 
 		infoEncLabel = new JLabel("Informação da Encomenda:");
 		infoEncLabel.setBounds(263,70,190,15);
-		infoEncTree = new JTree();
+		root = new DefaultMutableTreeNode("Encomenda");
+		infoEncTree = new JTree(root);
 		infoEncTree.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 		infoEncTree.setBounds(258,90,227,325);
 
@@ -91,7 +102,13 @@ public class ManagerUI extends JPanel{
 		stockTree = new JList();
 		stockTree.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 
+		List<String> peça = s.getStock().values().stream().collect(Collectors.toList());
+		modelo = new DefaultListModel();
+		for (String a : peça ) {
+			modelo.addElement(a);
+		}
 
+		stockTree.setModel(modelo);
 
 		stockTree.setBounds(15,90,227,365);
 		stockTree.setVisible(false);
@@ -110,6 +127,76 @@ public class ManagerUI extends JPanel{
 	}
 
 	private void createListeners(){
+		this.encs.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if(encs.getSelectedValue() != null){
+					DefaultMutableTreeNode newroot = new DefaultMutableTreeNode("Encomenda");
+					String enc = encs.getSelectedValue().toString();
+					//Map<Nome, Pair<Id, Categoria>>
+					Map<String, Pair<Integer, String>> pecas = s.getPecaOfEncomenda(allEncs.get(enc).getKey());
+					//Map<Categoria, List<peças>>
+					Map<String, List<String>> tmp = new HashMap<>();
+
+					for(Map.Entry<String,Pair<Integer, String>> entry : pecas.entrySet()){
+						String key = entry.getKey();
+						Pair<Integer, String> value = entry.getValue();
+
+						if(tmp.containsKey(value.getValue())){
+							tmp.get(value.getValue()).add(key);
+						}
+						else{
+							List<String> list = new ArrayList<>();
+							list.add(key);
+							tmp.put(value.getValue(), list);
+						}
+					}
+
+					for(Map.Entry<String, List<String>> entry : tmp.entrySet()){
+						String key = entry.getKey();
+						List<String> value = entry.getValue();
+
+						DefaultMutableTreeNode node = new DefaultMutableTreeNode(key);
+						for(String str : value){
+							node.add(new DefaultMutableTreeNode(str));
+						}
+
+						newroot.add(node);
+					}
+
+					DefaultTreeModel newmodel = new DefaultTreeModel(newroot);
+					infoEncTree.setModel(newmodel);
+				}
+			}
+		});
+
+
+		this.stockTree.addListSelectionListener(new ListSelectionListener() {
+
+			public void valueChanged(ListSelectionEvent e) {
+
+				if (stockTree.getSelectedValue() != null) {
+
+					String peça = stockTree.getSelectedValue().toString();
+					try {
+						int idpeca = s.getIdPeça(peça);
+						System.out.println(idpeca);
+
+						String maximo = ("Máximo = " + s.getInfoOfPeca( s.getIdPeça(peça)).getKey() + " da mesma.");
+						String disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca( s.getIdPeça(peça)).getValue();
+
+
+						DefaultListModel modelo = new DefaultListModel();
+						modelo.addElement(maximo);
+						modelo.addElement(disponibilidade);
+						infoStockList.setModel(modelo);
+
+					}catch (Exception a){
+						System.out.println(a);
+					}
+				}
+			}
+		});
+
 		this.moreStock.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
@@ -143,10 +230,24 @@ public class ManagerUI extends JPanel{
 		            @Override
 		            public void actionPerformed(ActionEvent e){
 		                try{
+							String peça = stockTree.getSelectedValue().toString();
 		                    int value = Integer.parseInt(txtBox.getText());
+
+		                    s.addPeca(s.getIdPeça(peça),value);
+
+
+							String maximo = ("Máximo = " + s.getInfoOfPeca( s.getIdPeça(peça)).getKey() + " da mesma.");
+							String disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca( s.getIdPeça(peça)).getValue();
+
+
+							DefaultListModel mod = new DefaultListModel();
+							mod.addElement(maximo);
+							mod.addElement(disponibilidade);
+							infoStockList.setModel(mod);
+
 		                    more.dispose();
 		                }
-		                catch(NumberFormatException ex){
+		                catch(Exception ex){
 		                    error.setVisible(true);
 		                }
 		            }
@@ -156,25 +257,60 @@ public class ManagerUI extends JPanel{
 
         this.goFilter.addActionListener(new ActionListener(){
             @Override
-            public void actionPerformed(ActionEvent e){
-                //Stuff here
-                System.out.println("Filter");
-            }
+            public void actionPerformed(ActionEvent e) {
+				//Stuff here
+				System.out.println("Filter");
+				try {
+					if(filter.getText().equals("")){
+						List<String> encomendas = s.getAllEncomendas().keySet().stream().collect(Collectors.toList());
+						DefaultListModel mod = new DefaultListModel();
+						for (String tmp : encomendas) {
+							mod.addElement(tmp);
+						}
+
+						encs.setModel(mod);
+					}else {
+						List<Integer> x = s.getEncomendasDeCliente(Integer.parseInt(filter.getText()));
+
+						DefaultListModel mod = new DefaultListModel();
+						for (Integer tmp : x){
+							mod.addElement(s.getEncomenda(tmp).getDescricao());
+						}
+
+						encs.setModel(mod);
+					}
+
+				}catch (Exception a){
+					System.out.println(a);
+				}
+			}
         });
 
         this.accept.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-                //acceptEnc(encs.getSelectedValue());
-                System.out.println("Accept");
+            	try {
+					s.setStatusEncomenda(s.getIdEncomenda(encs.getSelectedValue().toString()), "Valida");
+					((DefaultListModel) encs.getModel()).remove(encs.getSelectedIndex());
+
+				}catch (Exception a){
+            		System.out.println(a);
+				}
             }
         });
 
         this.decline.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-                //declineEnc(encs.getSelectedValue());
-                System.out.println("Decline");
+            	try {
+
+					s.rejeitarEncomenda(s.getIdEncomenda(encs.getSelectedValue().toString()));
+
+					((DefaultListModel) encs.getModel()).remove(encs.getSelectedIndex());
+
+				}catch (Exception a){
+            		System.out.println(a);
+				}
             }
         });
 
@@ -184,6 +320,10 @@ public class ManagerUI extends JPanel{
                 String selected = (String) choose.getSelectedItem();
                 if(selected.equals("Stock")){
                 	hideEncs();
+
+                	//adiciona aqui
+					//System.out.println(stockTree.getLeadSelectionIndex());
+
                 }
                 else{
                 	hideStock();

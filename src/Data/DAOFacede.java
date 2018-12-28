@@ -36,8 +36,8 @@ public class DAOFacede {
     }
 
     //adiciona um novo utilizador
-    public boolean putUtilizador(Funcionario user) throws Exception{
-        UtlDAO.putUtilizador(user);
+    public void putUtilizador(Funcionario user) throws Exception{
+         UtlDAO.putUtilizador(user);
     }
 
     //Devolve todas as peças do sistema
@@ -67,7 +67,7 @@ public class DAOFacede {
 
     //remove um utilizador
     public boolean removerUtilizador(int id)throws Exception {
-        UtlDAO.removerUtilizador(id);
+        return UtlDAO.removerUtilizador(id);
     }
 
     //devolve a lista de peças dependentes de uma determinada peça
@@ -122,12 +122,12 @@ public class DAOFacede {
 
     //define a quantidade atual de uma peça em stock
     public void setQuantidadeAtualStock(int id, int quantidade) throws Exception{
-        StockDAO.setQuantidadeStock(id, "qtdisponivel", 10);
+        StockDAO.setQuantidadeStock(id, "qtdisponivel", quantidade);
     }
 
     //define a qt maxima de uma peça em stock
     public void setQuantidadeMaximaStock(int id, String info, int quantidade) throws Exception{
-        StockDAO.setQuantidadeStock(id, "qtmaxima", 10);
+        StockDAO.setQuantidadeStock(id, "qtmaxima", quantidade);
     }
 
     //remove uma encomenda do sistema
@@ -159,4 +159,21 @@ public class DAOFacede {
     public List<PacoteDeConfiguracao> pacotesComPeca(int id) throws Exception{
         return PteDAO.pacotesComPeca(id);
     }
+
+    //define o status de uma encomenda
+    public void setStatusEncomenda(int id,String x) throws Exception{
+        EDAO.setStatusEncomenda(id,x);
+    }
+
+    //devolve todas as peças de uma encomenda
+    public Map<String, Pair<Integer, String>> getPeçasEncomenda(int id) throws Exception{
+        return EDAO.getPeçasEncomenda(id);
+    }
+
+    //devolve todos os pacotes de uma encomenda
+    public List<PacoteDeConfiguracao> getPacotesEncomenda(int id) throws Exception{
+        return EDAO.getPacotesEncomenda(id);
+    }
+
+
 }

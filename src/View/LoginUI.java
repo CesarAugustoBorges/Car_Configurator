@@ -8,7 +8,7 @@ import java.awt.event.*;
 
 public class LoginUI{
 	public LoginUI(){
-        Sistema x = new Sistema();
+        Sistema sistema = new Sistema();
         JLabel wrongInput = new JLabel("Credenciais erradas!");
         wrongInput.setBounds(50,15,140,15);
         wrongInput.setVisible(false);
@@ -49,41 +49,34 @@ public class LoginUI{
 
         login.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
 
 
-                //Exemplo , nome: 4; pass :bolos
-                if(x.getFuncionario(Integer.parseInt(userTxt.getText())).getTipo().equals("admin")){
-                    createJFrame(0, new AdminUI(x));
+                //Exemplo de admin, nome: 4; pass :bolos
+                //Exemplo de gestor , nome : 5, pass :vedeta
+                //Exemplo de funcionário , nome : 4 , pass : gui
+                try {
+
+                    switch (sistema.login(userTxt.getText(), new String(passTxt.getPassword()) )) {
+
+                        case 0:
+                            createJFrame(0,new AdminUI( sistema));
+                            frame.dispose();
+                            break;
+                        case 1:
+                            createJFrame(1,new ManagerUI(sistema));
+                            frame.dispose();
+                            break;
+                        case 2:
+                            createJFrame(2,new ClientUI(sistema));
+                            frame.dispose();
+                        default:
+                            wrongInput.setVisible(true);
+                            break;
+                    }
+                } catch (Exception b) {
+                    System.out.println(b);
                 }
-
-                //Exemplo , nome : 1 , pass : vedeta
-                if(x.getFuncionario(Integer.parseInt(userTxt.getText())).getTipo().equals("gestor")){
-                    createJFrame(1, new ManagerUI(x));
-                }
-
-
-                if(userTxt.getText().equals("funcionario")){createJFrame(2, new ClientUI());}
-
-                frame.dispose();
-
-
-                /*
-                switch(login(Integer.parseInt(userTxt.getText()), passTxt.getText())){
-                	case 0:     createJFrame(new AdminUI());
-                                frame.dispose();
-                			    break;
-                	case 1:     createJFrame(new ManagerUI());
-                                frame.dispose();
-                			    break;
-                	case 2:     createJFrame(new ClientUI());
-                                frame.dispose();
-                                break;
-                    case -1:    wrongInput.setVisible(true);
-                                break;
-                	default:    wrongInput.setVisible(true);
-                                break;
-                }*/
             }
         });
 

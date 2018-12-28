@@ -1,5 +1,7 @@
 package View;
 
+import Business.Sistema;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
@@ -8,11 +10,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.text.View;
 
 public class ClientUI extends JPanel{
     private JTree my;
     private JTree all;
     private JLabel allLabel;
+    private Sistema s;
     private JLabel myLabel;
     private JButton partsButton;
     private JButton packsButton;
@@ -21,7 +25,8 @@ public class ClientUI extends JPanel{
     private JButton moreButton;
     private JTextField logs;
 
-    public ClientUI(){
+    public ClientUI(Sistema s){
+        this.s = s;
         this.setLayout(null);
         createAllComponents();
         createListeners();
@@ -32,6 +37,7 @@ public class ClientUI extends JPanel{
         this.partsButton = new JButton("Peças");
         partsButton.setBounds(271,10,60,30);
 
+
         this.packsButton = new JButton("Pacotes");
         packsButton.setBounds(335,10,70,30);
 
@@ -40,18 +46,23 @@ public class ClientUI extends JPanel{
 
         BufferedImage img = null;
         try{
-            img = ImageIO.read(new File("View/garbage2.png"));
+            img = ImageIO.read(new File("src/View/garbage2.png"));
 
         }
         catch(IOException e){
             System.err.println("Caught IOException: " + e.getMessage());
         }
 
+
+
         Image tmp = img.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
         BufferedImage dimg = new BufferedImage(25, 25, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = dimg.createGraphics();
         g2d.drawImage(tmp, 0, 0, null);
         g2d.dispose();
+
+
+
 
         this.removePartButton = new JButton(new ImageIcon(dimg));
         removePartButton.setBounds(233,110,35,35);
@@ -60,6 +71,7 @@ public class ClientUI extends JPanel{
         my.setBounds(10,70,220,410);
         my.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 
+
         this.all = new JTree();
         all.setBounds(271,70,220,410);
         all.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
@@ -67,6 +79,7 @@ public class ClientUI extends JPanel{
         this.logs = new JTextField("Logs");
         logs.setEditable(false);
         logs.setBounds(10,490,420,55);
+
 
         this.moreButton = new JButton("+");
         moreButton.setFont(new Font("Arial", Font.PLAIN, 25));

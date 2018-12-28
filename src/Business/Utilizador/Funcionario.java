@@ -23,9 +23,17 @@ public class Funcionario {
         this.tipo = "Funcionario";
     }
 
-    public Funcionario(int id, String pass) {
+    public Funcionario(int id,String pass){
         this.id = id;
         this.passe = pass;
+    }
+
+    public Funcionario(int id,String nome,String pass,String tipo,String nif) {
+        this.id = id;
+        this.nome = nome;
+        this.tipo = tipo;
+        this.passe = pass;
+        this.nif = nif;
     }
 
     public int getId() {

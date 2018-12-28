@@ -1,9 +1,7 @@
 package Data;
 
-import Business.Encomenda.Encomenda;
-import Business.Encomenda.LinhaDeEncomenda;
-import Business.Encomenda.LinhaDeEncomendaPacote;
-import Business.Encomenda.LinhaDeEncomendaPeca;
+import Business.Encomenda.*;
+import Business.Stock.Peca;
 import javafx.util.Pair;
 
 import java.awt.geom.RectangularShape;
@@ -12,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.locks.Condition;
 
 public class EncomendaDAO {
 
@@ -95,7 +94,7 @@ public class EncomendaDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                result.put(rs.getString("estado"), new Pair<>(rs.getInt("id"), rs.getString("descricao")));
+                result.put(rs.getString("descricao"), new Pair<>(rs.getInt("id"), rs.getString("estado")));
             }
 
         }else Connect.close(con);
@@ -110,7 +109,7 @@ public class EncomendaDAO {
 
         if(con!=null) {
 
-            PreparedStatement ps = con.prepareStatement("select * Encomenda where id = ?");
+            PreparedStatement ps = con.prepareStatement("select * from Encomenda where id = ?");
             ps.setInt(1,id);
             ResultSet rs = ps.executeQuery();
             if(rs==null){
@@ -130,6 +129,10 @@ public class EncomendaDAO {
             ps.setInt(1, id);
             ps.executeUpdate();
 
+            ps = con.prepareStatement("Delete from EncomendaCliente where idEncomenda =?");
+            ps.setInt(1,id);
+            ps.executeUpdate();
+
             ps = con.prepareStatement("Delete from Encomenda where id = ?");
             ps.setInt(1, id);
             ps.executeUpdate();
@@ -139,7 +142,62 @@ public class EncomendaDAO {
         }else Connect.close(con);
 
         return false;
+    }
 
+    public void setStatusEncomenda(int id,String x) throws Exception{
+
+        con = Connect.connect();
+
+        if(con!=null) {
+
+            PreparedStatement ps = con.prepareStatement("Update Encomenda Set estado = ? where id = ?");
+            ps.setString(1,x);
+            ps.setInt(2, id);
+            int a = ps.executeUpdate();
+
+        }else Connect.close(con);
+    }
+
+    public Map<String, Pair<Integer, String>> getPeçasEncomenda(int id) throws Exception{
+        con = Connect.connect();
+        Map<String, Pair<Integer, String>> result = new HashMap<>();
+        if(con!=null) {
+            PreparedStatement ps = con.prepareStatement("Select idPeca from LDEPeça where idLDEncomenda = ?");
+            ps.setInt(1,id);
+            ResultSet rs = ps.executeQuery();
+            PeçaDAO peça = new PeçaDAO();
+            while(rs.next()){
+                int idPeca = rs.getInt("idPeca");
+                PreparedStatement p = con.prepareStatement("Select categoria,descricao from Peça where id = ?");
+                p.setInt(1,idPeca);
+                ResultSet r = p.executeQuery();
+                while(r.next()){
+                    Pair<Integer, String> par = new Pair(idPeca, r.getString("categoria"));
+                    result.put(r.getString("descricao"), par);
+                }
+            }
+
+        }else Connect.close(con);
+
+        return result;
+    }
+
+    public List<PacoteDeConfiguracao> getPacotesEncomenda(int id) throws Exception{
+        con = Connect.connect();
+        List<PacoteDeConfiguracao> result = new ArrayList<>();
+        if(con!=null) {
+
+            PreparedStatement ps = con.prepareStatement("Select idPacote from LDEPacote where idLDEncomenda = ?");
+            ps.setInt(1,id);
+            ResultSet rs = ps.executeQuery();
+            PacoteDeConfiguracaoDAO peça = new PacoteDeConfiguracaoDAO();
+            while(rs.next()){
+                result.add(peça.getPacote(rs.getInt("idPacote")));
+            }
+
+        }else Connect.close(con);
+
+        return result;
     }
 
 }
