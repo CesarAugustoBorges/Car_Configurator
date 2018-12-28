@@ -18,7 +18,7 @@ public class Sistema {
 
     private DAOFacede facade = new DAOFacede();
     private Encomenda enc = new Encomenda();
-    private List<String> categoriasObrigatorias = new ArrayList<>();
+    private List<String> categoriasObrigatorias;
 
     //Encomenda, tal como Peça não pode ter nomes repetidos
 
@@ -57,6 +57,15 @@ public class Sistema {
      *
      *  FALTAM MAIS FUNÇOES
      */
+
+    public Sistema(){
+        this.categoriasObrigatorias = new ArrayList<>();
+        this.categoriasObrigatorias.add("Volante");
+        this.categoriasObrigatorias.add("Roda");
+        this.categoriasObrigatorias.add("Porta");
+        this.categoriasObrigatorias.add("Motor");
+        this.categoriasObrigatorias.add("Pintura");
+    }
 
     public Map<String, Pair<Integer, String>> getAllPecas() throws Exception{
         try{
@@ -109,12 +118,6 @@ public class Sistema {
             System.out.println("Encomenda " + nome + " não existe");
         }
         return -1;
-    }
-
-    public boolean isCategoriaFilledOfPacote(int id) throws Exception{
-            Peca peca = getPeca(id);
-            String categoria = peca.getCategoria();
-            return this.enc.hasCategoria(categoria);
     }
 
     public int getIdPeça(String nome){
@@ -224,8 +227,9 @@ public class Sistema {
    }
 
 
-    public void addEncomenda() throws Exception  {
-        facade.addEncomenda(this.enc);
+    public void addEncomenda() throws Exception{
+        if(this.valid())
+            facade.addEncomenda(this.enc);
     }
 
     public void rejeitarEncomenda(int id)throws Exception  {
@@ -234,11 +238,11 @@ public class Sistema {
 
     public void encomendarPeca(int id, int quantia) throws Exception{
         if(!facade.containsStock(id))
-            throw new Exception("Stock não existe");
+            throw new Exception("Stock não existe: " + id);
         int quantidade = facade.getQuantidadeAtualStock(id);
         int quantidadeMaxima = facade.getQuantidadeMaximaStock(id);
         if (quantidade + quantia <= quantidadeMaxima || quantia <= 0)
-            throw new Exception("Quantidade excedida");
+            throw new Exception("Quantidade excedida: " + id);
         facade.setQuantidadeAtualStock(id, quantia + quantidade);
     }
 
@@ -389,16 +393,61 @@ public class Sistema {
     }
 
 
+    public boolean valid() throws Exception{
+        List<String> categorias = new ArrayList<>();
+        for(String s : categoriasObrigatorias)
+            categorias.add(s);
+        return this.enc.valid(categorias);
+    }
+
+    public void aceitaEncomenda(int id) throws Exception {
+        Encomenda encomenda = facade.getEncomenda(id);
+        checkStockForEncomenda(encomenda);
+        removeStockFromEncomenda(encomenda);
+        facade.setStatusEncomenda(id, "Aceite");
+    }
+
+    private void removeStockFromEncomenda(Encomenda encomenda)throws Exception {
+        for(LinhaDeEncomenda le : encomenda.getLinhasDeEncomenda()){
+            if(le instanceof LinhaDeEncomendaPeca){
+                LinhaDeEncomendaPeca lep = (LinhaDeEncomendaPeca) le;
+                int quantidadeDisponivel = facade.getQuantidadeAtualStock(lep.getIdPeca());
+                facade.setQuantidadeAtualStock(lep.getIdPeca(), quantidadeDisponivel - lep.getQuantidade());
+            }
+        }
+    }
+
+    private void checkStockForEncomenda(Encomenda encomenda) throws Exception {
+        for(LinhaDeEncomenda le : encomenda.getLinhasDeEncomenda()){
+            if(le instanceof LinhaDeEncomendaPeca){
+                LinhaDeEncomendaPeca lep = (LinhaDeEncomendaPeca) le;
+                int quantidadeDisponivel = facade.getQuantidadeAtualStock(lep.getIdPeca());
+                if(quantidadeDisponivel - lep.getQuantidade() < 0)
+                    throw new Exception("Não existe peças no stock para satisfazer a encomenda: Peça - " + lep.getDescricao());
+            }
+        }
+    }
+
+    public void removePeca(int id, int quantidade){
+        this.enc.removePeca(id, quantidade);
+    }
+
+    public void removePacote(int id, int quantidade){
+        this.enc.removePacote(id, quantidade);
+    }
+
     public static void main(String[] args) {
         try{
             Sistema sis = new Sistema();
-            sis.addPeca(1,1);
+
+            sis.addPeca(1,2);
             sis.addPeca(2, 1);
             sis.addPeca(3, 1);
             List<Integer> leToRemove = new ArrayList<>();
             leToRemove.add(5);
             sis.removeLsE(leToRemove);
             //sis.addPeca(1000,1);
+            sis.removePeca(1,1);
             System.out.println(sis.imprimirFatura(1, "123456789"));
         } catch(Exception e){
             e.printStackTrace();

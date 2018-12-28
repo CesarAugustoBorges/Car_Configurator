@@ -2,6 +2,11 @@ package Business.Encomenda;
 
 import Business.Stock.Peca;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class LinhaDeEncomendaPacote extends LinhaDeEncomenda {
     private PacoteDeConfiguracao pacoteDeConfiguracao;
 
@@ -60,10 +65,10 @@ public class LinhaDeEncomendaPacote extends LinhaDeEncomenda {
         return false;
     }
 
-    public boolean hasCategoria(String categoria){
-        for(Peca p : this.pacoteDeConfiguracao.getPecas().keySet())
-            if(p.getCategoria().equals(categoria))
-                return true;
-        return false;
+    public Set<String> getCategorias(){
+        Set<String> res = new HashSet<>();
+        for(Peca p : pacoteDeConfiguracao.getPecas().keySet())
+            res.add(p.getCategoria());
+        return res;
     }
 }
