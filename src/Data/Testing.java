@@ -16,7 +16,7 @@ public class Testing {
 
 
      //new DAOFacede().setStatusEncomenda(2, "Valida");
-
+     new DAOFacede().getEncomendasDeCliente(1).forEach(integer -> System.out.println(integer));
        //new DAOFacede().removeEncomenda(1);
 
        // new DAOFacede().setQuantidadeAtualStock(1,new DAOFacede().getQuantidadeAtualStock(1)+2);

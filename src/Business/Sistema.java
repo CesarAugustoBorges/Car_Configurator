@@ -1,16 +1,12 @@
 package Business;
 
 import Business.Encomenda.Encomenda;
-import Business.Encomenda.LinhaDeEncomenda;
-import Business.Encomenda.LinhaDeEncomendaPeca;
 import Business.Encomenda.PacoteDeConfiguracao;
 import Business.Stock.Peca;
-import Business.Stock.StockInteger;
 import Business.Utilizador.Cliente;
 import Business.Utilizador.Funcionario;
 import Data.*;
 import javafx.util.Pair;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 import java.util.*;
 

@@ -75,12 +75,12 @@ public class ClienteDAO{
 
         if(con!=null) {
 
-            PreparedStatement ps = con.prepareCall("SELECT idEncomenda FROM EncomendaCliente where idCliente = ?");
+            PreparedStatement ps = con.prepareCall("SELECT id FROM Encomenda where idCliente = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                x.add(rs.getInt("idEncomenda"));
+                x.add(rs.getInt("id"));
             }
             Connect.close(con);
 
