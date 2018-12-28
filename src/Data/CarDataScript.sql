@@ -1,7 +1,6 @@
 DROP DATABASE IF EXISTS CarData;
 CREATE DATABASE CarData; 
 Use CarData;
-Use CarData;
 
 -- tabela de clientes
 CREATE TABLE `Cliente` (

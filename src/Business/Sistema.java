@@ -20,6 +20,60 @@ public class Sistema {
 
     //Encomenda, tal como Peça não pode ter nomes repetidos
 
+    //Métodos -> Importante para não estar a repetir
+
+    /**
+     *  public int getIdEncomenda(String nome) -> devolve o id através do nome da encomenda
+     *  public int getIdPeça(String nome) -> devolve o id da peça através do nome da peça
+     *  public Funcionario getFuncionario(int id) -> devolve um funcionario
+     *  public void putFuncionario(int id, String password) -> adiciona um novo funcionario
+     *  public Map<Integer,String> getStock() -> devolve o stock do sistema
+     *  public Pair<Integer, Integer> getInfoOfPeca(int id) -> devolve o stock atual e maximo de uma peça
+     *  public boolean containsPeca(int id) -> verifica se uma peça existe
+     *  public Peca getPeca(int id)
+     *  public PacoteDeConfiguracao getPacote(int id)
+     *  public int login(String user, String password)
+     *  public void setStatusEncomenda(int id,String x)
+     *  public void addEncomenda()
+     *  public void rejeitarEncomenda(int id)
+     *  public void encomendarPeca(int id, int quantia)
+     *  public List<Pair<Integer,String>> getLsEIncompativeisComPeca(int id)
+     *  public List<Pair<Integer,String>> getLsEIncompativeisComPacote(int id)
+     *  public void removeLsE(List<Integer> ids)
+     *  public Pair<Integer, Integer> getStock(int id)
+     *  public void removeLsEDependentesDePacote(List<Pair<Integer, Boolean>> les, int idPacote)
+     *  public void removeLsEIncompativeisComPacote(List<Pair<Integer, Boolean>> les, int idPacote)
+     *  public void removeLsEDependentesDePeca(List<Pair<Integer, Boolean>> les, int idPeca)
+     *  public void removeLsEIncompativeisComPeca(List<Pair<Integer, Boolean>> les, int idPeca)
+     *  public List<Peca> getPecaOfEncomenda(int x)
+     *  public List<PacoteDeConfiguracao> getPacoteOfEncomenda(int x)
+     *  public String imprimirFatura(int clienteId, String Nif)
+     *  public Map<String, Pair<Integer,String>> getAllEncomendas()
+     *  public Encomenda getEncomenda(int id)
+     *  public List<Integer> getEncomendasDeCliente(int id)
+     *
+     * FALTAM MAIS FUNCÇOES
+     */
+
+    public List<Peca> getPecaOfEncomenda(int x) throws Exception{
+        try {
+            return facade.getPeçasEncomenda(x);
+        }catch (Exception e){
+            System.out.println("Encomenda inexistente na base de dados");
+        }
+        return null;
+    }
+
+    public List<PacoteDeConfiguracao> getPacoteOfEncomenda(int x) throws Exception{
+        try {
+            return facade.getPacotesEncomenda(x);
+        }catch (Exception e){
+            System.out.println("Encomenda inexistente na base de dados");
+        }
+        return null;
+    }
+
+
 
     public int getIdEncomenda(String nome) throws Exception{
         try{

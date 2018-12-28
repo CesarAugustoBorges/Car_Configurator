@@ -1,9 +1,7 @@
 package Data;
 
-import Business.Encomenda.Encomenda;
-import Business.Encomenda.LinhaDeEncomenda;
-import Business.Encomenda.LinhaDeEncomendaPacote;
-import Business.Encomenda.LinhaDeEncomendaPeca;
+import Business.Encomenda.*;
+import Business.Stock.Peca;
 import javafx.util.Pair;
 
 import java.awt.geom.RectangularShape;
@@ -158,6 +156,42 @@ public class EncomendaDAO {
             int a = ps.executeUpdate();
 
         }else Connect.close(con);
+    }
+
+    public List<Peca> getPeçasEncomenda(int id) throws Exception{
+        con = Connect.connect();
+        List<Peca> result = new ArrayList<>();
+        if(con!=null) {
+
+            PreparedStatement ps = con.prepareStatement("Select idPeca from LDEPeça where idLDEncomenda = ?");
+            ps.setInt(1,id);
+            ResultSet rs = ps.executeQuery();
+            PeçaDAO peça = new PeçaDAO();
+            while(rs.next()){
+                result.add(peça.getPeca(rs.getInt("idPeca")));
+            }
+
+        }else Connect.close(con);
+
+        return result;
+    }
+
+    public List<PacoteDeConfiguracao> getPacotesEncomenda(int id) throws Exception{
+        con = Connect.connect();
+        List<PacoteDeConfiguracao> result = new ArrayList<>();
+        if(con!=null) {
+
+            PreparedStatement ps = con.prepareStatement("Select idPacote from LDEPacote where idLDEncomenda = ?");
+            ps.setInt(1,id);
+            ResultSet rs = ps.executeQuery();
+            PacoteDeConfiguracaoDAO peça = new PacoteDeConfiguracaoDAO();
+            while(rs.next()){
+                result.add(peça.getPacote(rs.getInt("idPacote")));
+            }
+
+        }else Connect.close(con);
+
+        return result;
     }
 
 }

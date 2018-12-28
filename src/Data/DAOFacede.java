@@ -160,8 +160,19 @@ public class DAOFacede {
         return PteDAO.pacotesComPeca(id);
     }
 
+    //define o status de uma encomenda
     public void setStatusEncomenda(int id,String x) throws Exception{
         EDAO.setStatusEncomenda(id,x);
+    }
+
+    //devolve todas as peças de uma encomenda
+    public List<Peca> getPeçasEncomenda(int id) throws Exception{
+        return EDAO.getPeçasEncomenda(id);
+    }
+
+    //devolve todos os pacotes de uma encomenda
+    public List<PacoteDeConfiguracao> getPacotesEncomenda(int id) throws Exception{
+        return EDAO.getPacotesEncomenda(id);
     }
 
 
