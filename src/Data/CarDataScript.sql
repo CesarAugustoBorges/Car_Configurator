@@ -4,7 +4,7 @@ Use CarData;
 
 -- tabela de clientes
 CREATE TABLE `Cliente` (
- `id` INT NOT NULL AUTO_INCREMENT,
+ `id` INT NOT NULL,
  `nif` VARCHAR(45) NOT NULL,
  `nome` VARCHAR(45) NOT NULL,
  PRIMARY KEY (`id`));
@@ -17,17 +17,10 @@ descricao VARCHAR(45) NOT NULL,
 idCliente INT NOT NULL,
 FOREIGN KEY (idCliente) references Cliente(id));
 
--- tabela de encomendas de um cliente
-CREATE TABLE EncomendaCliente(
-idCliente INT NOT NULL,
-idEncomenda INT NOT NULL,
-Primary Key(idCliente,idEncomenda),
-FOREIGN Key (idCliente) REFERENCES Cliente(id),
-FOREIGN KEY(idEncomenda) REFERENCES Encomenda(id));
 
 -- tabela de funcionarios
 CREATE TABLE Funcionario(
- id INT NOT NULL auto_increment,
+ id INT NOT NULL,
  nif VARCHAR(45) NOT NULL,
  nome VARCHAR(45) NOT NULL,
  tipo VARCHAR(45) NOT NULL,
@@ -118,14 +111,25 @@ INSERT Into Pacote
  (id,preco,descricao)
  VALUES
  (1,10,"Pacote Desportivo"),
- (2,5,"Pacote Incompleto");
+ (2,5,"Pacote Caroxa"),
+ (3,20,"Pacote M2"),
+ (4,24,"Pacote luxo");
  	
 
 
  Insert Into Peça
  (categoria,descricao,preco)
  VALUES
- ("Roda","roda x",10), ("Volante","volante x",20),("Porta","porta l",30),("Vidro","vidro da frente",4),("Vidro","vidro da frente",4),("Motor","motor",22),("Vidro","vidro de tras",10.2),("Pintura","vermelhor,",123.2),("Vidro","retrovisres",123);
+ ("Roda","roda x",10), 
+ ("Volante","volante x",20),
+ ("Porta","porta l",30),
+ ("Vidro","vidro da frente",4),
+ ("Vidro","vidro da frente",4),
+ ("Motor","motor",22),
+ ("Vidro","vidro de tras",10.2),
+ ("Pintura","vermelhor,",123.2)
+ ,("Vidro","retrovisres",123);
+
 
 Insert Into Stock
 (qtdisponivel,qtmaxima,idPeça)
@@ -137,12 +141,12 @@ VALUES
  
   
  Insert Into Cliente 
-(nif,nome)
+(id,nif,nome)
 VALUES
-    ("123456789","André Guilherme"),
-    ("123456788","César Augusto"),
-    ("123456777","Mini J"),
-    ("123456666","Discipulo");
+(1,"123456789","André Guilherme"),
+(2,"123456788","César Augusto"),
+(3,"123456777","Mini J"),
+(4,"123456666","Discipulo");
 
 INSERT INTO Encomenda
 (id,estado,descricao,idCliente)
@@ -153,20 +157,15 @@ VALUES
 (4,"Em espera","Encomenda caroxa",2),
 (5,"Em espera","Encomenda desportiva",3);
 
-INSERT Into EncomendaCliente
-(idCliente,idEncomenda)
-VALUES
-(1,1),
-(2,1);
 
 
 Insert Into Funcionario
-(nif,nome,tipo,passe)
+(id,nif,nome,tipo,passe)
 VALUES
-("123456789","Vedeta","Gestor","vedeta"),
-("123456788","Draven","Gestor","axes"),
-("123456777","Lux","Gestor","narnia"),
-("123456666","Defenido","Admin","bolos");
+(1,"123456789","Guilherme","Gestor","vedeta"),
+(2,"123456788","Draven","Gestor","axes"),
+(3,"123456777","Lux","Gestor","narnia"),
+(4,"123456666","A coisa","Admin","bolos");
  
 
  
@@ -204,6 +203,5 @@ INSERT INTO PeçaDoPacote
 (idPacote,idPeca)
 VALUES
 (1,1),(1,2),(1,3),(1,4),
-(2,1),(2,2);
-
-SELECT * from Cliente;
+(2,1),(2,2),
+(3,1),(3,2),(3,3);
