@@ -166,7 +166,7 @@ public class DAOFacede {
     }
 
     //devolve todas as peças de uma encomenda
-    public List<Peca> getPeçasEncomenda(int id) throws Exception{
+    public Map<String, Pair<Integer, String>> getPeçasEncomenda(int id) throws Exception{
         return EDAO.getPeçasEncomenda(id);
     }
 

@@ -1,15 +1,17 @@
 package View;
 
-import Business.Encomenda.Encomenda;
 import Business.Sistema;
-import Business.Stock.Peca;
+import javafx.util.Pair;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,6 +31,9 @@ public class ManagerUI extends JPanel{
 	private JTree infoEncTree;
 	private JButton accept;
 	private JButton decline;
+
+	private Map<String, Pair<Integer,String>> allEncs;
+	private DefaultMutableTreeNode root;
 
 	//Stock
 	private JLabel stockLabel;
@@ -66,7 +71,10 @@ public class ManagerUI extends JPanel{
 		encs.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 		encs.setBounds(15,90,227,365);
 
-		List<String> x = s.getAllEncomendas().keySet().stream().collect(Collectors.toList());
+		//Map<Descricao, Pair<Id, Categoria>>
+		allEncs = s.getAllEncomendas();
+
+		List<String> x = allEncs.keySet().stream().collect(Collectors.toList());
 		DefaultListModel modelo = new DefaultListModel();
 		for (String a : x ) {
 			modelo.addElement(a);
@@ -77,7 +85,8 @@ public class ManagerUI extends JPanel{
 
 		infoEncLabel = new JLabel("Informação da Encomenda:");
 		infoEncLabel.setBounds(263,70,190,15);
-		infoEncTree = new JTree();
+		root = new DefaultMutableTreeNode("Encomenda");
+		infoEncTree = new JTree(root);
 		infoEncTree.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 		infoEncTree.setBounds(258,90,227,325);
 
@@ -101,10 +110,6 @@ public class ManagerUI extends JPanel{
 
 		stockTree.setModel(modelo);
 
-
-
-
-
 		stockTree.setBounds(15,90,227,365);
 		stockTree.setVisible(false);
 
@@ -116,22 +121,51 @@ public class ManagerUI extends JPanel{
 		infoStockList.setBounds(258,90,227,325);
 		infoStockList.setVisible(false);
 
-
-
-
-
 		moreStock = new JButton("Encomendar Mais");
 		moreStock.setBounds(315,425,170,30);
 		moreStock.setVisible(false);
 	}
 
 	private void createListeners(){
-
 		this.encs.addListSelectionListener(new ListSelectionListener() {
-
 			public void valueChanged(ListSelectionEvent e) {
+				if(encs.getSelectedValue() != null){
+					DefaultMutableTreeNode newroot = new DefaultMutableTreeNode("Encomenda");
+					String enc = encs.getSelectedValue().toString();
+					//Map<Nome, Pair<Id, Categoria>>
+					Map<String, Pair<Integer, String>> pecas = s.getPecaOfEncomenda(allEncs.get(enc).getKey());
+					//Map<Categoria, List<peças>>
+					Map<String, List<String>> tmp = new HashMap<>();
 
+					for(Map.Entry<String,Pair<Integer, String>> entry : pecas.entrySet()){
+						String key = entry.getKey();
+						Pair<Integer, String> value = entry.getValue();
 
+						if(tmp.containsKey(value.getValue())){
+							tmp.get(value.getValue()).add(key);
+						}
+						else{
+							List<String> list = new ArrayList<>();
+							list.add(key);
+							tmp.put(value.getValue(), list);
+						}
+					}
+
+					for(Map.Entry<String, List<String>> entry : tmp.entrySet()){
+						String key = entry.getKey();
+						List<String> value = entry.getValue();
+
+						DefaultMutableTreeNode node = new DefaultMutableTreeNode(key);
+						for(String str : value){
+							node.add(new DefaultMutableTreeNode(str));
+						}
+
+						newroot.add(node);
+					}
+
+					DefaultTreeModel newmodel = new DefaultTreeModel(newroot);
+					infoEncTree.setModel(newmodel);
+				}
 			}
 		});
 
@@ -239,7 +273,7 @@ public class ManagerUI extends JPanel{
 						List<Integer> x = s.getEncomendasDeCliente(Integer.parseInt(filter.getText()));
 
 						DefaultListModel mod = new DefaultListModel();
-						for (Integer tmp : x) {
+						for (Integer tmp : x){
 							mod.addElement(s.getEncomenda(tmp).getDescricao());
 						}
 

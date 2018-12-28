@@ -55,16 +55,17 @@ public class Sistema {
      * FALTAM MAIS FUNCÇOES
      */
 
-    public List<Peca> getPecaOfEncomenda(int x) throws Exception{
+    public Map<String, Pair<Integer, String>> getPecaOfEncomenda(int x){
         try {
             return facade.getPeçasEncomenda(x);
-        }catch (Exception e){
+        }
+        catch (Exception e){
             System.out.println("Encomenda inexistente na base de dados");
         }
         return null;
     }
 
-    public List<PacoteDeConfiguracao> getPacoteOfEncomenda(int x) throws Exception{
+    public List<PacoteDeConfiguracao> getPacoteOfEncomenda(int x){
         try {
             return facade.getPacotesEncomenda(x);
         }catch (Exception e){
@@ -75,7 +76,7 @@ public class Sistema {
 
 
 
-    public int getIdEncomenda(String nome) throws Exception{
+    public int getIdEncomenda(String nome){
         try{
             for(String x : facade.getAllEncomendas().keySet()){
                 if(x.equals(nome)){

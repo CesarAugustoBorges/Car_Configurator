@@ -17,7 +17,7 @@ public class AdminUI extends JPanel{
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.add("Admin",adminPanel());
 		tabbedPane.add("Gestor",new ManagerUI(s));
-		//tabbedPane.add("ConfiguraFácil",new ClientUI());
+		tabbedPane.add("ConfiguraFácil",new ClientUI(s));
 		tabbedPane.setBounds(0,0,520,640);
 
 		add(tabbedPane);

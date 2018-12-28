@@ -158,17 +158,23 @@ public class EncomendaDAO {
         }else Connect.close(con);
     }
 
-    public List<Peca> getPeçasEncomenda(int id) throws Exception{
+    public Map<String, Pair<Integer, String>> getPeçasEncomenda(int id) throws Exception{
         con = Connect.connect();
-        List<Peca> result = new ArrayList<>();
+        Map<String, Pair<Integer, String>> result = new HashMap<>();
         if(con!=null) {
-
             PreparedStatement ps = con.prepareStatement("Select idPeca from LDEPeça where idLDEncomenda = ?");
             ps.setInt(1,id);
             ResultSet rs = ps.executeQuery();
             PeçaDAO peça = new PeçaDAO();
             while(rs.next()){
-                result.add(peça.getPeca(rs.getInt("idPeca")));
+                int idPeca = rs.getInt("idPeca");
+                PreparedStatement p = con.prepareStatement("Select categoria,descricao from Peça where id = ?");
+                p.setInt(1,idPeca);
+                ResultSet r = p.executeQuery();
+                while(r.next()){
+                    Pair<Integer, String> par = new Pair(idPeca, r.getString("categoria"));
+                    result.put(r.getString("descricao"), par);
+                }
             }
 
         }else Connect.close(con);
