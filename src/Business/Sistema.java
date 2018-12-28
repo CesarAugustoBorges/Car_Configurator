@@ -63,6 +63,14 @@ public class Sistema {
         }
     }
 
+    public Map<String, Pair<Integer, List<String>>> getAllPacotes() throws Exception{
+        try{
+            return facade.getAllPacotes();
+        }catch (Exception e){
+            throw new Exception("Não foi possivel buscar a informação dos pacotes");
+        }
+    }
+
 
 
     public Map<String, Pair<Integer, String>> getPecaOfEncomenda(int x){

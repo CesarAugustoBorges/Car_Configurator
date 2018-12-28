@@ -2,6 +2,10 @@ DROP DATABASE IF EXISTS CarData;
 CREATE DATABASE CarData; 
 Use CarData;
 
+Select PA.descricao, PE.descricao from Pacote as PA
+	Inner Join PeçaDoPacote as PD on PA.id = PD.idPacote
+    INNER JOIN Peça as PE on PD.idPeca = PE.id;
+
 -- tabela de clientes
 CREATE TABLE `Cliente` (
  `id` INT NOT NULL AUTO_INCREMENT,
@@ -123,7 +127,7 @@ INSERT Into Pacote
 
 
  Insert Into Peça
- (descricao,categoria,preco)
+ (categoria,descricao,preco)
  VALUES
  ("Roda","a",10), ("Volante","ro",20),("Porta","p",30),("Vidro","v",4),("Jante","j",4),("motor","m",22),("tubo","t",10.2),("pintura","p,",123.2),("espelho","e",123),("capo","c",213);
 
@@ -145,18 +149,17 @@ VALUES
     ("123456666","Discipulo");
 
 INSERT INTO Encomenda
-(id,descricao,estado,idCliente)
+(id,estado,descricao,idCliente)
 VALUES
-(1,"carro fixe","por validar",1),
-(2,"carro feio","por validar",1);
+(1,"carro fixe","ads",1),
+(2,"carro feio","sd",1);
 
 INSERT Into EncomendaCliente
 (idCliente,idEncomenda)
 VALUES
 (1,1),
-(2,2);
+(2,1);
 
-select * from Funcionario;
 
 Insert Into Funcionario
 (nif,nome,tipo,passe)
@@ -164,7 +167,6 @@ VALUES
 ("123456789","Vedeta","Gestor","vedeta"),
 ("123456788","Draven","Gestor","axes"),
 ("123456777","Lux","Gestor","narnia"),
-("123456777","Guilherme","Funcionario","gui"),
 ("123456666","Defenido","Admin","bolos");
  
 
@@ -204,3 +206,5 @@ INSERT INTO PeçaDoPacote
 VALUES
 (1,1),(1,2),(1,3),(1,4),
 (2,1),(2,2);
+
+SELECT * from Cliente;

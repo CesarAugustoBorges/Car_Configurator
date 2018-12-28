@@ -16,17 +16,19 @@ public class PacoteDeConfiguracaoDAO {
         Map<String, Pair<Integer, List<String>>> result = new HashMap<>();
 
         if (con != null) {
-            PreparedStatement ps = con.prepareStatement("Select PA.descricao as pacote, PA.id as IdPacote, PE.descricao as peca from Pacote as PA"+
-                                                            "INNER JOIN PeçaDoPacote as PD on PA.id = PD.idPacote"+
-                                                            "INNER JOIN Peça as PE on PD.idPeça = PE.id");
+            PreparedStatement ps = con.prepareStatement("Select PA.descricao as pacote, PA.id as IdPacote,PE.descricao as peca from Pacote as PA\n"+
+                                                            "INNER Join PeçaDoPacote as PD on PA.id = PD.idPacote\n"+
+                                                            "INNER JOIN Peça as PE on PD.idPeca = PE.id;");
+
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                if(result.containsKey(rs.getString("pacote")))
-                   result.get("pacote").getValue().add(rs.getString("peca"));
+                String pacote = rs.getString("pacote");
+                if(result.containsKey(pacote))
+                   result.get(pacote).getValue().add(rs.getString("peca"));
                 else{
                     int idPacote = Integer.parseInt(rs.getString("IdPacote"));
-                    result.put(rs.getString("pacote"), new Pair<>(idPacote, new ArrayList<>()));
+                    result.put(pacote, new Pair<>(idPacote, new ArrayList<>()));
 
                 }
             }
