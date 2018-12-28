@@ -59,4 +59,8 @@ public class LinhaDeEncomendaPeca extends LinhaDeEncomenda {
                 return true;
         return false;
     }
+
+    public boolean hasCategoria(String categoria) {
+        return this.peca.getCategoria().equals(categoria);
+    }
 }

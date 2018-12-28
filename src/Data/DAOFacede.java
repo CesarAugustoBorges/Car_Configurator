@@ -45,6 +45,11 @@ public class DAOFacede {
         return PDAO.getAllPecas();
     }
 
+    //Devolve todas os pacotes do sistema
+    public Map<String, Pair<Integer, List<String>>> getAllPacotes() throws Exception{
+        return PteDAO.getAllPacotes();
+    }
+
     //Devolve a quantidade disponivel e máxima como um par
     public Pair<Integer, Integer> getInfoOfPeca(int id)throws Exception {
         return StockDAO.getInfoOfPeca(id);
@@ -166,7 +171,7 @@ public class DAOFacede {
     }
 
     //devolve todas as peças de uma encomenda
-    public List<Peca> getPeçasEncomenda(int id) throws Exception{
+    public Map<String, Pair<Integer, String>> getPeçasEncomenda(int id) throws Exception{
         return EDAO.getPeçasEncomenda(id);
     }
 

@@ -55,16 +55,35 @@ public class Sistema {
      * FALTAM MAIS FUNCÇOES
      */
 
-    public List<Peca> getPecaOfEncomenda(int x) throws Exception{
+    public Map<String, Pair<Integer, String>> getAllPecas() throws Exception{
+        try{
+            return facade.getAllPecas();
+        }catch (Exception e){
+            throw new Exception("Não foi possivel buscar a informação das peças");
+        }
+    }
+
+    public Map<String, Pair<Integer, List<String>>> getAllPacotes() throws Exception{
+        try{
+            return facade.getAllPacotes();
+        }catch (Exception e){
+            throw new Exception("Não foi possivel buscar a informação dos pacotes");
+        }
+    }
+
+
+
+    public Map<String, Pair<Integer, String>> getPecaOfEncomenda(int x){
         try {
             return facade.getPeçasEncomenda(x);
-        }catch (Exception e){
+        }
+        catch (Exception e){
             System.out.println("Encomenda inexistente na base de dados");
         }
         return null;
     }
 
-    public List<PacoteDeConfiguracao> getPacoteOfEncomenda(int x) throws Exception{
+    public List<PacoteDeConfiguracao> getPacoteOfEncomenda(int x){
         try {
             return facade.getPacotesEncomenda(x);
         }catch (Exception e){
@@ -75,7 +94,7 @@ public class Sistema {
 
 
 
-    public int getIdEncomenda(String nome) throws Exception{
+    public int getIdEncomenda(String nome){
         try{
             for(String x : facade.getAllEncomendas().keySet()){
                 if(x.equals(nome)){
@@ -87,6 +106,12 @@ public class Sistema {
             System.out.println("Encomenda " + nome + " não existe");
         }
         return -1;
+    }
+
+    public boolean isCategoriaFilledOfPacote(int id) throws Exception{
+            Peca peca = getPeca(id);
+            String categoria = peca.getCategoria();
+            return this.enc.hasCategoria(categoria);
     }
 
     public int getIdPeça(String nome){
@@ -195,23 +220,7 @@ public class Sistema {
         }
    }
 
-    ///////////////////////////////////////////
-    ////////// Encomendar Veículo ////////////
-    ///////////////////////////////////////////
-    //public void addEncomenda() {
-    //    facade.addEncomenda(this.enc);
-    //}
 
-    ///////////////////////////////////////////
-    ////////// Rejeitar Encomenda ////////////
-    ///////////////////////////////////////////
-    //public void rejeitarEncomenda(id) {
-    //    facade.removeEncomenda(id);
-    //}
-
-    ///////////////////////////////////////////
-    //////////// Encomendar pecas /////////////
-    ///////////////////////////////////////////
     public void addEncomenda() throws Exception  {
         facade.addEncomenda(this.enc);
     }
@@ -279,19 +288,11 @@ public class Sistema {
         this.enc.addPacote(pacote);
     }
 
-    ///////////////////////////////////////////
-    ///////////// Remover Pacote //////////////
-    ///////////////////////////////////////////
 
     public List<Pair<Integer, String>> getLsEDependentesPacote(int IdPacote) throws Exception {
         PacoteDeConfiguracao p = facade.getPacote(IdPacote);
         return this.enc.getLsEDependentes(p);
     }
-
-
-    ///////////////////////////////////////////
-    ///////////// Remover Funcionario//////////
-    ///////////////////////////////////////////
 
     //Devolver um Boolean!!
     public boolean removerFuncionario(int id) throws Exception {
@@ -302,10 +303,6 @@ public class Sistema {
         return false;
     }
 
-    ///////////////////////////////////////////
-    /////////// Adicionar Funcionario//////////
-    ///////////////////////////////////////////
-
     //Devolver um Boolean!!
     public boolean adicionarFuncionario(String nome ,int id, String password , String tipo,String nif) throws Exception{
 
@@ -315,10 +312,6 @@ public class Sistema {
         facade.putUtilizador(f);
         return true;
     }
-
-    ///////////////////////////////////////////
-    ///////////// Imprimir fatura /////////////
-    ///////////////////////////////////////////
 
     public String imprimirFatura(int clienteId, String Nif) throws Exception {
         if(!facade.containsCliente(clienteId))
@@ -409,47 +402,5 @@ public class Sistema {
         } catch(Exception e){
             e.printStackTrace();
         }
-
-
-        /*
-        ArrayList<Integer> arrP1d = new ArrayList<>(), arrP1I = new ArrayList<>();
-        arrP1d.add(2); arrP1d.add(4);
-        Peca p1 = new Peca(1,10.12f,"motor-1.0", "motor", arrP1d, arrP1I);
-
-        ArrayList<Integer> arrP2d = new ArrayList<>(), arrP2I = new ArrayList<>();
-        Peca p2 = new Peca(2,12.20f,"volante-2.1", "extra", arrP2d, arrP2I);
-
-        ArrayList<Integer> arrP3d = new ArrayList<>(), arrP3I = new ArrayList<>();
-        Peca p3 = new Peca( 3, 25.20f, "radio", "extras", arrP3d, arrP3I);
-
-        Map<Peca, Integer> arrPacote1 = new HashMap<>();
-        arrPacote1.put(p1, 2); arrPacote1.put(p3, 1);
-        PacoteDeConfiguracao pacote1 = new PacoteDeConfiguracao(1, 25.20f, "Pacote desportivo", arrPacote1);
-
-        Map<Peca, Integer> arrPacote2 = new HashMap<>();
-        arrPacote2.put(p2, 2);
-        PacoteDeConfiguracao pacote2 = new PacoteDeConfiguracao(2, 23.20f, "Pacote smooths", arrPacote2);
-
-        //LinhaDeEncomenda le1 = new LinhaDeEncomendaPeca(1, 1, p1);
-        LinhaDeEncomenda le2 = new LinhaDeEncomendaPeca(2, 1, p2);
-        //LinhaDeEncomenda le3 = new LinhaDeEncomendaPacote(3, 1, pacote1);
-        //LinhaDeEncomenda le4 = new LinhaDeEncomendaPacote(4, 1, pacote2);
-
-        ArrayList<LinhaDeEncomenda> arrLsE = new ArrayList<>();
-        //arrLsE.add(le1);
-        arrLsE.add(le2);
-        //arrLsE.add(le3);
-        //arrLsE.add(le4);
-        Encomenda enc = new Encomenda(1, arrLsE);
-
-        for(Integer i : enc.getPecasObrigatorias(p1))
-            System.out.println("Peca obrigatorioa :" +i);
-        //System.out.println("Se a le com a peca 1 depende da peca 2: " + le1.dependeDe(p2));
-        //System.out.println("Se a le com o pacote 1 depende do pacote 2: " + le3.dependeDe(pacote2));
-
-        enc.removeLEDependenteDe(3, true, pacote2);
-        System.out.println(enc.getFatura());
-
-        */
     }
 }

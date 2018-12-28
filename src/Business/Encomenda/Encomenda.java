@@ -282,46 +282,10 @@ public class Encomenda {
         return false;
     }
 
-    /*
-        // Se um pacote tiver um item na lista, então o pacote é removido
-    public void removePecas(List<Integer> ids) {
-        for(Integer id: ids)
-            removePeca(id, false);
+    public boolean hasCategoria(String categoria){
+        for(LinhaDeEncomenda le: linhasDeEncomenda)
+            if(le.hasCategoria(categoria))
+                return true;
+        return false;
     }
-
-
-    public String checkStatusWhenAdding(Peca p) {
-        ArrayList<Integer> dependencias = p.getDependencias();
-        ArrayList<Integer> incompatibilidades = p.getIncompatibilidades();
-        for(LinhaDeEncomenda le: linhasDeEncomenda) {
-            for(Integer dep : dependencias)
-                if(le.hasPeca(dep))
-                    dependencias.remove(Integer.valueOf(dep));
-            for(Integer inc : incompatibilidades){
-                if(le.hasPeca(inc))
-                    if(this.status.indexOf("Incompativel") < 0)
-                        this.status = "Incompativel";
-            }
-        }
-        if(dependencias.size() > 0 && this.status.indexOf("Dependente") < 0)
-            this.status += "Dependente";
-
-        if(this.status == "") this.status = "Valid";
-        return this.status;
-    }
-
-    public String checkStatusWhenAdding(PacoteDeConfiguracao pdc)  {
-        Set<Integer> incompatibilidades = pdc.getIncompatibilidades();
-        for(LinhaDeEncomenda le: linhasDeEncomenda) {
-            for(Integer inc : incompatibilidades){
-                if(le.hasPeca(inc))
-                    if(this.status.indexOf("Incompativel") < 0)
-                        this.status = "Incompativel";
-            }
-        }
-        if(this.status == "") this.status = "Valid";
-        return this.status;
-    }
-    */
-
 }
