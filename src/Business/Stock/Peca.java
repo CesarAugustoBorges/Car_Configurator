@@ -25,6 +25,7 @@ public class Peca {
     public Peca(int id, float preco, String descricao, String categoria, ArrayList<Integer> dependencias, ArrayList<Integer> incompatibilidades){
         this.id = id;
         this.preco = preco;
+        this.categoria = categoria;
         this.descricao = descricao;
         this.setIncompatibilidades(incompatibilidades);
         this.setDependencias(dependencias);

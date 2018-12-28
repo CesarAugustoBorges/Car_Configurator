@@ -15,8 +15,10 @@ import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import java.util.*;
 
 public class Sistema {
+
     private DAOFacede facade = new DAOFacede();
     private Encomenda enc = new Encomenda();
+    private List<String> categoriasObrigatorias = new ArrayList<>();
 
     //Encomenda, tal como Peça não pode ter nomes repetidos
 
@@ -52,7 +54,8 @@ public class Sistema {
      *  public Encomenda getEncomenda(int id)
      *  public List<Integer> getEncomendasDeCliente(int id)
      *
-     * FALTAM MAIS FUNCÇOES
+     *
+     *  FALTAM MAIS FUNÇOES
      */
 
     public Map<String, Pair<Integer, String>> getAllPecas() throws Exception{
@@ -256,7 +259,7 @@ public class Sistema {
             this.enc.removeLinhaEncomenda(id);
     }
 
-    public void addPecas(List<Integer> ids) throws Exception {
+    public void addPecas(List<Integer> ids) throws Exception{
         for(Integer id : ids)
             enc.addPeca(facade.getPeca(id), 1);
     }

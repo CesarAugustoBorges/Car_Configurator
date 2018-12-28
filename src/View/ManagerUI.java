@@ -1,9 +1,5 @@
 package View;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 6a3166f865a2b1b8f8b01ccdb0bfd0cd5d1f51ad
 import Business.Sistema;
 import javafx.util.Pair;
 
