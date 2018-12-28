@@ -59,4 +59,11 @@ public class LinhaDeEncomendaPacote extends LinhaDeEncomenda {
                 return true;
         return false;
     }
+
+    public boolean hasCategoria(String categoria){
+        for(Peca p : this.pacoteDeConfiguracao.getPecas().keySet())
+            if(p.getCategoria().equals(categoria))
+                return true;
+        return false;
+    }
 }

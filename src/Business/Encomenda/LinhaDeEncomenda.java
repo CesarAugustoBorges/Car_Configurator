@@ -61,4 +61,5 @@ public abstract class LinhaDeEncomenda {
     public abstract String getDescricao();
     public abstract boolean dependeDe(Peca p);
     public abstract boolean dependeDe(PacoteDeConfiguracao p);
+    public abstract boolean hasCategoria(String categoria);
 }

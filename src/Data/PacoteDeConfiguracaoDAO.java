@@ -2,12 +2,39 @@ package Data;
 
 import Business.Encomenda.PacoteDeConfiguracao;
 import Business.Stock.Peca;
+import javafx.util.Pair;
 
 import java.sql.*;
 import java.util.*;
 
 public class PacoteDeConfiguracaoDAO {
     Connection con;
+
+    public Map<String, Pair<Integer, List<String>>> getAllPacotes() throws Exception{ // Map<Descricao, id>>
+
+        con = Connect.connect();
+        Map<String, Pair<Integer, List<String>>> result = new HashMap<>();
+
+        if (con != null) {
+            PreparedStatement ps = con.prepareStatement("Select PA.descricao as pacote, PA.id as IdPacote, PE.descricao as peca from Pacote as PA"+
+                                                            "INNER JOIN PeçaDoPacote as PD on PA.id = PD.idPacote"+
+                                                            "INNER JOIN Peça as PE on PD.idPeça = PE.id");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                if(result.containsKey(rs.getString("pacote")))
+                   result.get("pacote").getValue().add(rs.getString("peca"));
+                else{
+                    int idPacote = Integer.parseInt(rs.getString("IdPacote"));
+                    result.put(rs.getString("pacote"), new Pair<>(idPacote, new ArrayList<>()));
+
+                }
+            }
+        }else Connect.close(con);
+
+        return result;
+
+    }
 
     public PacoteDeConfiguracao getPacote(int id) throws Exception{
 

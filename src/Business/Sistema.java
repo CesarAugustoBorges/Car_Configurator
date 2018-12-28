@@ -55,6 +55,16 @@ public class Sistema {
      * FALTAM MAIS FUNCÇOES
      */
 
+    public Map<String, Pair<Integer, String>> getAllPecas() throws Exception{
+        try{
+            return facade.getAllPecas();
+        }catch (Exception e){
+            throw new Exception("Não foi possivel buscar a informação das peças");
+        }
+    }
+
+
+
     public Map<String, Pair<Integer, String>> getPecaOfEncomenda(int x){
         try {
             return facade.getPeçasEncomenda(x);
@@ -88,6 +98,12 @@ public class Sistema {
             System.out.println("Encomenda " + nome + " não existe");
         }
         return -1;
+    }
+
+    public boolean isCategoriaFilledOfPacote(int id) throws Exception{
+            Peca peca = getPeca(id);
+            String categoria = peca.getCategoria();
+            return this.enc.hasCategoria(categoria);
     }
 
     public int getIdPeça(String nome){
@@ -196,23 +212,7 @@ public class Sistema {
         }
    }
 
-    ///////////////////////////////////////////
-    ////////// Encomendar Veículo ////////////
-    ///////////////////////////////////////////
-    //public void addEncomenda() {
-    //    facade.addEncomenda(this.enc);
-    //}
 
-    ///////////////////////////////////////////
-    ////////// Rejeitar Encomenda ////////////
-    ///////////////////////////////////////////
-    //public void rejeitarEncomenda(id) {
-    //    facade.removeEncomenda(id);
-    //}
-
-    ///////////////////////////////////////////
-    //////////// Encomendar pecas /////////////
-    ///////////////////////////////////////////
     public void addEncomenda() throws Exception  {
         facade.addEncomenda(this.enc);
     }
