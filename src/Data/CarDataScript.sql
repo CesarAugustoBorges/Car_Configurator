@@ -2,6 +2,8 @@ DROP DATABASE IF EXISTS CarData;
 CREATE DATABASE CarData; 
 Use CarData;
 
+select * from Funcionario;
+
 -- tabela de clientes
 CREATE TABLE `Cliente` (
  `id` INT NOT NULL AUTO_INCREMENT,

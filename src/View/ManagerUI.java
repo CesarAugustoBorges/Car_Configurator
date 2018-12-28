@@ -1,6 +1,6 @@
 package View;
 
-import Business.Encomenda.Encomenda;
+
 import Business.Sistema;
 import Business.Stock.Peca;
 
