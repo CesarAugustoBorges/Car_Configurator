@@ -278,10 +278,7 @@ public class Sistema {
     }
 
     public void addPeca(int id, int quantidade) throws Exception{
-        System.out.println("id da peça " + id);
         Peca peca = getPeca(id);
-        facade.setQuantidadeAtualStock(id,facade.getQuantidadeAtualStock(id)+quantidade);
-
         this.enc.addPeca(peca, quantidade);
     }
 
@@ -390,6 +387,7 @@ public class Sistema {
             throw new Exception("Erro ao obter dados sobre o stock de: " + id);
         }
     }
+
 
     public static void main(String[] args) {
         try{
