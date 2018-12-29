@@ -1,6 +1,8 @@
 package Business;
 
 import Business.Encomenda.Encomenda;
+import Business.Encomenda.LinhaDeEncomenda;
+import Business.Encomenda.LinhaDeEncomendaPeca;
 import Business.Encomenda.PacoteDeConfiguracao;
 import Business.Stock.Peca;
 import Business.Utilizador.Cliente;
@@ -56,11 +58,12 @@ public class Sistema {
 
     public Sistema(){
         this.categoriasObrigatorias = new ArrayList<>();
-        this.categoriasObrigatorias.add("Volante");
-        this.categoriasObrigatorias.add("Roda");
-        this.categoriasObrigatorias.add("Porta");
         this.categoriasObrigatorias.add("Motor");
         this.categoriasObrigatorias.add("Pintura");
+        this.categoriasObrigatorias.add("Roda");
+        this.categoriasObrigatorias.add("Volante");
+        this.categoriasObrigatorias.add("Porta");
+        this.categoriasObrigatorias.add("Vidro");
     }
 
     public Map<String, Pair<Integer, String>> getAllPecas() throws Exception{
@@ -186,7 +189,7 @@ public class Sistema {
         try{
             return facade.getPacote(id);
         }catch (Exception e){
-            throw new Exception("Erro ao buscar informação sobre o pacote: " + id);
+                throw new Exception("Erro ao buscar informação sobre o pacote: " + id);
         }
     }
     // Metodo que verifica as credenciais do utilizador.
@@ -279,6 +282,10 @@ public class Sistema {
 
     public void addPeca(int id, int quantidade) throws Exception{
         Peca peca = getPeca(id);
+        this.enc.addPeca(peca, quantidade);
+    }
+
+    public void addPeca(Peca peca, int quantidade) throws Exception{
         this.enc.addPeca(peca, quantidade);
     }
 
@@ -432,19 +439,95 @@ public class Sistema {
         this.enc.removePacote(id, quantidade);
     }
 
+    public void configuracaoOtima(int quantiaMaxima) throws Exception{
+        Encomenda encomenda = new Encomenda();
+        List<Integer> nPecasEmConsideracao = new ArrayList<>();
+        Map<String, Integer> nPecasEmCategoria = new HashMap<>();
+        List<Float> percentagem = new ArrayList<>();
+        int nCategorias = categoriasObrigatorias.size();
+        for(int i = 0; i< nCategorias; i++){
+            percentagem.add(1.f/nCategorias);
+            nPecasEmConsideracao.add(-1);
+        }
+
+        for(int i = 0; i < nCategorias; i++){
+            List<Peca> pecasOfCategoria = facade.getPecasOfCategorias(categoriasObrigatorias.get(i));
+            pecasOfCategoria.sort((p1, p2) -> Float.compare(p2.getPreco(), p1.getPreco()));
+            System.out.println(categoriasObrigatorias.get(i) + "......." + pecasOfCategoria.size());
+            for(int j = 0; j < pecasOfCategoria.size(); j++){
+                Peca p = pecasOfCategoria.get(j);
+                System.out.println(categoriasObrigatorias.get(i) + " ... " + p.getDescricao());
+
+                if(p.getPreco() < percentagem.get(i) * quantiaMaxima){
+                    if(getLsEIncompativeisComPeca(p.getId()).isEmpty()){
+                        List<Integer> idsObrigatorias = getPecasObrigatorias(p.getId());
+                        List<Peca> pecasObrigatorias = new ArrayList<>();
+                        for(Integer id: idsObrigatorias) pecasObrigatorias.add(getPeca(id));
+
+                        if(!pecasObrigatorias.isEmpty()){
+                            int preco = 0;
+                            for(Peca peca : pecasObrigatorias)
+                                preco += peca.getPreco();
+                            if(preco + p.getPreco() < percentagem.get(i) * quantiaMaxima){
+                                for(Peca peca : pecasObrigatorias)
+                                    addPecaConfiguracaoOtima(encomenda, peca, nPecasEmCategoria);
+                                addPecaConfiguracaoOtima(encomenda, p, nPecasEmCategoria);
+                                break;
+                            }
+                        } else {
+                            addPecaConfiguracaoOtima(encomenda, p, nPecasEmCategoria);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        this.enc = encomenda;
+    }
+
+
+    private void addPecaConfiguracaoOtima(Encomenda enc,Peca p, Map<String, Integer> nPecaEmCategoria){
+        String categoria = p.getCategoria();
+        enc.addPeca(p,1);
+        if(nPecaEmCategoria.containsKey(categoria))
+            nPecaEmCategoria.replace(categoria, nPecaEmCategoria.get(categoria) +1);
+    }
+
+    public boolean canCreatePacote(int id) throws Exception{
+        PacoteDeConfiguracao pacote = getPacote(id);
+        return this.enc.canCreatePacote(pacote);
+    }
+
+    public void createPacote(int id) throws  Exception{
+        PacoteDeConfiguracao pacote = getPacote(id);
+        this.enc.createPacote(pacote);
+    }
+
     public static void main(String[] args) {
         try{
             Sistema sis = new Sistema();
 
             sis.addPeca(1,2);
+            sis.addPeca(1,2);
             sis.addPeca(2, 1);
             sis.addPeca(3, 1);
+            sis.addPeca(6, 1);
+            sis.addPeca(8, 1);
+            sis.addPeca(7, 1);
+
             List<Integer> leToRemove = new ArrayList<>();
-            leToRemove.add(5);
             sis.removeLsE(leToRemove);
             //sis.addPeca(1000,1);
             sis.removePeca(1,1);
             System.out.println(sis.imprimirFatura(1, "123456789"));
+            System.out.println(sis.canCreatePacote(2));
+            if(sis.canCreatePacote(2));
+                sis.createPacote(2);
+            //sis.configuracaoOtima(100000);
+            System.out.println(sis.imprimirFatura(1, "123456789"));
+            //sis.addEncomenda();
+
+
         } catch(Exception e){
             e.printStackTrace();
         }

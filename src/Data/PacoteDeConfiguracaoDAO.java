@@ -42,7 +42,7 @@ public class PacoteDeConfiguracaoDAO {
 
         con = Connect.connect();
         PacoteDeConfiguracao pc = new PacoteDeConfiguracao();
-        ArrayList<Peca> peças = new ArrayList<>();
+        Map<Peca, Integer> peças = new HashMap<>();
 
         if(con!=null) {
 
@@ -57,20 +57,19 @@ public class PacoteDeConfiguracaoDAO {
                 pc.setPreco(rs.getFloat("preco"));
             }
 
-            ps = con.prepareStatement("Select * from Peca where idPacote = ?");
+            ps = con.prepareStatement("Select * from PeçaDoPacote where idPacote = ?");
             ps.setInt(1, id);
             rs = ps.executeQuery();
             PeçaDAO pd = new PeçaDAO();
 
             while (rs.next()) {
-                Peca aux = pd.getPeca(rs.getInt("id"));
-                peças.add(aux);
+                Peca aux = pd.getPeca(rs.getInt("idPeca"));
+                peças.put(aux, 1);
             }
 
-            pc.setPecas(new HashMap<>());
+            pc.setPecas(peças);
 
         }else Connect.close(con);
-
         return  pc;
     }
 

@@ -180,5 +180,9 @@ public class DAOFacede {
         return EDAO.getPacotesEncomenda(id);
     }
 
+    public List<Peca> getPecasOfCategorias(String categoria) throws Exception{
+        return PDAO.getPecasOfCategorias(categoria);
+    }
+
 
 }

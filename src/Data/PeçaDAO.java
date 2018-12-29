@@ -129,4 +129,24 @@ public class PeçaDAO {
 
     }
 
+    public List<Peca> getPecasOfCategorias(String categoria) throws Exception{
+        List<Peca> result = new ArrayList<>();
+
+        con = Connect.connect();
+
+        if (con != null) {
+
+
+            PreparedStatement ps = con.prepareStatement("Select id from Peça\n where categoria = ?");
+            ps.setString(1, categoria);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                result.add(getPeca(rs.getInt("id")));
+            }
+
+        } else Connect.close(con);
+
+        return result;
+    }
 }
