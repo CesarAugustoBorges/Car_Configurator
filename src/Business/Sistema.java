@@ -63,7 +63,6 @@ public class Sistema {
         this.categoriasObrigatorias.add("Roda");
         this.categoriasObrigatorias.add("Volante");
         this.categoriasObrigatorias.add("Porta");
-        this.categoriasObrigatorias.add("Vidro");
     }
 
     public Map<String, Pair<Integer, String>> getAllPecas() throws Exception{
@@ -441,24 +440,26 @@ public class Sistema {
 
     public void configuracaoOtima(int quantiaMaxima) throws Exception{
         Encomenda encomenda = new Encomenda();
-        List<Integer> nPecasEmConsideracao = new ArrayList<>();
-        Map<String, Integer> nPecasEmCategoria = new HashMap<>();
-        List<Float> percentagem = new ArrayList<>();
+        Encomenda lockedEncomenda = new Encomenda();
+        Integer[] nPecasEmConsideracao = new Integer[categoriasObrigatorias.size()];
+        Map<String, List<Peca>> pecasEmCategoria = new HashMap<>();
+        Map<String, Float> percentagem = new HashMap<>();
+
         int nCategorias = categoriasObrigatorias.size();
         for(int i = 0; i< nCategorias; i++){
-            percentagem.add(1.f/nCategorias);
-            nPecasEmConsideracao.add(-1);
+            percentagem.put( categoriasObrigatorias.get(i), 1.f/nCategorias);
+            nPecasEmConsideracao[i] = -1;
         }
-
-        for(int i = 0; i < nCategorias; i++){
-            List<Peca> pecasOfCategoria = facade.getPecasOfCategorias(categoriasObrigatorias.get(i));
+        int i = 0;
+        while(i >= 0){
+            System.out.println(i);
+            String categoria = categoriasObrigatorias.get(i);
+            List<Peca> pecasOfCategoria = facade.getPecasOfCategorias(categoria);
             pecasOfCategoria.sort((p1, p2) -> Float.compare(p2.getPreco(), p1.getPreco()));
-            System.out.println(categoriasObrigatorias.get(i) + "......." + pecasOfCategoria.size());
             for(int j = 0; j < pecasOfCategoria.size(); j++){
                 Peca p = pecasOfCategoria.get(j);
-                System.out.println(categoriasObrigatorias.get(i) + " ... " + p.getDescricao());
 
-                if(p.getPreco() < percentagem.get(i) * quantiaMaxima){
+                if(getPrecoCategoria(pecasEmCategoria.get(categoria)) <= percentagem.get(categoria) * quantiaMaxima){
                     if(getLsEIncompativeisComPeca(p.getId()).isEmpty()){
                         List<Integer> idsObrigatorias = getPecasObrigatorias(p.getId());
                         List<Peca> pecasObrigatorias = new ArrayList<>();
@@ -466,31 +467,89 @@ public class Sistema {
 
                         if(!pecasObrigatorias.isEmpty()){
                             int preco = 0;
+                            boolean canAdd = true;
                             for(Peca peca : pecasObrigatorias)
-                                preco += peca.getPreco();
-                            if(preco + p.getPreco() < percentagem.get(i) * quantiaMaxima){
-                                for(Peca peca : pecasObrigatorias)
-                                    addPecaConfiguracaoOtima(encomenda, peca, nPecasEmCategoria);
-                                addPecaConfiguracaoOtima(encomenda, p, nPecasEmCategoria);
+                                if(peca.getPreco() + getPrecoCategoria(pecasEmCategoria.get(peca.getCategoria())) > percentagem.get(categoria) * quantiaMaxima)
+                                    canAdd = false;
+                            if(!canAdd) break;
+
+                            for(Peca peca : pecasObrigatorias)
+                                addPecaConfiguracaoOtima(encomenda, lockedEncomenda, peca, pecasEmCategoria, nPecasEmConsideracao);
+                            addPecaConfiguracaoOtima(encomenda, lockedEncomenda, p, pecasEmCategoria, nPecasEmConsideracao);
+                            break;
+
+                        } else {
+                            if(p.getPreco() + getPrecoCategoria(pecasEmCategoria.get(p.getCategoria())) > percentagem.get(categoria) * quantiaMaxima){
+                                addPecaConfiguracaoOtima(encomenda, lockedEncomenda, p, pecasEmCategoria, nPecasEmConsideracao);
                                 break;
                             }
-                        } else {
-                            addPecaConfiguracaoOtima(encomenda, p, nPecasEmCategoria);
-                            break;
                         }
                     }
                 }
             }
+            int next = getNextCategoria(nPecasEmConsideracao);
+            if(i == next){
+                encomenda = lockedEncomenda.clone();
+                nPecasEmConsideracao[i] = 0;
+                for(int k = 0; k < nPecasEmConsideracao.length; k++){
+                    if(nPecasEmConsideracao[k] != 0)
+                        nPecasEmConsideracao[k] = -1;
+                }
+                float percNeeded = pecasOfCategoria.get(pecasOfCategoria.size() - 1).getPreco() / quantiaMaxima;
+                if(percNeeded >= 1)
+                    throw new Exception("Não existe financiamento suficiente para: " + categoria);
+                percentagem.replace(categoria, percNeeded);
+                nPecasEmConsideracao[i] = 0;
+                int categoriasLocked = getNCategoriasNotLocked(nPecasEmConsideracao);
+                if(categoriasLocked >= categoriasObrigatorias.size() - 1)
+                    throw new Exception("Nao existe configuração ótima com essa quantia");
+                float percDifForEach = (percNeeded - percentagem.get(categoria))/(categoriasObrigatorias.size() - categoriasLocked);
+                for(int k = 0; k < percentagem.size(); k++){
+                    if(nPecasEmConsideracao[k] != 0){
+                        percentagem.replace(categoria, percentagem.get(categoria) - percDifForEach);
+                    }
+                }
+            }
+            i = getNextCategoria(nPecasEmConsideracao);
         }
         this.enc = encomenda;
     }
 
 
-    private void addPecaConfiguracaoOtima(Encomenda enc,Peca p, Map<String, Integer> nPecaEmCategoria){
+    private int getNextCategoria(Integer[] cat){
+        for(int i = 0; i < cat.length; i++)
+            if(cat[i] < 0) return i;
+        return -1;
+    }
+
+    private int getNCategoriasNotLocked(Integer[] cat){
+        int n = 0;
+        for(Integer i : cat)
+            if(i == 0)
+                n++;
+        return n;
+    }
+
+    private float getPrecoCategoria(List<Peca> pecas){
+        int preco = 0;
+        if(pecas == null) return 0;
+        for(Peca p: pecas)
+            preco += p.getPreco();
+        return preco;
+    }
+
+    private void addPecaConfiguracaoOtima(Encomenda enc, Encomenda saved, Peca p, Map<String, List<Peca>> nPecaEmCategoria, Integer[] flags){
         String categoria = p.getCategoria();
+        int index = -1;
+        for(int i = 0; i < categoriasObrigatorias.size(); i++)
+            if(categoriasObrigatorias.get(i).equals(p.getCategoria()))
+                index = i;
+        flags[index] = 1;
         enc.addPeca(p,1);
+        if(flags[index] == 0)
+            saved.addPeca(p,1);
         if(nPecaEmCategoria.containsKey(categoria))
-            nPecaEmCategoria.replace(categoria, nPecaEmCategoria.get(categoria) +1);
+            nPecaEmCategoria.get(categoria).add(p);
     }
 
     public boolean canCreatePacote(int id) throws Exception{
@@ -506,7 +565,7 @@ public class Sistema {
     public static void main(String[] args) {
         try{
             Sistema sis = new Sistema();
-
+            /*
             sis.addPeca(1,2);
             sis.addPeca(1,2);
             sis.addPeca(2, 1);
@@ -514,18 +573,16 @@ public class Sistema {
             sis.addPeca(6, 1);
             sis.addPeca(8, 1);
             sis.addPeca(7, 1);
-
-            List<Integer> leToRemove = new ArrayList<>();
-            sis.removeLsE(leToRemove);
+            */
             //sis.addPeca(1000,1);
-            sis.removePeca(1,1);
+            sis.configuracaoOtima(100);
             System.out.println(sis.imprimirFatura(1, "123456789"));
             System.out.println(sis.canCreatePacote(2));
             if(sis.canCreatePacote(2));
                 sis.createPacote(2);
-            //sis.configuracaoOtima(100000);
+
             System.out.println(sis.imprimirFatura(1, "123456789"));
-            //sis.addEncomenda();
+            sis.addEncomenda();
 
 
         } catch(Exception e){

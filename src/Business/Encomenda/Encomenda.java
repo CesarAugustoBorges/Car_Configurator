@@ -18,6 +18,15 @@ public class Encomenda {
         this.linhasDeEncomenda = new ArrayList<>();
     }
 
+    public Encomenda clone() {
+        Encomenda enc = new Encomenda();
+        enc.setId(this.getId());
+        enc.setStatus(this.getStatus());
+        enc.setDescricao(this.getDescricao());
+        enc.setLinhasDeEncomenda(this.getLinhasDeEncomenda());
+        return enc;
+    }
+
     public String getDescricao() {
         return descricao;
     }
@@ -314,10 +323,17 @@ public class Encomenda {
 
 
     public boolean valid(List<String> categorias) throws Exception{
-        for(LinhaDeEncomenda le: linhasDeEncomenda)
+        for(LinhaDeEncomenda le: linhasDeEncomenda){
+            if(le instanceof LinhaDeEncomendaPacote){
+                System.out.println(le.getCategorias());
+                for(String categoria : le.getCategorias())
+                    System.out.println("Categoria Pacote : " + categoria);
+
+            }
             for(String categoria : le.getCategorias())
                 if(categorias.contains(categoria))
                     categorias.remove(categoria);
+        }
         if(!categorias.isEmpty()){
             String cate = "";
             for(String s : categorias) cate += s;
