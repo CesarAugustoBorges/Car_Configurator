@@ -10,6 +10,7 @@ public class PacoteDeConfiguracao {
     private float preco;
     private String descricao;
     private Map<Peca, Integer> pecas;
+    private float desconto;
 
     public PacoteDeConfiguracao(){
 
@@ -20,16 +21,34 @@ public class PacoteDeConfiguracao {
         this.preco = p.getPreco();
         this.descricao = p.getDescricao();
         this.setPecas(p.getPecas());
+        this.desconto = p.getDesconto();
     }
 
-    public PacoteDeConfiguracao(int id, float preco, String descricao, Map<Peca, Integer> pecas){
+    public PacoteDeConfiguracao(int id, float preco, String descricao, Map<Peca, Integer> pecas, int desconto){
         this.id = id;
         this.preco = preco;
         this.descricao = descricao;
         this.setPecas(pecas);
+        this.desconto = desconto;
+    }
+
+
+    public float getDesconto() {
+        return desconto;
+    }
+
+    public void setDesconto(float desconto) {
+        this.desconto = desconto;
     }
 
     public float getPreco() {
+        return preco * (1-desconto);
+    }
+
+    private float getPrecoSemDesconto(){
+        int preco = 0;
+        for(Peca p: pecas.keySet())
+            preco += p.getPreco();
         return preco;
     }
 
@@ -57,6 +76,7 @@ public class PacoteDeConfiguracao {
         this.pecas = new HashMap<Peca, Integer>();
         for(Peca p : pecas.keySet())
             this.pecas.put(p, pecas.get(p));
+        this.preco = getPrecoSemDesconto();
     }
 
     public List<Integer> getPecasIds(){

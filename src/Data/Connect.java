@@ -15,7 +15,11 @@ public class Connect {
     //representa qual a base de dados a usar
     private final static String db = "CarData";
     //representa a password do root
+<<<<<<< HEAD
     private final static String password = "andreguigui1";
+=======
+    private final static String password = "123cacbCACBCESAR";
+>>>>>>> ba32da2fa1550d8e0b1cb610c8746049d2055dd9
 
 
     public static Connection connect(){

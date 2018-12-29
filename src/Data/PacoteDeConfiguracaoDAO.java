@@ -42,7 +42,7 @@ public class PacoteDeConfiguracaoDAO {
 
         con = Connect.connect();
         PacoteDeConfiguracao pc = new PacoteDeConfiguracao();
-        ArrayList<Peca> peças = new ArrayList<>();
+        Map<Peca, Integer> peças = new HashMap<>();
 
         if(con!=null) {
 
@@ -64,13 +64,16 @@ public class PacoteDeConfiguracaoDAO {
 
             while (rs.next()) {
                 Peca aux = pd.getPeca(rs.getInt("idPeca"));
+<<<<<<< HEAD
                 peças.add(aux);
+=======
+                peças.put(aux, 1);
+>>>>>>> ba32da2fa1550d8e0b1cb610c8746049d2055dd9
             }
 
-            pc.setPecas(new HashMap<>());
+            pc.setPecas(peças);
 
         }else Connect.close(con);
-
         return  pc;
     }
 

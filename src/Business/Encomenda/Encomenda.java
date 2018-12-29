@@ -276,15 +276,39 @@ public class Encomenda {
 
 
     public boolean canCreatePacote(PacoteDeConfiguracao pacote){
-        List<LinhaDeEncomenda> leps = linhasDeEncomenda.stream().filter(l -> l instanceof LinhaDeEncomendaPeca).collect(Collectors.toList());
-        List<Integer> pecasDoPacote = pacote.getPecasIds();
+        List<LinhaDeEncomenda> leps = linhasDeEncomenda.stream()
+                                    .filter(l -> l instanceof LinhaDeEncomendaPeca)
+                                    .collect(Collectors.toList());
+        Map<Peca, Integer> pecasDoPacote = pacote.getPecas();
         for(LinhaDeEncomenda l : leps){
             int idPeca = ((LinhaDeEncomendaPeca) l).getIdPeca();
-            if(pacote.hasPeca(idPeca))
+            int quantidade = l.getQuantidade();
+            int quantidadeNoPacote = Integer.MAX_VALUE;
+            for(Peca p : pecasDoPacote.keySet())
+                if(p.getId() == idPeca)
+                    quantidadeNoPacote = pecasDoPacote.get(p);
+            if(pacote.hasPeca(idPeca) && quantidade >= quantidadeNoPacote)
                 pecasDoPacote.remove(Integer.valueOf(idPeca));
         }
         if(pecasDoPacote.size() == 0)
             return true;
+        return false;
+    }
+
+    public void createPacote(PacoteDeConfiguracao pacote){
+        List<LinhaDeEncomenda> leps = linhasDeEncomenda.stream()
+                .filter(l -> l instanceof LinhaDeEncomendaPeca)
+                .collect(Collectors.toList());
+        Map<Peca, Integer> pecasDoPacote = pacote.getPecas();
+        for(Peca p : pecasDoPacote.keySet())
+            removePeca(p.getId(), pecasDoPacote.get(p));
+        addPacote(pacote);
+    }
+
+    public boolean hasCategoriaFilled(String categoria){
+        for(LinhaDeEncomenda le: linhasDeEncomenda)
+            if(le.getCategorias().contains(categoria))
+                return true;
         return false;
     }
 
@@ -297,7 +321,7 @@ public class Encomenda {
         if(!categorias.isEmpty()){
             String cate = "";
             for(String s : categorias) cate += s;
-            throw new Exception("Categorias que faltam serem preenchidas: " + cate);
+            throw new Exception("Categorias que falta serem preenchidas: " + cate + "; ");
         }
         return true;
     }
