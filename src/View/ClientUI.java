@@ -23,10 +23,13 @@ public class ClientUI extends JPanel{
     private Map<String, Pair<Integer,String>> pecas;
     private Map<String, Pair<Integer, List<String>>> pacotes;
     private int selectedItem;
+    private static List<String> allLogs;
 
     private JTree my;
+    private JScrollPane myScroll;
     private DefaultMutableTreeNode myRoot;
     private JTree all;
+    private JScrollPane allScroll;
     private DefaultMutableTreeNode allRoot;
     private JLabel allLabel;
     private JLabel myLabel;
@@ -35,22 +38,30 @@ public class ClientUI extends JPanel{
     private JButton addPartButton;
     private JButton removePartButton;
     private JButton moreButton;
-    private JTextField logs;
+    private JScrollPane logsScroll;
+    private static JTextField logs;
 
     public ClientUI(Sistema s){
         this.s = s;
+        this.allLogs = new ArrayList<>();
         this.pecas = new HashMap<>();
 
         try{
             pecas = s.getAllPecas();
         }
-        catch (Exception e){System.out.println(e.toString());}
+        catch (Exception e){
+            logs.setText(e.toString());
+            this.allLogs.add(e.toString());
+        }
 
         this.pacotes = new HashMap<>();
         try {
             pacotes = s.getAllPacotes();
         }
-        catch (Exception ex){System.out.println(ex.toString());}
+        catch (Exception ex){
+            logs.setText(ex.toString());
+            this.allLogs.add(ex.toString());
+        }
 
         this.selectedItem = 0;
         this.setLayout(null);
@@ -90,18 +101,22 @@ public class ClientUI extends JPanel{
 
         myRoot = fillMyTree();
         this.my = new JTree(myRoot);
-        my.setBounds(10,70,220,410);
+        this.myScroll = new JScrollPane(my);
+        myScroll.setBounds(10,70,220,410);
         my.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 
         allRoot = fillAllTreeParts();
         this.all = new JTree(allRoot);
-        all.setBounds(271,70,220,410);
+        this.allScroll = new JScrollPane(all);
+        allScroll.setBounds(271,70,220,410);
         all.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+
 
         this.logs = new JTextField("Logs");
         logs.setEditable(false);
-        logs.setBounds(10,490,420,55);
-
+        logs.setAutoscrolls(true);
+        this.logsScroll = new JScrollPane(logs);
+        logsScroll.setBounds(10,490,420,55);
 
         this.moreButton = new JButton("+");
         moreButton.setFont(new Font("Arial", Font.PLAIN, 25));
@@ -209,7 +224,10 @@ public class ClientUI extends JPanel{
                             try{
                                 s.addPecas(listPecas);
                             }
-                            catch(Exception ex){System.out.println(ex.toString());}
+                            catch(Exception ex){
+                                logs.setText(ex.toString());
+                                allLogs.add(ex.toString());
+                            }
                         }
                         else{
                             System.out.println("Não é uma peça");
@@ -221,7 +239,11 @@ public class ClientUI extends JPanel{
                             try{
                                 s.addPacote(idPacote);
                             }
-                            catch (Exception exc){System.out.println(exc.toString());}
+                            catch (Exception exc)
+                            {
+                                logs.setText(exc.toString());
+                                allLogs.add(exc.toString());
+                            }
                             DefaultMutableTreeNode node = new DefaultMutableTreeNode(nome);
                             int w=0;
                             while(w<childs){
@@ -252,23 +274,26 @@ public class ClientUI extends JPanel{
                 Object[] path = my.getSelectionPath().getPath();
                 int i = path.length-1;
                 int childs = model.getChildCount(path[i]);
-                boolean good = true;
 
                 if(path.length==2){
                     if(childs==0) {
                         try {
-                            Pair<Integer, String> par = pecas.get(path[1]);
+                            Pair<Integer, String> par = pecas.get(path[1].toString());
                             int idp = par.getKey();
                             s.removePeca(idp,1);
                         } catch (Exception ex){
-                            System.out.println(ex.toString());
+                            logs.setText(ex.toString());
+                            allLogs.add(ex.toString());
                         }
                     } else{
                         try{
-                            int id = pacotes.get(path[1]).getKey();
+                            int id = pacotes.get(path[1].toString()).getKey();
                             s.removePacote(id,1);
                         }
-                        catch (Exception ex){System.out.println(ex.toString());}
+                        catch (Exception ex){
+                            logs.setText(ex.toString());
+                            allLogs.add(ex.toString());
+                        }
                     }
                     root.remove((DefaultMutableTreeNode) path[1]);
                     DefaultTreeModel newmodel = new DefaultTreeModel(root);
@@ -283,8 +308,18 @@ public class ClientUI extends JPanel{
         this.moreButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Stuff here
-                System.out.println("Hello there!");
+                JList l = new JList(allLogs.toArray());
+                JScrollPane sp = new JScrollPane(l);
+                sp.setBounds(1,1,298,270);
+
+                JFrame f = new JFrame("Logs");
+                f.setLayout(null);
+                f.setSize(300,300);
+                f.setResizable(false);
+                f.setLocationRelativeTo(null);
+                f.setVisible(true);
+
+                f.add(sp);
             }
         });        
     }
@@ -292,13 +327,13 @@ public class ClientUI extends JPanel{
     private void addAll(){
         add(partsButton);
         add(packsButton);
-        add(my);
+        add(myScroll);
         add(myLabel);
-        add(all);
+        add(allScroll);
         add(allLabel);
         add(addPartButton);
         add(removePartButton);
-        add(logs);
+        add(logsScroll);
         add(moreButton);
     }
 
@@ -397,7 +432,10 @@ public class ClientUI extends JPanel{
                             s.addEncomenda();
                             //s.imprimirFatura(1, nifTxt.getText());//nomeTxt.getText()
                         }
-                        catch (Exception ex){System.out.println(ex.toString());}
+                        catch (Exception ex){
+                            logs.setText(ex.toString());
+                            allLogs.add(ex.toString());
+                        }
                         frame2.dispose();
                     }
                 });

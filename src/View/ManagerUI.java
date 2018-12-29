@@ -176,7 +176,6 @@ public class ManagerUI extends JPanel{
 					String peça = stockTree.getSelectedValue().toString();
 					try {
 						int idpeca = s.getIdPeça(peça);
-						System.out.println(idpeca);
 
 						String maximo = ("Máximo = " + s.getInfoOfPeca( s.getIdPeça(peça)).getKey() + " da mesma.");
 						String disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca( s.getIdPeça(peça)).getValue();
@@ -197,7 +196,6 @@ public class ManagerUI extends JPanel{
 		this.moreStock.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-            	System.out.println("Ola");
                 JFrame more = new JFrame("Encomendar mais");
                 more.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		        more.setLayout(null);
@@ -226,25 +224,23 @@ public class ManagerUI extends JPanel{
 		        done.addActionListener(new ActionListener(){
 		            @Override
 		            public void actionPerformed(ActionEvent e){
-		                try{
-							String peça = stockTree.getSelectedValue().toString();
-		                    int value = Integer.parseInt(txtBox.getText());
-
-		                    s.encomendarPeca(s.getIdPeça(peça),value);
-
-							String maximo = ("Máximo = " + s.getInfoOfPeca( s.getIdPeça(peça)).getKey() + " da mesma.");
-							String disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca( s.getIdPeça(peça)).getValue();
-
-
+						String peça = stockTree.getSelectedValue().toString();
+						int value = Integer.parseInt(txtBox.getText());
+						String maximo = new String();
+						String disponibilidade = new String();;
+		            	try{
+							s.encomendarPeca(s.getIdPeça(peça),value);
+							maximo = ("Máximo = " + s.getInfoOfPeca( s.getIdPeça(peça)).getKey() + " da mesma.");
+							disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca( s.getIdPeça(peça)).getValue();
 							DefaultListModel mod = new DefaultListModel();
 							mod.addElement(maximo);
 							mod.addElement(disponibilidade);
 							infoStockList.setModel(mod);
-
-		                    more.dispose();
+							more.dispose();
 		                }
 		                catch(Exception ex){
-		                    error.setVisible(true);
+		                	error.setVisible(true);
+		                	System.out.println(ex);
 		                }
 		            }
 		        });
