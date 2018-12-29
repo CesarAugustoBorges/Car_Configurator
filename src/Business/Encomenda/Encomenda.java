@@ -4,7 +4,6 @@ import Business.Stock.Peca;
 import javafx.util.Pair;
 
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Encomenda {
@@ -121,28 +120,35 @@ public class Encomenda {
         return res;
     }
 
-    public void removePeca(int id, boolean desfazer) {
+    public void removePeca(int id, int quantia) {
         int i;
         for(i = 0; i < linhasDeEncomenda.size(); i++) {
-            if(linhasDeEncomenda.get(i).hasPeca(id))
-                if(!desfazer)
-                    break;
-                else break; // alterar o else
+            if(linhasDeEncomenda.get(i) instanceof LinhaDeEncomendaPeca && linhasDeEncomenda.get(i).hasPeca(id))
+                break;
         }
-        if(i != linhasDeEncomenda.size())
-            this.linhasDeEncomenda.remove(i);
+        if(i != linhasDeEncomenda.size()){
+            LinhaDeEncomendaPeca lep = (LinhaDeEncomendaPeca) linhasDeEncomenda.get(i);
+            if(lep.getQuantidade() - quantia > 0)
+                lep.setQuantidade(lep.getQuantidade() - quantia);
+            else this.linhasDeEncomenda.remove(i);
+        }
+
     }
 
-    public void removePacote(int id, boolean desfazer) {
+    public void removePacote(int id, int quantia) {
         int i;
+        LinhaDeEncomendaPacote lep = null;
         for(i = 0; i < linhasDeEncomenda.size(); i++) {
-            if(linhasDeEncomenda.get(i).hasPeca(id))
-                if(!desfazer)
+            if(linhasDeEncomenda.get(i) instanceof LinhaDeEncomendaPacote){
+                lep = (LinhaDeEncomendaPacote) linhasDeEncomenda.get(i);
+                if(lep.getPacoteDeConfiguracao().getId() == id)
                     break;
-                else break; // alterar o else
+            }
         }
         if(i != linhasDeEncomenda.size())
-            this.linhasDeEncomenda.remove(i);
+            if(lep.getQuantidade() - quantia > 0)
+                lep.setQuantidade(lep.getQuantidade() - quantia);
+            else this.linhasDeEncomenda.remove(i);
     }
 
 
@@ -282,10 +288,17 @@ public class Encomenda {
         return false;
     }
 
-    public boolean hasCategoria(String categoria){
+
+    public boolean valid(List<String> categorias) throws Exception{
         for(LinhaDeEncomenda le: linhasDeEncomenda)
-            if(le.hasCategoria(categoria))
-                return true;
-        return false;
+            for(String categoria : le.getCategorias())
+                if(categorias.contains(categoria))
+                    categorias.remove(categoria);
+        if(!categorias.isEmpty()){
+            String cate = "";
+            for(String s : categorias) cate += s;
+            throw new Exception("Categorias que faltam serem preenchidas: " + cate);
+        }
+        return true;
     }
 }

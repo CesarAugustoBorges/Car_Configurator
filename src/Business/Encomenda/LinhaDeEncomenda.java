@@ -2,6 +2,9 @@ package Business.Encomenda;
 
 import Business.Stock.Peca;
 
+import java.util.List;
+import java.util.Set;
+
 public abstract class LinhaDeEncomenda {
     private int id;
     private float preco;
@@ -61,5 +64,5 @@ public abstract class LinhaDeEncomenda {
     public abstract String getDescricao();
     public abstract boolean dependeDe(Peca p);
     public abstract boolean dependeDe(PacoteDeConfiguracao p);
-    public abstract boolean hasCategoria(String categoria);
+    public abstract Set<String> getCategorias();
 }

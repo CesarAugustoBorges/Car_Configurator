@@ -2,7 +2,9 @@ package Business.Encomenda;
 
 import Business.Stock.Peca;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class LinhaDeEncomendaPeca extends LinhaDeEncomenda {
     private Peca peca;
@@ -62,5 +64,11 @@ public class LinhaDeEncomendaPeca extends LinhaDeEncomenda {
 
     public boolean hasCategoria(String categoria) {
         return this.peca.getCategoria().equals(categoria);
+    }
+
+    public Set<String> getCategorias(){
+        Set<String> res = new HashSet<>();
+        res.add(peca.getCategoria());
+        return res;
     }
 }
