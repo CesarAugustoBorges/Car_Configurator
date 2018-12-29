@@ -115,7 +115,8 @@ INSERT Into Pacote
  (3,20,"Pacote M2"),
  (4,24,"Pacote luxo");
  	
-
+SELECT * FROM Peça
+	where categoria = "Roda";
 
  Insert Into Peça
  (categoria,descricao,preco)
@@ -127,8 +128,8 @@ INSERT Into Pacote
  ("Vidro","vidro da frente",4),
  ("Motor","motor",22),
  ("Vidro","vidro de tras",10.2),
- ("Pintura","vermelhor,",123.2)
- ,("Vidro","retrovisres",123);
+ ("Pintura","vermelho",123.2),
+ ("Vidro","retrovisres",123);
 
 
 Insert Into Stock
