@@ -224,9 +224,9 @@ public class Sistema {
    }
 
 
-    public void addEncomenda() throws Exception{
+    public void addEncomenda(String nif) throws Exception{
         if(this.valid())
-            facade.addEncomenda(this.enc);
+            facade.addEncomenda(this.enc,nif);
     }
 
     public void rejeitarEncomenda(int id)throws Exception  {

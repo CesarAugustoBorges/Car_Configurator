@@ -42,6 +42,29 @@ public class ClienteDAO{
 
     }
 
+    public int getIdCliente(String nif) throws Exception{
+        con = Connect.connect();
+        Cliente c = null;
+
+        if(con!=null) {
+
+            PreparedStatement ps = con.prepareStatement("Select id from Cliente Where nif = ?");
+            ps.setString(1, nif);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+
+                return rs.getInt("id");
+            }
+
+
+        }else Connect.close(con);
+
+        return  -1;
+
+    }
+
+
     public boolean containsCliente(int id) throws Exception{
         if(getCliente(id)!=null){
             return true;

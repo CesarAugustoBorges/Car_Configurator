@@ -64,11 +64,7 @@ public class PacoteDeConfiguracaoDAO {
 
             while (rs.next()) {
                 Peca aux = pd.getPeca(rs.getInt("idPeca"));
-<<<<<<< HEAD
-                peças.add(aux);
-=======
                 peças.put(aux, 1);
->>>>>>> ba32da2fa1550d8e0b1cb610c8746049d2055dd9
             }
 
             pc.setPecas(peças);
