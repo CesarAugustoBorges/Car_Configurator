@@ -16,17 +16,47 @@ public class EncomendaDAO {
 
     Connection con;
 
-    public void addEncomenda(Encomenda enc) throws Exception{
+    public void addEncomenda(Encomenda enc,String nif) throws Exception{
         con = Connect.connect();
         if(con!=null) {
 
-            PreparedStatement ps = con.prepareStatement("Insert into Encomenda (id,estado,descricao) VALUES (?,?,?)");
-            ps.setInt(1, enc.getId());
-            ps.setString(2, enc.getStatus());
-            ps.setString(3, enc.getDescricao());
-            int a = ps.executeUpdate();
+            int id = new ClienteDAO().getIdCliente(nif);
+
+            //try {
+             //   con.setAutoCommit(false);
+
+                //private List<LinhaDeEncomenda> linhasDeEncomenda;
+                //start the transaction
+                List<LinhaDeEncomenda> ld = enc.getLinhasDeEncomenda();
+                PreparedStatement ps;
+                List<LinhaDeEncomendaPacote> ldpacote = new ArrayList<>();
+                List<LinhaDeEncomendaPeca> ldpeca = new ArrayList<>();
+
+                for(LinhaDeEncomenda tmp : ld){
+
+                    ps = con.prepareStatement("Inserto into LDEncomenda  (preco,quantidade,idEncomenda) VALUES (?,?,?)");
+                    ps.setFloat(1,tmp.getPrecoTotal());
+                    ps.setInt(2,tmp.getQuantidade());
+                    ps.setInt(3,enc.getId());
+                    ps.executeUpdate();
+                    //System.out.println(tmp.getClass());
+                }
+
+                //COMO FAÇO A DISTINIÇÂO ?
 
 
+
+                ps = con.prepareStatement("Insert into Encomenda (estado,descricao,idCliente) VALUES (?,?,?)");
+                ps.setString(1, enc.getStatus());
+                ps.setString(2, enc.getDescricao());
+                ps.setInt(3,id);
+                int a = ps.executeUpdate();
+
+               // con.commit();
+           // }catch (SQLException e){
+
+            //    con.rollback();
+          //  }
         }
         else Connect.close(con);
     }
@@ -109,6 +139,8 @@ public class EncomendaDAO {
 
         if(con!=null) {
 
+
+
             PreparedStatement ps = con.prepareStatement("select * from Encomenda where id = ?");
             ps.setInt(1,id);
             ResultSet rs = ps.executeQuery();
@@ -127,10 +159,6 @@ public class EncomendaDAO {
 
             ps = con.prepareStatement("Delete from LDEncomenda where idEncomenda = ?");
             ps.setInt(1, id);
-            ps.executeUpdate();
-
-            ps = con.prepareStatement("Delete from EncomendaCliente where idEncomenda =?");
-            ps.setInt(1,id);
             ps.executeUpdate();
 
             ps = con.prepareStatement("Delete from Encomenda where id = ?");

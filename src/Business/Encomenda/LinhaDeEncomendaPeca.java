@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public class LinhaDeEncomendaPeca extends LinhaDeEncomenda {
+
     private Peca peca;
 
     public LinhaDeEncomendaPeca(){

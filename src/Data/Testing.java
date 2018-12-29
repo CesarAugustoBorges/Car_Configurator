@@ -1,11 +1,13 @@
 package Data;
 
+import Business.Encomenda.Encomenda;
 import Business.Utilizador.Funcionario;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -14,12 +16,16 @@ public class Testing {
 
         //System.out.println(new PeçaDAO().getPeca(1).getDescricao());
 
-
+      //  System.out.println(new DAOFacede().getPacote(1).getDescricao());
      //new DAOFacede().setStatusEncomenda(2, "Valida");
-     new DAOFacede().getEncomendasDeCliente(1).forEach(integer -> System.out.println(integer));
+        // new DAOFacede().getEncomendasDeCliente(1).forEach(integer -> System.out.println(integer));
        //new DAOFacede().removeEncomenda(1);
 
        // new DAOFacede().setQuantidadeAtualStock(1,new DAOFacede().getQuantidadeAtualStock(1)+2);
+
+
+        Encomenda x = new Encomenda();
+        new DAOFacede().addEncomenda(x,"12312312312");
 
        // System.out.println(new ClienteDAO().getCliente(1).getName()); //-> método 1
        // System.out.println(new UtilizadorDAO().getUtilizador(1).getNome());// -> método 2
