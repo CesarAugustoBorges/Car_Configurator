@@ -1,22 +1,34 @@
 package View;
 
 import Business.Sistema;
+import javafx.util.Pair;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.imageio.ImageIO;
-import javax.swing.text.View;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 
 public class ClientUI extends JPanel{
+    private static Sistema s;
+    private Map<String, Pair<Integer,String>> pecas;
+    private Map<String, Pair<Integer, List<String>>> pacotes;
+    private int selectedItem;
+
     private JTree my;
+    private DefaultMutableTreeNode myRoot;
     private JTree all;
+    private DefaultMutableTreeNode allRoot;
     private JLabel allLabel;
-    private Sistema s;
     private JLabel myLabel;
     private JButton partsButton;
     private JButton packsButton;
@@ -27,6 +39,20 @@ public class ClientUI extends JPanel{
 
     public ClientUI(Sistema s){
         this.s = s;
+        this.pecas = new HashMap<>();
+
+        try{
+            pecas = s.getAllPecas();
+        }
+        catch (Exception e){System.out.println(e.toString());}
+
+        this.pacotes = new HashMap<>();
+        try {
+            pacotes = s.getAllPacotes();
+        }
+        catch (Exception ex){System.out.println(ex.toString());}
+
+        this.selectedItem = 0;
         this.setLayout(null);
         createAllComponents();
         createListeners();
@@ -53,26 +79,22 @@ public class ClientUI extends JPanel{
             System.err.println("Caught IOException: " + e.getMessage());
         }
 
-
-
         Image tmp = img.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
         BufferedImage dimg = new BufferedImage(25, 25, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = dimg.createGraphics();
         g2d.drawImage(tmp, 0, 0, null);
         g2d.dispose();
 
-
-
-
         this.removePartButton = new JButton(new ImageIcon(dimg));
         removePartButton.setBounds(233,110,35,35);
 
-        this.my = new JTree();
+        myRoot = fillMyTree();
+        this.my = new JTree(myRoot);
         my.setBounds(10,70,220,410);
         my.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 
-
-        this.all = new JTree();
+        allRoot = fillAllTreeParts();
+        this.all = new JTree(allRoot);
         all.setBounds(271,70,220,410);
         all.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 
@@ -95,32 +117,166 @@ public class ClientUI extends JPanel{
 
     }
 
+    private DefaultMutableTreeNode fillMyTree(){
+        DefaultMutableTreeNode newRoot = new DefaultMutableTreeNode("Carro");
+        return newRoot;
+    }
+
+    private DefaultMutableTreeNode fillAllTreeParts(){
+        DefaultMutableTreeNode newRoot = new DefaultMutableTreeNode("Peças");
+        /*
+        Map<Categoria, List<Nome>> das peças*/
+        Map<String, List<String>> tmp = new HashMap<>();
+
+        for(Map.Entry<String,Pair<Integer, String>> entry : pecas.entrySet()){
+            String key = entry.getKey();
+            Pair<Integer, String> value = entry.getValue();
+
+            if(tmp.containsKey(value.getValue())){
+                tmp.get(value.getValue()).add(key);
+            }
+            else{
+                List<String> list = new ArrayList<>();
+                list.add(key);
+                tmp.put(value.getValue(), list);
+            }
+        }
+
+        for(Map.Entry<String, List<String>> entry : tmp.entrySet()){
+            String key = entry.getKey();
+            List<String> value = entry.getValue();
+
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(key);
+            for(String str : value){
+                node.add(new DefaultMutableTreeNode(str));
+            }
+
+            newRoot.add(node);
+        }
+
+        return newRoot;
+    }
+
     private void createListeners(){
         this.partsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Stuff here
+                selectedItem = 0;
+                DefaultTreeModel newmodel = new DefaultTreeModel(fillAllTreeParts());
+                all.setModel(newmodel);
             }
         });
 
         this.packsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Stuff here
+                selectedItem = 1;
+                DefaultMutableTreeNode newRoot = new DefaultMutableTreeNode("Pacotes");
+                for(Map.Entry<String, Pair<Integer, List<String>>> entry : pacotes.entrySet()){
+                    String key = entry.getKey();
+                    List<String> value = entry.getValue().getValue();
+
+                    DefaultMutableTreeNode node = new DefaultMutableTreeNode(key);
+                    for(String str : value){
+                        node.add(new DefaultMutableTreeNode(str));
+                    }
+                    newRoot.add(node);
+                }
+
+                DefaultTreeModel newmodel = new DefaultTreeModel(newRoot);
+                all.setModel(newmodel);
             }
         });
 
         this.addPartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Stuff here
+                TreeModel model = my.getModel();
+                Object[] path = all.getSelectionPath().getPath();
+                int i = path.length-1;
+                int childs = model.getChildCount(path[i]);
+                String nome = path[i].toString();
+                DefaultMutableTreeNode root = (DefaultMutableTreeNode) my.getModel().getRoot();
+
+
+                if(path.length!=1){
+                    if(selectedItem==0){
+                        if(childs==0){
+                            root.add(new DefaultMutableTreeNode(nome));
+                            List<Integer> listPecas = new ArrayList<>();
+                            int idPeca = pecas.get(nome).getKey();
+                            listPecas.add(idPeca);
+                            try{
+                                s.addPecas(listPecas);
+                            }
+                            catch(Exception ex){System.out.println(ex.toString());}
+                        }
+                        else{
+                            System.out.println("Não é uma peça");
+                        }
+                    }
+                    if(selectedItem==1){
+                        if(childs!=0){
+                            int idPacote = pacotes.get(nome).getKey();
+                            try{
+                                s.addPacote(idPacote);
+                            }
+                            catch (Exception exc){System.out.println(exc.toString());}
+                            DefaultMutableTreeNode node = new DefaultMutableTreeNode(nome);
+                            int w=0;
+                            while(w<childs){
+                                node.add(new DefaultMutableTreeNode(model.getChild(path[i],w).toString()));
+                                w++;
+                            }
+
+                            root.add(node);
+                        }
+                        else{
+                            System.out.println("Não é um Pacote");
+                        }
+                    }
+                    DefaultTreeModel newmodel = new DefaultTreeModel(root);
+                    my.setModel(newmodel);
+                }
+                else{
+                    System.out.println("Não é uma Peça nem um Pacote");
+                }
             }
         });
 
         this.removePartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Stuff here
+                TreeModel model = my.getModel();
+                DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+                Object[] path = my.getSelectionPath().getPath();
+                int i = path.length-1;
+                int childs = model.getChildCount(path[i]);
+                boolean good = true;
+
+                if(path.length==2){
+                    if(childs==0) {
+                        try {
+                            Pair<Integer, String> par = pecas.get(path[1]);
+                            int idp = par.getKey();
+                            s.removePeca(idp,1);
+                        } catch (Exception ex){
+                            System.out.println(ex.toString());
+                        }
+                    } else{
+                        try{
+                            int id = pacotes.get(path[1]).getKey();
+                            s.removePacote(id,1);
+                        }
+                        catch (Exception ex){System.out.println(ex.toString());}
+                    }
+                    root.remove((DefaultMutableTreeNode) path[1]);
+                    DefaultTreeModel newmodel = new DefaultTreeModel(root);
+                    my.setModel(newmodel);
+                }
+                else {
+                    System.out.println("Nao pode apagar itens de um pacote");
+                }
             }
         });
 
@@ -205,7 +361,46 @@ public class ClientUI extends JPanel{
         order.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Stuff here
+                JLabel nome = new JLabel("Nome:");
+                nome.setBounds(55,40,60,15);
+
+                JLabel nif = new JLabel("NIF:");
+                nif.setBounds(55,100,60,15);
+
+                JTextField nomeTxt = new JTextField();
+                nomeTxt.setBounds(50,55,220,30);
+
+                JTextField nifTxt = new JTextField();
+                nifTxt.setBounds(50,115,220,30);
+
+                JButton print = new JButton("Imprimir");
+                print.setBounds(180,165,90,30);
+
+                JFrame frame2 = new JFrame("Faturação");
+                frame2.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                frame2.setLayout(null);
+                frame2.setSize(325,235);
+                frame2.setResizable(false);
+                frame2.setLocationRelativeTo(null);
+                frame2.setVisible(true);
+
+                frame2.add(nome);
+                frame2.add(nomeTxt);
+                frame2.add(nif);
+                frame2.add(nifTxt);
+                frame2.add(print);
+
+                print.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        try{
+                            s.addEncomenda();
+                            //s.imprimirFatura(1, nifTxt.getText());//nomeTxt.getText()
+                        }
+                        catch (Exception ex){System.out.println(ex.toString());}
+                        frame2.dispose();
+                    }
+                });
             }
         });
 
@@ -255,6 +450,7 @@ public class ClientUI extends JPanel{
             public void actionPerformed(ActionEvent e){
                 try{
                     int value = Integer.parseInt(txtBox.getText());
+
                     confFrame.dispose();
                 }
                 catch(NumberFormatException ex){
