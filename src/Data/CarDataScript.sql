@@ -140,7 +140,11 @@ INSERT Into Pacote
  ("Motor","motor 200",500),			-- 18
   ("Roda","roda caroxa",10),			-- 19
  ("Volante","volante caroxa",20),		-- 20
- ("Porta","porta caroxa",30)			-- 21
+ ("Porta","porta caroxa",30),			-- 21
+ ("Extra","radio",30),
+ ("Extra","bluetooth",30),
+ ("Extra","gps",60),
+ ("Extra","ar condicionado",80)
  ;
 
 
@@ -167,7 +171,11 @@ VALUES
 (5,30,18),
 (0,50,19),
 (30,40,20),
-(30,50,21);
+(30,50,21),
+(50,50,22),
+(50,50,23),
+(50,50,24),
+(50,50,25);
  
   
  Insert Into Cliente 
@@ -207,7 +215,9 @@ VALUES
 (13,"Valida","Encomenda caroxa",15),
 (14,"Valida","Encomenda caroxa",11),
 (15,"Em espera","Encomenda desportiva",6),
-(16,"Valida","Encomenda desportiva",5)
+(16,"Valida","Encomenda desportiva",5),
+(17,"Em espera","Encomenda topo de gama",12),
+(18,"Em espera","Encomenda topo de gama",12)
 ;
 
 
@@ -222,9 +232,20 @@ VALUES
 (5,"123456789","Joao","Funcionario","aaa"),
 (6,"123456789","Zeze","Funcionario","qwer"),
 (7,"123456789","Maria","Funcionario","naosei"),
-(8,"123456789","David","Funcionario","11111"),
-(9,"123456789","Gonçalo","Funcionario","passe"),
-(10,"123456789","Tiago","Funcionario","1234")
+(8,"124446789","David","Funcionario","11111"),
+(9,"123426722","Gonçalo","Funcionario","passe"),
+(10,"333456449","Tiago","Funcionario","1234"),
+(11,"12006666","chefe","Admin","eumando"),
+(12,"123006666","jesus","Admin","aleluia"),
+(13,"123006709","Susana","Gestor","naosei"),
+(14,"120036788","Mariana","Gestor","palavra"),
+(15,"144426777","Lulu","Gestor","gatinhos"),
+(16,"100006789","Joao","Funcionario","passe"),
+(17,"123432547","Manel","Funcionario","mamas"),
+(18,"123389889","Ze","Funcionario","zezeze"),
+(19,"124000789","Carlos","Funcionario","amarelo"),
+(20,"003421122","Catarina","Funcionario","cavalo"),
+(21,"332200449","Colera","Funcionario","mosca")
 ;
  
 
@@ -248,6 +269,7 @@ VALUES
  (9,11),(9,12),(9,13),(11,13),(11,12),(12,13)
  ,(4,5),(5,4)
  ,(7,8),(6,7)
+ ,(17,18),(6,17),(6,18)
  ;
  
  
@@ -273,7 +295,11 @@ VALUES
 (17,34,1,13),
 (18,41,1,14),
 (19,34,1,15),
-(20,22,1,16)
+(20,22,1,16),
+(21,400,1,17),
+(22,200,1,17),
+(23,400,1,18),
+(24,200,1,18)
 ;
 
 INSERT INTO LDEPeça
@@ -292,12 +318,17 @@ INSERT INTO LDEPacote
 VALUES
 (1,1),(2,2),(3,3),
 (1,11),(2,12),(3,13),
-(1,14),(2,15),(3,16);
+(1,14),(2,15),(3,16),
+(1,21),(4,22),(1,23),(4,24)
+;
 
 
 INSERT INTO PeçaDoPacote
 (idPacote,idPeca)
 VALUES
-(1,1),(1,2),(1,3),(1,4),
-(2,19),(2,20),(2,21),
-(3,14),(3,15),(3,16);
+(1,1),(1,2),(1,3),(1,4),(1,6),
+(2,19),(2,20),(2,21),(2,17),
+(3,14),(3,15),(3,16),(3,18),
+(4,22),(4,23),(4,24),(4,25)
+;
+
