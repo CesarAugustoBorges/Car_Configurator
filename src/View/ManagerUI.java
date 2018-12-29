@@ -171,11 +171,8 @@ public class ManagerUI extends JPanel{
 
 
 		this.stockTree.addListSelectionListener(new ListSelectionListener() {
-
 			public void valueChanged(ListSelectionEvent e) {
-
 				if (stockTree.getSelectedValue() != null) {
-
 					String peça = stockTree.getSelectedValue().toString();
 					try {
 						int idpeca = s.getIdPeça(peça);
@@ -233,8 +230,7 @@ public class ManagerUI extends JPanel{
 							String peça = stockTree.getSelectedValue().toString();
 		                    int value = Integer.parseInt(txtBox.getText());
 
-		                    s.addPeca(s.getIdPeça(peça),value);
-
+		                    s.encomendarPeca(s.getIdPeça(peça),value);
 
 							String maximo = ("Máximo = " + s.getInfoOfPeca( s.getIdPeça(peça)).getKey() + " da mesma.");
 							String disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca( s.getIdPeça(peça)).getValue();
@@ -260,6 +256,9 @@ public class ManagerUI extends JPanel{
             public void actionPerformed(ActionEvent e) {
 				//Stuff here
 				System.out.println("Filter");
+				DefaultMutableTreeNode r = new DefaultMutableTreeNode("Encomenda");
+				DefaultTreeModel newmodel = new DefaultTreeModel(r);
+				infoEncTree.setModel(newmodel);
 				try {
 					if(filter.getText().equals("")){
 						List<String> encomendas = s.getAllEncomendas().keySet().stream().collect(Collectors.toList());

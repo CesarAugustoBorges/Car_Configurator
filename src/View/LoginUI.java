@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class LoginUI{
+    private static JFrame notLoginFrame;
+
 	public LoginUI(){
         Sistema sistema = new Sistema();
         JLabel wrongInput = new JLabel("Credenciais erradas!");
@@ -36,8 +38,6 @@ public class LoginUI{
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-
-
 
         frame.add(wrongInput);
         frame.add(user);
@@ -100,14 +100,18 @@ public class LoginUI{
                         break;
         }
 
-        JFrame frame = new JFrame(name);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setSize(w,h);
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        frame.getContentPane().add(panel);
+        notLoginFrame = new JFrame(name);
+        notLoginFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        notLoginFrame.setSize(w,h);
+        notLoginFrame.setResizable(false);
+        notLoginFrame.setLocationRelativeTo(null);
+        notLoginFrame.setVisible(true);
+        notLoginFrame.getContentPane().add(panel);
 
-        if(i==2 || i==0){ClientUI.createMenuBar(frame);}
+        if(i==2 || i==0){ClientUI.createMenuBar(notLoginFrame);}
+    }
+
+    public static void freeFrame(){
+	    notLoginFrame.dispose();
     }
 }

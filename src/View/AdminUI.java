@@ -81,7 +81,7 @@ public class AdminUI extends JPanel{
 		tipo.setBounds(295,170,60,15);
 
 		JLabel identifcador = new JLabel("Identificador:");
-		identifcador.setBounds(295,240,60,15);
+		identifcador.setBounds(295,240,100,15);
 
         
         JTextField userTxt2 = new JTextField();
@@ -97,17 +97,17 @@ public class AdminUI extends JPanel{
 		identificadorTxtx.setBounds(290,270,190,30);
 
         JLabel success2 = new JLabel("Funcionário registado com sucesso");
-		success2.setBounds(255,300,240,30);
+		success2.setBounds(255,340,240,30);
 		success2.setForeground(Color.green);
 		success2.setVisible(false);
 
 		JLabel failure2 = new JLabel("Erro ao registar Funcionário");
-		failure2.setBounds(255,220,240,30);
+		failure2.setBounds(255,340,240,30);
 		failure2.setForeground(Color.red);
 		failure2.setVisible(false);
         
         JButton register = new JButton("Registar");
-        register.setBounds(380,300,100,30);
+        register.setBounds(380,310,100,30);
         register.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
