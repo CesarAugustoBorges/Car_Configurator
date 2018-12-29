@@ -22,8 +22,6 @@ public class Sistema {
 
     /**
      *  public int getIdEncomenda(String nome) -> devolve o id através do nome da encomenda
-     *  public int getIdPeça(String nome) -> devolve o id da peça através do nome da peça
-     *  public Funcionario getFuncionario(int id) -> devolve um funcionario
      *  public void putFuncionario(int id, String password) -> adiciona um novo funcionario
      *  public Map<Integer,String> getStock() -> devolve o stock do sistema
      *  public Pair<Integer, Integer> getInfoOfPeca(int id) -> devolve o stock atual e maximo de uma peça
