@@ -219,12 +219,12 @@ VALUES
 (2,"123456788","Draven","Gestor","axes"),
 (3,"123456777","Lux","Gestor","narnia"),
 (4,"123456666","A coisa","Admin","bolos"),
-(5,"123456789","Joao","Gestor","aaa"),
-(6,"123456789","Zeze","Gestor","qwer"),
-(7,"123456789","Maria","Gestor","naosei"),
-(8,"123456789","David","Gestor","11111"),
-(9,"123456789","Gonçalo","Gestor","passe"),
-(10,"123456789","Tiago","Gestor","1234")
+(5,"123456789","Joao","Funcionario","aaa"),
+(6,"123456789","Zeze","Funcionario","qwer"),
+(7,"123456789","Maria","Funcionario","naosei"),
+(8,"123456789","David","Funcionario","11111"),
+(9,"123456789","Gonçalo","Funcionario","passe"),
+(10,"123456789","Tiago","Funcionario","1234")
 ;
  
 
