@@ -1,6 +1,8 @@
 package Business;
 
 import Business.Encomenda.Encomenda;
+import Business.Encomenda.LinhaDeEncomenda;
+import Business.Encomenda.LinhaDeEncomendaPeca;
 import Business.Encomenda.PacoteDeConfiguracao;
 import Business.Stock.Peca;
 import Business.Utilizador.Cliente;

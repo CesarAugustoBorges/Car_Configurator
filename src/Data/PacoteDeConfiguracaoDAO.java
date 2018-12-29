@@ -57,13 +57,13 @@ public class PacoteDeConfiguracaoDAO {
                 pc.setPreco(rs.getFloat("preco"));
             }
 
-            ps = con.prepareStatement("Select * from Peca where idPacote = ?");
+            ps = con.prepareStatement("Select * from PeçaDoPacote where idPacote = ?");
             ps.setInt(1, id);
             rs = ps.executeQuery();
             PeçaDAO pd = new PeçaDAO();
 
             while (rs.next()) {
-                Peca aux = pd.getPeca(rs.getInt("id"));
+                Peca aux = pd.getPeca(rs.getInt("idPeca"));
                 peças.add(aux);
             }
 
