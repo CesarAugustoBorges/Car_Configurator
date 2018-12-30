@@ -23,10 +23,6 @@ public class Testing {
 
        // new DAOFacede().setQuantidadeAtualStock(1,new DAOFacede().getQuantidadeAtualStock(1)+2);
 
-
-        Encomenda x = new Encomenda();
-        new DAOFacede().addEncomenda(x,"12312312312");
-
        // System.out.println(new ClienteDAO().getCliente(1).getName()); //-> método 1
        // System.out.println(new UtilizadorDAO().getUtilizador(1).getNome());// -> método 2
         //System.out.println(new UtilizadorDAO().constainsUtilizador(1)); //-> método 3
