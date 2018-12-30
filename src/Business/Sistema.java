@@ -17,7 +17,7 @@ public class Sistema {
     private DAOFacede facade = new DAOFacede();
     private Encomenda enc = new Encomenda();
     private List<String> categoriasObrigatorias;
-
+    private Map<Integer,String> pecas;
     //Encomenda, tal como Peça não pode ter nomes repetidos
 
     //Métodos -> Importante para não estar a repetir
@@ -119,10 +119,12 @@ public class Sistema {
 
     public int getIdPeça(String nome){
         try {
-            for (Integer x : getStock().keySet()) {
-                if(getPeca(x).getDescricao().equals(nome)){
+            for (Integer x : pecas.keySet()) {
+
+                if(pecas.get(x).equals(nome)){
                     return  x;
                 }
+
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -152,7 +154,8 @@ public class Sistema {
 
     public Map<Integer,String> getStock() throws Exception{
         try{
-            return facade.getStock();
+            pecas = facade.getStock();
+            return pecas;
         } catch (Exception e){
             throw new Exception("A informação do stock não foi concedida");
         }
@@ -238,7 +241,7 @@ public class Sistema {
             throw new Exception("Stock não existe: " + id);
         int quantidade = facade.getQuantidadeAtualStock(id);
         int quantidadeMaxima = facade.getQuantidadeMaximaStock(id);
-        if (quantidade + quantia <= quantidadeMaxima || quantia <= 0)
+        if (quantidade + quantia > quantidadeMaxima || quantia <= 0)
             throw new Exception("Quantidade excedida: " + id);
         facade.setQuantidadeAtualStock(id, quantia + quantidade);
     }

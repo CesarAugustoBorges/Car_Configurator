@@ -100,6 +100,7 @@ public class ManagerUI extends JPanel{
 		stockLabel.setBounds(20,70,100,15);
 		stockLabel.setVisible(false);
 		stockTree = new JList();
+
 		stockTree.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 
 		List<String> peça = s.getStock().values().stream().collect(Collectors.toList());
@@ -127,6 +128,7 @@ public class ManagerUI extends JPanel{
 	}
 
 	private void createListeners(){
+
 		this.encs.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if(encs.getSelectedValue() != null){
@@ -172,13 +174,20 @@ public class ManagerUI extends JPanel{
 
 		this.stockTree.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
+
 				if (stockTree.getSelectedValue() != null) {
+
 					String peça = stockTree.getSelectedValue().toString();
+					System.out.println(peça);
+
 					try {
+
 						int idpeca = s.getIdPeça(peça);
 
-						String maximo = ("Máximo = " + s.getInfoOfPeca( s.getIdPeça(peça)).getKey() + " da mesma.");
-						String disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca( s.getIdPeça(peça)).getValue();
+						System.out.println(idpeca);
+
+						String maximo = ("Máximo = " + s.getInfoOfPeca(idpeca).getKey() + " da mesma.");
+						String disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca(idpeca).getValue();
 
 
 						DefaultListModel modelo = new DefaultListModel();
