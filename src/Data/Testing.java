@@ -16,14 +16,18 @@ public class Testing {
 
         //System.out.println(new PeçaDAO().getPeca(1).getDescricao());
 
+     new DAOFacede().getStock().values().forEach(s -> System.out.println(s));
+
+
+
       //  System.out.println(new DAOFacede().getPacote(1).getDescricao());
      //new DAOFacede().setStatusEncomenda(2, "Valida");
-        // new DAOFacede().getEncomendasDeCliente(1).forEach(integer -> System.out.println(integer));
+       //  new DAOFacede().getEncomendasDeCliente(1).forEach(integer -> System.out.println(integer));
        //new DAOFacede().removeEncomenda(1);
 
        // new DAOFacede().setQuantidadeAtualStock(1,new DAOFacede().getQuantidadeAtualStock(1)+2);
 
-       // System.out.println(new ClienteDAO().getCliente(1).getName()); //-> método 1
+//       System.out.println(new ClienteDAO().getCliente(1).getName()); //-> método 1
        // System.out.println(new UtilizadorDAO().getUtilizador(1).getNome());// -> método 2
         //System.out.println(new UtilizadorDAO().constainsUtilizador(1)); //-> método 3
         //new UtilizadorDAO().putUtilizador(new Funcionario("asd","sad","asd")); //-> método 4

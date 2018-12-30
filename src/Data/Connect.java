@@ -1,9 +1,6 @@
 package Data;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Properties;
 
 public class Connect {
@@ -25,6 +22,7 @@ public class Connect {
         properties.setProperty("useSSL", "false");
         properties.setProperty("autoReconnect", "true");
         properties.setProperty("password", password);
+        properties.setProperty("allowPublicKeyRetrieval","true");
 
         try{
             Class.forName("com.mysql.jdbc.Driver");

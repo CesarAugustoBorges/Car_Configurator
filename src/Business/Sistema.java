@@ -17,7 +17,7 @@ public class Sistema {
     private DAOFacede facade = new DAOFacede();
     private Encomenda enc = new Encomenda();
     private List<String> categoriasObrigatorias;
-
+    private Map<Integer,String> pecas;
     //Encomenda, tal como Peça não pode ter nomes repetidos
 
     //Métodos -> Importante para não estar a repetir
@@ -101,6 +101,39 @@ public class Sistema {
     }
 
 
+<<<<<<< HEAD
+
+    public int getIdEncomenda(String nome){
+        try{
+            for(String x : facade.getAllEncomendas().keySet()){
+                if(x.equals(nome)){
+                    return facade.getAllEncomendas().get(nome).getKey();
+                }
+
+            }
+        }catch (Exception e){
+            System.out.println("Encomenda " + nome + " não existe");
+        }
+        return -1;
+    }
+
+    public int getIdPeça(String nome){
+        try {
+            for (Integer x : pecas.keySet()) {
+
+                if(pecas.get(x).equals(nome)){
+                    return  x;
+                }
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+=======
+>>>>>>> 96fa5e145a279cc05873a7460869626b5b8d12b4
     public Funcionario getFuncionario(int id) throws Exception{
         try{
             if(facade.constainsUtilizador(id))
@@ -123,7 +156,8 @@ public class Sistema {
 
     public Map<Integer,String> getStock() throws Exception{
         try{
-            return facade.getStock();
+            pecas = facade.getStock();
+            return pecas;
         } catch (Exception e){
             throw new Exception("A informação do stock não foi concedida");
         }
@@ -209,7 +243,7 @@ public class Sistema {
             throw new Exception("Stock não existe: " + id);
         int quantidade = facade.getQuantidadeAtualStock(id);
         int quantidadeMaxima = facade.getQuantidadeMaximaStock(id);
-        if (quantidade + quantia <= quantidadeMaxima || quantia <= 0)
+        if (quantidade + quantia > quantidadeMaxima || quantia <= 0)
             throw new Exception("Quantidade excedida: " + id);
         facade.setQuantidadeAtualStock(id, quantia + quantidade);
     }
