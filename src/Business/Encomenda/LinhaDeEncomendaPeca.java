@@ -16,11 +16,12 @@ public class LinhaDeEncomendaPeca extends LinhaDeEncomenda {
 
     public LinhaDeEncomendaPeca(LinhaDeEncomendaPeca le) {
         super(le);
+        this.peca = le.getPeca();
     }
 
     public LinhaDeEncomendaPeca(int id, int quantidade, Peca p) {
         super(id, quantidade);
-        this.peca = p;
+        this.peca = p.clone();
         this.setPreco(p.getPreco());
     }
 
@@ -46,6 +47,10 @@ public class LinhaDeEncomendaPeca extends LinhaDeEncomenda {
 
     public int getIdPeca() {
         return peca.getId();
+    }
+
+    public Peca getPeca() {
+        return this.peca.clone();
     }
 
     public String getDescricao(){

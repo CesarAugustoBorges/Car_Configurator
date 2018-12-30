@@ -429,7 +429,10 @@ public class ClientUI extends JPanel{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         try{
-                            s.addEncomenda("2121");
+
+
+                            s.addEncomenda(nifTxt.getText());
+
                             //s.imprimirFatura(1, nifTxt.getText());//nomeTxt.getText()
                         }
                         catch (Exception ex){

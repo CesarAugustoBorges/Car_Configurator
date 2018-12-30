@@ -18,6 +18,7 @@ public class Peca {
         this.id = p.getId();
         this.preco = p.getPreco();
         this.descricao = p.getDescricao();
+        this.categoria = p.getCategoria();
         this.setDependencias(p.getDependencias());
         this.setIncompatibilidades(p.getIncompatibilidades());
     }

@@ -114,8 +114,6 @@ INSERT Into Pacote
  (2,5,"Pacote Caroxa"),
  (3,20,"Pacote M2"),
  (4,24,"Pacote luxo");
- 	
-
 
  Insert Into Peça
  (categoria,descricao,preco)

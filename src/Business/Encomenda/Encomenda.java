@@ -18,6 +18,15 @@ public class Encomenda {
         this.linhasDeEncomenda = new ArrayList<>();
     }
 
+    public Encomenda clone() {
+        Encomenda enc = new Encomenda();
+        enc.setId(this.getId());
+        enc.setStatus(this.getStatus());
+        enc.setDescricao(this.getDescricao());
+        enc.setLinhasDeEncomenda(this.getLinhasDeEncomenda());
+        return enc;
+    }
+
     public String getDescricao() {
         return descricao;
     }
@@ -284,11 +293,15 @@ public class Encomenda {
             int idPeca = ((LinhaDeEncomendaPeca) l).getIdPeca();
             int quantidade = l.getQuantidade();
             int quantidadeNoPacote = Integer.MAX_VALUE;
-            for(Peca p : pecasDoPacote.keySet())
-                if(p.getId() == idPeca)
+            Peca peca = null;
+            for(Peca p : pecasDoPacote.keySet()){
+                if(p.getId() == idPeca){
                     quantidadeNoPacote = pecasDoPacote.get(p);
-            if(pacote.hasPeca(idPeca) && quantidade >= quantidadeNoPacote)
-                pecasDoPacote.remove(Integer.valueOf(idPeca));
+                    peca = p;
+                }
+            }
+            if( quantidade >= quantidadeNoPacote && pacote.hasPeca(idPeca))
+                pecasDoPacote.remove(peca);
         }
         if(pecasDoPacote.size() == 0)
             return true;
@@ -314,10 +327,17 @@ public class Encomenda {
 
 
     public boolean valid(List<String> categorias) throws Exception{
-        for(LinhaDeEncomenda le: linhasDeEncomenda)
+        for(LinhaDeEncomenda le: linhasDeEncomenda){
+            if(le instanceof LinhaDeEncomendaPacote){
+                System.out.println(le.getCategorias());
+                for(String categoria : le.getCategorias())
+                    System.out.println("Categoria Pacote : " + categoria);
+
+            }
             for(String categoria : le.getCategorias())
                 if(categorias.contains(categoria))
                     categorias.remove(categoria);
+        }
         if(!categorias.isEmpty()){
             String cate = "";
             for(String s : categorias) cate += s;
