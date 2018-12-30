@@ -33,6 +33,7 @@ public class ManagerUI extends JPanel{
 	private JButton decline;
 
 	private Map<String, Pair<Integer,String>> allEncs;
+	private Map<String, Pair<Integer,String>> allPecas;
 	private DefaultMutableTreeNode root;
 
 	//Stock
@@ -73,6 +74,7 @@ public class ManagerUI extends JPanel{
 
 		//Map<Descricao, Pair<Id, Categoria>>
 		allEncs = s.getAllEncomendas();
+		allPecas = s.getAllPecas();
 
 		List<String> x = allEncs.keySet().stream().collect(Collectors.toList());
 		DefaultListModel modelo = new DefaultListModel();
@@ -175,10 +177,10 @@ public class ManagerUI extends JPanel{
 				if (stockTree.getSelectedValue() != null) {
 					String peça = stockTree.getSelectedValue().toString();
 					try {
-						int idpeca = s.getIdPeça(peça);
+						int idpeca = allPecas.get(peça).getKey();
 
-						String maximo = ("Máximo = " + s.getInfoOfPeca( s.getIdPeça(peça)).getKey() + " da mesma.");
-						String disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca( s.getIdPeça(peça)).getValue();
+						String maximo = ("Máximo = " + s.getInfoOfPeca(idpeca).getKey() + " da mesma.");
+						String disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca(idpeca).getValue();
 
 
 						DefaultListModel modelo = new DefaultListModel();
@@ -229,9 +231,10 @@ public class ManagerUI extends JPanel{
 						String maximo = new String();
 						String disponibilidade = new String();;
 		            	try{
-							s.encomendarPeca(s.getIdPeça(peça),value);
-							maximo = ("Máximo = " + s.getInfoOfPeca( s.getIdPeça(peça)).getKey() + " da mesma.");
-							disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca( s.getIdPeça(peça)).getValue();
+		            		int idpeca = allPecas.get(peça).getKey();
+							s.encomendarPeca(idpeca,value);
+							maximo = ("Máximo = " + s.getInfoOfPeca(idpeca).getKey() + " da mesma.");
+							disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca(idpeca).getValue();
 							DefaultListModel mod = new DefaultListModel();
 							mod.addElement(maximo);
 							mod.addElement(disponibilidade);
@@ -265,11 +268,11 @@ public class ManagerUI extends JPanel{
 
 						encs.setModel(mod);
 					}else {
-						List<Integer> x = s.getEncomendasDeCliente(Integer.parseInt(filter.getText()));
+						Map<String, Pair<Integer, String>> x = s.getEncomendasDeCliente(Integer.parseInt(filter.getText()));
 
 						DefaultListModel mod = new DefaultListModel();
-						for (Integer tmp : x){
-							mod.addElement(s.getEncomenda(tmp).getDescricao());
+						for (String tmp : x.keySet()){
+							mod.addElement(tmp);
 						}
 
 						encs.setModel(mod);
@@ -285,7 +288,8 @@ public class ManagerUI extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e){
             	try {
-					s.setStatusEncomenda(s.getIdEncomenda(encs.getSelectedValue().toString()), "Valida");
+            		int idEncomenda = allEncs.get(encs.getSelectedValue().toString()).getKey();
+					s.setStatusEncomenda(idEncomenda, "Valida");
 					((DefaultListModel) encs.getModel()).remove(encs.getSelectedIndex());
 
 				}catch (Exception a){
@@ -298,8 +302,8 @@ public class ManagerUI extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e){
             	try {
-
-					s.rejeitarEncomenda(s.getIdEncomenda(encs.getSelectedValue().toString()));
+					int idEncomenda = allEncs.get(encs.getSelectedValue().toString()).getKey();
+					s.rejeitarEncomenda(idEncomenda);
 
 					((DefaultListModel) encs.getModel()).remove(encs.getSelectedIndex());
 

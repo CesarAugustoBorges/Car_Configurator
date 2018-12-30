@@ -293,11 +293,15 @@ public class Encomenda {
             int idPeca = ((LinhaDeEncomendaPeca) l).getIdPeca();
             int quantidade = l.getQuantidade();
             int quantidadeNoPacote = Integer.MAX_VALUE;
-            for(Peca p : pecasDoPacote.keySet())
-                if(p.getId() == idPeca)
+            Peca peca = null;
+            for(Peca p : pecasDoPacote.keySet()){
+                if(p.getId() == idPeca){
                     quantidadeNoPacote = pecasDoPacote.get(p);
-            if(pacote.hasPeca(idPeca) && quantidade >= quantidadeNoPacote)
-                pecasDoPacote.remove(Integer.valueOf(idPeca));
+                    peca = p;
+                }
+            }
+            if( quantidade >= quantidadeNoPacote && pacote.hasPeca(idPeca))
+                pecasDoPacote.remove(peca);
         }
         if(pecasDoPacote.size() == 0)
             return true;

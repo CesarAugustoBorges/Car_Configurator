@@ -101,34 +101,6 @@ public class Sistema {
     }
 
 
-
-    public int getIdEncomenda(String nome){
-        try{
-            for(String x : facade.getAllEncomendas().keySet()){
-                if(x.equals(nome)){
-                    return facade.getAllEncomendas().get(nome).getKey();
-                }
-
-            }
-        }catch (Exception e){
-            System.out.println("Encomenda " + nome + " não existe");
-        }
-        return -1;
-    }
-
-    public int getIdPeça(String nome){
-        try {
-            for (Integer x : getStock().keySet()) {
-                if(getPeca(x).getDescricao().equals(nome)){
-                    return  x;
-                }
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return -1;
-    }
-
     public Funcionario getFuncionario(int id) throws Exception{
         try{
             if(facade.constainsUtilizador(id))
@@ -298,7 +270,7 @@ public class Sistema {
         return this.enc.getLsEDependentes(p);
     }
 
-    //Devolver um Boolean!!
+
     public boolean removerFuncionario(int id) throws Exception {
         if(facade.constainsUtilizador(id)){
             facade.removerUtilizador(id);
@@ -307,9 +279,7 @@ public class Sistema {
         return false;
     }
 
-    //Devolver um Boolean!!
     public boolean adicionarFuncionario(String nome ,int id, String password , String tipo,String nif) throws Exception{
-
         if(facade.constainsUtilizador(id))
             return false;
         Funcionario f = new Funcionario(id,nome, password,tipo,nif);
@@ -349,11 +319,15 @@ public class Sistema {
     }
 
 
-    public List<Integer> getEncomendasDeCliente(int id) throws Exception{
+    public Map<String, Pair<Integer, String>> getEncomendasDeCliente(int id) throws Exception{
         try{
-            return facade.getEncomendasDeCliente(id);
+            Map<String, Pair<Integer, String>>encomendas = facade.getEncomendasDeCliente(id);
+            if(encomendas.size() == 0)
+                throw new Exception("O cliente \"" + id + "\" não tem encomendas");
+            return encomendas;
+
         } catch (Exception e){
-            throw  new Exception("Cliente + " + id + " não tem encomendas");
+            throw  new Exception("O cliente + \"" + id + "\" não tem encomendas");
         }
     }
 
@@ -404,7 +378,7 @@ public class Sistema {
         Encomenda encomenda = facade.getEncomenda(id);
         checkStockForEncomenda(encomenda);
         removeStockFromEncomenda(encomenda);
-        facade.setStatusEncomenda(id, "Aceite");
+        facade.setStatusEncomenda(id, "Valida");
     }
 
     private void removeStockFromEncomenda(Encomenda encomenda)throws Exception {
@@ -550,6 +524,24 @@ public class Sistema {
             nPecaEmCategoria.get(categoria).add(p);
     }
 
+    public Map<String, Integer> possiblePacotesInEncomenda() throws Exception{
+        Map<String, Integer> res = new HashMap<>();
+        Set<Integer> pacotesTestados = new HashSet<>();
+        List<LinhaDeEncomenda> les = this.enc.getLinhasDeEncomenda();
+        for(LinhaDeEncomenda le: les)
+            if(le instanceof LinhaDeEncomendaPeca){
+                int idPeca = ((LinhaDeEncomendaPeca) le).getIdPeca();
+                List<PacoteDeConfiguracao> pacotesComPeca = facade.pacotesComPeca(idPeca);
+                for(PacoteDeConfiguracao pacote : pacotesComPeca)
+                    if(!pacotesTestados.contains(pacote.getId())){
+                        if(this.enc.canCreatePacote(pacote))
+                            res.put(pacote.getDescricao(), pacote.getId());
+                        pacotesTestados.add(pacote.getId());
+                    }
+            }
+        return res;
+    }
+
     public boolean canCreatePacote(int id) throws Exception{
         PacoteDeConfiguracao pacote = getPacote(id);
         return this.enc.canCreatePacote(pacote);
@@ -563,24 +555,17 @@ public class Sistema {
     public static void main(String[] args) {
         try{
             Sistema sis = new Sistema();
-            /*
-            sis.addPeca(1,2);
-            sis.addPeca(1,2);
-            sis.addPeca(2, 1);
-            sis.addPeca(3, 1);
-            sis.addPeca(6, 1);
-            sis.addPeca(8, 1);
-            sis.addPeca(7, 1);
-            */
-            //sis.addPeca(1000,1);
-            sis.configuracaoOtima(100);
-            System.out.println(sis.imprimirFatura(1, "123456789"));
-            System.out.println(sis.canCreatePacote(2));
-            if(sis.canCreatePacote(2));
-                sis.createPacote(2);
+            for(String s : sis.getEncomendasDeCliente(1).keySet()) System.out.println("Encomenda de "+ 1 +" " + s);
+            for(int i = 1; i < 20; i++)
+                sis.addPeca(i,2);
 
+            //sis.addPeca(1000,1);
+            //sis.configuracaoOtima(100);
             System.out.println(sis.imprimirFatura(1, "123456789"));
-            sis.addEncomenda();
+            for(String s : sis.possiblePacotesInEncomenda().keySet())
+                System.out.println("pacotesPossiveis: " + s);
+
+            //sis.addEncomenda();
 
 
         } catch(Exception e){

@@ -151,7 +151,7 @@ public class DAOFacede {
     }
 
     //devolve as encomendas de um determinado cliente
-    public List<Integer> getEncomendasDeCliente(int id) throws Exception{
+    public Map<String, Pair<Integer, String>> getEncomendasDeCliente(int id) throws Exception{
         return ClDAO.getEncomendasDeCliente(id);
     }
 

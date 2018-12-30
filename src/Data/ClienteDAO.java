@@ -2,10 +2,13 @@ package Data;
 
 import Business.Utilizador.Cliente;
 import Business.Utilizador.Funcionario;
+import javafx.util.Pair;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 //Save - put(k : Object, o : Object) : void
 //Get - get(key : Object) : Object
@@ -91,19 +94,19 @@ public class ClienteDAO{
 
     }
 
-    public List<Integer> getEncomendasDeCliente(int id) throws Exception{
+    public Map<String, Pair<Integer, String>> getEncomendasDeCliente(int id) throws Exception{
 
         con = Connect.connect();
-        List<Integer> x = new ArrayList<>();
+        Map<String, Pair<Integer, String>> x = new HashMap<>();
 
         if(con!=null) {
 
-            PreparedStatement ps = con.prepareCall("SELECT id FROM Encomenda where idCliente = ?");
+            PreparedStatement ps = con.prepareCall("SELECT id, descricao, estado FROM Encomenda where idCliente = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                x.add(rs.getInt("id"));
+                x.put(rs.getString("descricao"), new Pair<>(rs.getInt("id"), rs.getString("estado")));
             }
             Connect.close(con);
 
