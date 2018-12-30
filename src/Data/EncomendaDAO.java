@@ -22,10 +22,10 @@ public class EncomendaDAO {
 
             int id = new ClienteDAO().getIdCliente(nif);
 
-            //try {
-             //   con.setAutoCommit(false);
+            try {
+                con.setAutoCommit(false);
 
-                //private List<LinhaDeEncomenda> linhasDeEncomenda;
+
                 //start the transaction
                 List<LinhaDeEncomenda> ld = enc.getLinhasDeEncomenda();
                 PreparedStatement ps;
@@ -39,24 +39,38 @@ public class EncomendaDAO {
                     ps.setInt(2,tmp.getQuantidade());
                     ps.setInt(3,enc.getId());
                     ps.executeUpdate();
-                    //System.out.println(tmp.getClass());
                 }
 
-                //COMO FAÇO A DISTINIÇÂO ?
 
+                for(LinhaDeEncomenda tmp : ld){
+
+                    if(tmp instanceof LinhaDeEncomendaPeca){//caso seja linha de encomenda peça
+                        ps = con.prepareStatement("Insert into LDEPeça (idPeca,idEncomenda) VALUES(?,?)");
+                        ps.setInt(1,((LinhaDeEncomendaPeca) tmp).getIdPeca());
+                        ps.setInt(2,tmp.getId());
+                        ps.executeUpdate();
+
+                    }
+                    else{ //caso seja linha de encomenda pacote
+                        ps = con.prepareStatement("Insert into LDEPacote (idPacote,idEncomenda) VALUES(?,?)");
+                        ps.setInt(1,((LinhaDeEncomendaPacote) tmp).getPacoteDeConfiguracao().getId());
+                        ps.setInt(2,tmp.getId());
+                        ps.executeUpdate();
+                    }
+
+                }
 
 
                 ps = con.prepareStatement("Insert into Encomenda (estado,descricao,idCliente) VALUES (?,?,?)");
                 ps.setString(1, enc.getStatus());
                 ps.setString(2, enc.getDescricao());
                 ps.setInt(3,id);
-                int a = ps.executeUpdate();
+                ps.executeUpdate();
 
-               // con.commit();
-           // }catch (SQLException e){
-
-            //    con.rollback();
-          //  }
+                con.commit();
+            }catch (SQLException e){
+                con.rollback();
+            }
         }
         else Connect.close(con);
     }
@@ -68,46 +82,52 @@ public class EncomendaDAO {
         ArrayList<LinhaDeEncomenda> l = new ArrayList<>();
 
         if(con!=null) {
+            try {
 
-            PreparedStatement ps = con.prepareStatement("Select * from Encomenda where id = ?");
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
+                con.setAutoCommit(false);
+                PreparedStatement ps = con.prepareStatement("Select * from Encomenda where id = ?");
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                enc.setId(rs.getInt("id"));
-                enc.setStatus(rs.getString("estado"));
-                enc.setDescricao(rs.getString("descricao"));
+                while (rs.next()) {
+                    enc.setId(rs.getInt("id"));
+                    enc.setStatus(rs.getString("estado"));
+                    enc.setDescricao(rs.getString("descricao"));
+                }
+
+                //todas as linhas de encomenda peças
+                ps = con.prepareStatement("select LDE.preco , LDE.quantidade , LDEPeça.idPeca from Encomenda as E  inner join LDEncomenda as LDE on E.id = LDE.idEncomenda inner join LDEPeça on LDE.id = LDEPeça.idLDEncomenda where E.id = ?;");
+                ps.setInt(1, id);
+                rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    LinhaDeEncomendaPeca ldp = new LinhaDeEncomendaPeca();
+                    ldp.setQuantidade(rs.getInt("quantidade"));
+                    ldp.setId(rs.getInt("idPeca"));
+                    ldp.setPreco(rs.getFloat("preco"));
+                    l.add(ldp);
+                }
+
+                //todas as linahs de encomenda pacotes
+                ps = con.prepareStatement("select LDE.preco , LDE.quantidade , LDEPacote.idPacote from Encomenda as E  inner join LDEncomenda as LDE on E.id = LDE.idEncomenda inner join LDEPacote on LDE.id = LDEPacote.idLDEncomenda where E.id = ?;");
+                ps.setInt(1, id);
+                rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    LinhaDeEncomendaPacote ldp = new LinhaDeEncomendaPacote();
+                    ldp.setQuantidade(rs.getInt("quantidade"));
+                    ldp.setId(rs.getInt("idPacote"));
+                    ldp.setPreco(rs.getFloat("preco"));
+                    l.add(ldp);
+                }
+
+
+                //todas as linhas de encomenda
+                enc.setLinhasDeEncomenda(l);
+                con.commit();
+            }catch (SQLException e){
+                con.rollback();
             }
-
-            //todas as linhas de encomenda peças
-            ps = con.prepareStatement("select LDE.preco , LDE.quantidade , LDEPeça.idPeca from Encomenda as E  inner join LDEncomenda as LDE on E.id = LDE.idEncomenda inner join LDEPeça on LDE.id = LDEPeça.idLDEncomenda where E.id = ?;");
-            ps.setInt(1, id);
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                LinhaDeEncomendaPeca ldp = new LinhaDeEncomendaPeca();
-                ldp.setQuantidade(rs.getInt("quantidade"));
-                ldp.setId(rs.getInt("idPeca"));
-                ldp.setPreco(rs.getFloat("preco"));
-                l.add(ldp);
-            }
-
-            //todas as linahs de encomenda pacotes
-            ps = con.prepareStatement("select LDE.preco , LDE.quantidade , LDEPacote.idPacote from Encomenda as E  inner join LDEncomenda as LDE on E.id = LDE.idEncomenda inner join LDEPacote on LDE.id = LDEPacote.idLDEncomenda where E.id = ?;");
-            ps.setInt(1, id);
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                LinhaDeEncomendaPacote ldp = new LinhaDeEncomendaPacote();
-                ldp.setQuantidade(rs.getInt("quantidade"));
-                ldp.setId(rs.getInt("idPacote"));
-                ldp.setPreco(rs.getFloat("preco"));
-                l.add(ldp);
-            }
-
-
-            //todas as linhas de encomenda
-            enc.setLinhasDeEncomenda(l);
         }else Connect.close(con);
 
         return enc;
@@ -140,33 +160,37 @@ public class EncomendaDAO {
         if(con!=null) {
 
 
+            try {
+                con.setAutoCommit(false);
+                PreparedStatement ps = con.prepareStatement("select * from Encomenda where id = ?");
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+                if (rs == null) {
+                    return true;
+                }
 
-            PreparedStatement ps = con.prepareStatement("select * from Encomenda where id = ?");
-            ps.setInt(1,id);
-            ResultSet rs = ps.executeQuery();
-            if(rs==null){
+                ps = con.prepareStatement("Delete from LDEPeça where idLDEncomenda in ( select LD.id from Encomenda as E inner join LDEncomenda  AS LD on E.id = LD.idEncomenda where E.id = ?);");
+                ps.setInt(1, id);
+                ps.executeUpdate();
+
+
+                ps = con.prepareStatement("Delete from LDEPacote where idLDEncomenda in ( select LD.id from Encomenda as E inner join LDEncomenda  AS LD on E.id = LD.idEncomenda where E.id = ?);");
+                ps.setInt(1, id);
+                ps.executeUpdate();
+
+                ps = con.prepareStatement("Delete from LDEncomenda where idEncomenda = ?");
+                ps.setInt(1, id);
+                ps.executeUpdate();
+
+                ps = con.prepareStatement("Delete from Encomenda where id = ?");
+                ps.setInt(1, id);
+                ps.executeUpdate();
+                con.commit();
                 return true;
+
+            }catch (SQLException e){
+                con.rollback();
             }
-
-            ps = con.prepareStatement("Delete from LDEPeça where idLDEncomenda in ( select LD.id from Encomenda as E inner join LDEncomenda  AS LD on E.id = LD.idEncomenda where E.id = ?);");
-            ps.setInt(1, id);
-            ps.executeUpdate();
-
-
-            ps = con.prepareStatement("Delete from LDEPacote where idLDEncomenda in ( select LD.id from Encomenda as E inner join LDEncomenda  AS LD on E.id = LD.idEncomenda where E.id = ?);");
-            ps.setInt(1, id);
-            ps.executeUpdate();
-
-            ps = con.prepareStatement("Delete from LDEncomenda where idEncomenda = ?");
-            ps.setInt(1, id);
-            ps.executeUpdate();
-
-            ps = con.prepareStatement("Delete from Encomenda where id = ?");
-            ps.setInt(1, id);
-            ps.executeUpdate();
-            return true;
-
-
         }else Connect.close(con);
 
         return false;
