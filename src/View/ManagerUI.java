@@ -184,9 +184,7 @@ public class ManagerUI extends JPanel{
 					try {
 
 
-						int idpeca = s.getIdPeça(peça);
-
-
+						int idpeca = allPecas.get(peça).getKey();
 
 						String maximo = ("Máximo = " + s.getInfoOfPeca(idpeca).getKey() + " da mesma.");
 						String disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca(idpeca).getValue();

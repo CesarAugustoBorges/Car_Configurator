@@ -275,11 +275,12 @@ public class Encomenda {
 
     public List<Integer> getPecasObrigatorias(Peca p){
         List<Integer> dep = p.getDependencias();
-        for(int i = 0; i < dep.size(); i++){
-            for(LinhaDeEncomenda le : linhasDeEncomenda)
-                if(le.hasPeca(dep.get(i)))
+        for(LinhaDeEncomenda le : linhasDeEncomenda)
+            for(int i = 0; i < dep.size(); i++){
+                if(le.hasPeca(dep.get(i))){
                     dep.remove(i);
-        }
+                }
+            }
         return dep;
     }
 

@@ -100,6 +100,7 @@ public class Sistema {
         return null;
     }
 
+<<<<<<< HEAD
 
 
 
@@ -133,6 +134,8 @@ public class Sistema {
     }
 
 
+=======
+>>>>>>> a412061541bc413cfcaff51b80bdfa0a11502ccf
     public Funcionario getFuncionario(int id) throws Exception{
         try{
             if(facade.constainsUtilizador(id))
@@ -444,6 +447,113 @@ public class Sistema {
     }
 
     public void configuracaoOtima(int quantiaMaxima) throws Exception{
+        Encomenda configOtima = new Encomenda();
+        Map<String, List<Peca>> pecasEmCategoria = new HashMap<>();
+        for(String categoria: categoriasObrigatorias)
+            pecasEmCategoria.put(categoria, facade.getPecasOfCategorias(categoria));
+
+        // Construção da solução mais barata
+        for(String categoria: pecasEmCategoria.keySet())
+            pecasEmCategoria.get(categoria).sort(new Comparator<Peca>() {
+                @Override
+                public int compare(Peca peca, Peca t1) {
+                    Float preco1, preco2;
+                    preco1 = preco2 = 0.0f;
+                    try{
+                        preco1 = costToAddPeca(peca, configOtima);
+                        preco2 = costToAddPeca(t1, configOtima);
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    return Float.compare(preco1, preco2);
+                }
+            });
+        for(String categoria: pecasEmCategoria.keySet()){
+            if(pecasEmCategoria.get(categoria).isEmpty()) pecasEmCategoria.remove(categoria);
+            else{
+                Peca maisBarata = pecasEmCategoria.get(categoria).get(0);
+                configOtima.addPeca(maisBarata,1);
+                addDependenciasDePeca(maisBarata, configOtima);
+                pecasEmCategoria.get(categoria).remove(0);
+                if(pecasEmCategoria.get(categoria).isEmpty()) pecasEmCategoria.remove(categoria);
+            }
+        }
+
+
+        if(configOtima.getPreco() > quantiaMaxima)
+            throw new Exception("Nao existe configuração ótima para a quantia escolhida");
+
+        // A cada iteraçao a encomenda fica mais cara
+        while(!pecasEmCategoria.isEmpty()){
+            for(String categoria: pecasEmCategoria.keySet())
+                pecasEmCategoria.get(categoria).sort(new Comparator<Peca>() {
+                    @Override
+                    public int compare(Peca peca, Peca t1) {
+                        Float preco1, preco2;
+                        preco1 = preco2 = 0.0f;
+                        try{
+                            preco1 = costToAddPeca(peca, configOtima);
+                            preco2 = costToAddPeca(t1, configOtima);
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        return Float.compare(preco1, preco2);
+                    }
+                });
+            String categoria = getLowestCostCategoria(pecasEmCategoria, configOtima);
+            Peca maisBarata = pecasEmCategoria.get(categoria).get(0);
+            if(costToAddPeca(maisBarata, configOtima) + configOtima.getPreco() >= quantiaMaxima)
+                break;
+
+            configOtima.addPeca(maisBarata,1);
+            addDependenciasDePeca(maisBarata, configOtima);
+            pecasEmCategoria.get(categoria).remove(0);
+            if(pecasEmCategoria.get(categoria).isEmpty()) pecasEmCategoria.remove(categoria);
+        }
+        this.enc = configOtima;
+    }
+
+    private void addDependenciasDePeca(Peca peca, Encomenda enc) throws Exception{
+        for(Integer i: enc.getPecasObrigatorias(peca)){
+            Peca p = facade.getPeca(i);
+            enc.addPeca(p,1);
+            addDependenciasDePeca(p, enc);
+        }
+    }
+
+    private float costToAddPeca(Peca peca, Encomenda enc) throws Exception{
+        Encomenda encWithPeca = enc.clone();
+        encWithPeca.addPeca(peca,1);
+        int precoOfDependencias = 0;
+        if(!enc.getLEIncompativeisCom(peca).isEmpty()) return 99999999999.98f;
+            for(Integer i: enc.getPecasObrigatorias(peca)){
+                Peca p = facade.getPeca(i);
+                precoOfDependencias += costToAddPeca(p, encWithPeca);
+            }
+        return peca.getPreco() + precoOfDependencias;
+    }
+
+    private String getLowestCostCategoria(Map<String, List<Peca>> pecas, Encomenda enc) throws Exception{
+        String categoria = "";
+        for(String s : pecas.keySet())
+            if(categoria == ""){
+                categoria = s;
+                break;
+            }
+        float custo = 99999999999.99f;
+
+        for(String cat : pecas.keySet()){
+            float cost2compare = costToAddPeca(pecas.get(cat).get(0), enc);
+            if(custo > cost2compare ){
+                categoria = cat;
+                custo = cost2compare;
+            }
+        }
+        return categoria;
+    }
+
+    /*
+    public void configuracaoOtima(int quantiaMaxima) throws Exception{
         Encomenda encomenda = new Encomenda();
         Encomenda lockedEncomenda = new Encomenda();
         Integer[] nPecasEmConsideracao = new Integer[categoriasObrigatorias.size()];
@@ -556,7 +666,7 @@ public class Sistema {
         if(nPecaEmCategoria.containsKey(categoria))
             nPecaEmCategoria.get(categoria).add(p);
     }
-
+    */
     public Map<String, Integer> possiblePacotesInEncomenda() throws Exception{
         Map<String, Integer> res = new HashMap<>();
         Set<Integer> pacotesTestados = new HashSet<>();
@@ -588,12 +698,13 @@ public class Sistema {
     public static void main(String[] args) {
         try{
             Sistema sis = new Sistema();
-            for(String s : sis.getEncomendasDeCliente(1).keySet()) System.out.println("Encomenda de "+ 1 +" " + s);
+            /*for(String s : sis.getEncomendasDeCliente(1).keySet()) System.out.println("Encomenda de "+ 1 +" " + s);
             for(int i = 1; i < 20; i++)
                 sis.addPeca(i,2);
-
+            */
             //sis.addPeca(1000,1);
             //sis.configuracaoOtima(100);
+            sis.configuracaoOtima(200000);
             System.out.println(sis.imprimirFatura(1, "123456789"));
             for(String s : sis.possiblePacotesInEncomenda().keySet())
                 System.out.println("pacotesPossiveis: " + s);
