@@ -71,4 +71,8 @@ public class LinhaDeEncomendaPacote extends LinhaDeEncomenda {
             res.add(p.getCategoria());
         return res;
     }
+
+    public boolean hasCategoria(String categoria) {
+        return getCategorias().contains(categoria);
+    }
 }

@@ -52,10 +52,10 @@ public class PeçaDAO {
 
 
     public Peca getPeca(int id) throws Exception{
-        con = Connect.connect();
         Peca p = null;
-
-        if(con!=null){
+        try{
+            con = Connect.connect();
+            if(con!=null){
 
                 p = new Peca();
                 ArrayList<Integer> dependencia = new ArrayList<>();
@@ -94,9 +94,9 @@ public class PeçaDAO {
                 }
 
                 p.setIncompatibilidades(incompatibilidade);
-
-
-        }else Connect.close(con);
+            }
+        }finally{
+                Connect.close(con); }
 
         return p;
     }

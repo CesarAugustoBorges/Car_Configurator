@@ -77,4 +77,5 @@ public class LinhaDeEncomendaPeca extends LinhaDeEncomenda {
         res.add(peca.getCategoria());
         return res;
     }
+
 }
