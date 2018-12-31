@@ -113,36 +113,41 @@ INSERT Into Pacote
  (1,10,"Pacote Desportivo"),
  (2,5,"Pacote Caroxa"),
  (3,20,"Pacote M2"),
- (4,24,"Pacote luxo");
+ (4,24,"Pacote luxo"),
+ (5,10,"Carro completo");
 
  Insert Into Peça
  (categoria,descricao,preco)
  VALUES
- ("Roda","roda desportiva",10),	-- 1
- ("Volante","volante desportivo",20), -- 2
- ("Porta","porta desportiva",30), -- 3
- ("Vidro","vidro da frente",4), -- 4
- ("Vidro","vidro da frente escurecido",20), -- 5
- ("Motor","motor 1000",2000),	-- 6
- ("Vidro","vidro de tras",10.2), -- 7
- ("Vidro","vidro de tras escurecido",20.2), -- 8
+ ("Roda","roda desportiva",1500),	-- 1
+ ("Volante","volante desportivo",500), -- 2
+ ("Porta","porta desportiva",1200), -- 3
+ ("Vidro Frente","vidro da frente",70), -- 4
+ ("Vidro Frente","vidro da frente escurecido",200), -- 5
+ ("Motor","motor 1000",4000),	-- 6
+ ("Vidro Tras","vidro de tras",50.2), -- 7
+ ("Vidro Tras","vidro de tras escurecido",150.2), -- 8
  ("Pintura","vermelhor,",123.2), -- 9
  ("Vidro","retrovisres",123), -- 10
  ("Pintura","azul,",123.2),	-- 11
  ("Pintura","preto,",123.2),	-- 12
  ("Pintura","branco,",123.2),	-- 13
- ("Roda","roda casual",10),	-- 14
- ("Volante","volante casual",20),	-- 15
- ("Porta","porta casual",30),	-- 16
- ("Motor","motor 500",1000),	-- 17
- ("Motor","motor 200",500),			-- 18
-  ("Roda","roda caroxa",10),			-- 19
- ("Volante","volante caroxa",20),		-- 20
- ("Porta","porta caroxa",30),			-- 21
- ("Extra","radio",30),
- ("Extra","bluetooth",30),
- ("Extra","gps",60),
- ("Extra","ar condicionado",80)
+ ("Roda","roda casual",800),	-- 14
+ ("Volante","volante casual",200),	-- 15
+ ("Porta","porta casual",600),	-- 16
+ ("Motor","motor 500",2000),	-- 17
+ ("Motor","motor 200",1000),			-- 18
+  ("Roda","roda caroxa",600),			-- 19
+ ("Volante","volante caroxa",100),		-- 20
+ ("Porta","porta caroxa",400),			-- 21
+ ("Extra","radio",30),					-- 22
+ ("Extra","bluetooth",30),				-- 23
+ ("Extra","gps",80),					-- 24
+ ("Extra","ar condicionado",200),			-- 25
+  ("Extra","Computador de bordo",800),		-- 26
+  ("Extra","Alarme",400),					-- 27
+  ("Caixa","caixa manual",400),		-- 28
+  ("Caixa","caixa automatica",800)	-- 29
  ;
 
 
@@ -267,7 +272,7 @@ VALUES
  (9,11),(9,12),(9,13),(11,13),(11,12),(12,13)
  ,(4,5),(5,4)
  ,(7,8),(6,7)
- ,(17,18),(6,17),(6,18)
+ ,(17,18),(6,17),(6,18),(29,28)
  ;
  
  
@@ -324,9 +329,12 @@ VALUES
 INSERT INTO PeçaDoPacote
 (idPacote,idPeca)
 VALUES
-(1,1),(1,2),(1,3),(1,4),(1,6),
-(2,19),(2,20),(2,21),(2,17),
-(3,14),(3,15),(3,16),(3,18),
-(4,22),(4,23),(4,24),(4,25)
+(1,1),(1,2),(1,3),(1,4),(1,6),(1,29),
+(2,19),(2,20),(2,21),(2,17),(2,29),
+(3,14),(3,15),(3,16),(3,18),(1,28),
+(4,22),(4,23),(4,24),(4,25),(4,25),
+
+(5,1),(5,2),(5,3),(5,4),(5,6),(5,5),(5,8),(5,10),(5,12),
+(5,22),(5,23),(5,24),(5,25),(5,25),(5,29)
 ;
 
