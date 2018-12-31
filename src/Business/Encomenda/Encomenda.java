@@ -275,20 +275,12 @@ public class Encomenda {
 
     public List<Integer> getPecasObrigatorias(Peca p){
         List<Integer> dep = p.getDependencias();
-        try{
-
-            int tam = dep.size();
-            for(int i = 0; i < tam; i++){
-                for(LinhaDeEncomenda le : linhasDeEncomenda)
-                    if(le.hasPeca(dep.get(i))){
-                        dep.remove(i);
-                        tam --;
-                    }
+        for(LinhaDeEncomenda le : linhasDeEncomenda)
+            for(int i = 0; i < dep.size(); i++){
+                if(le.hasPeca(dep.get(i))){
+                    dep.remove(i);
+                }
             }
-
-        } catch (Exception e){
-            System.out.println(this.getFatura());
-        }
         return dep;
     }
 

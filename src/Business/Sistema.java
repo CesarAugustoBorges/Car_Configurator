@@ -100,40 +100,6 @@ public class Sistema {
         return null;
     }
 
-
-<<<<<<< HEAD
-
-    public int getIdEncomenda(String nome){
-        try{
-            for(String x : facade.getAllEncomendas().keySet()){
-                if(x.equals(nome)){
-                    return facade.getAllEncomendas().get(nome).getKey();
-                }
-
-            }
-        }catch (Exception e){
-            System.out.println("Encomenda " + nome + " não existe");
-        }
-        return -1;
-    }
-
-    public int getIdPeça(String nome){
-        try {
-            for (Integer x : pecas.keySet()) {
-
-                if(pecas.get(x).equals(nome)){
-                    return  x;
-                }
-
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return -1;
-    }
-
-=======
->>>>>>> 96fa5e145a279cc05873a7460869626b5b8d12b4
     public Funcionario getFuncionario(int id) throws Exception{
         try{
             if(facade.constainsUtilizador(id))
@@ -450,6 +416,7 @@ public class Sistema {
         for(String categoria: categoriasObrigatorias)
             pecasEmCategoria.put(categoria, facade.getPecasOfCategorias(categoria));
 
+        // Construção da solução mais barata
         for(String categoria: pecasEmCategoria.keySet())
             pecasEmCategoria.get(categoria).sort(new Comparator<Peca>() {
                 @Override
@@ -465,17 +432,48 @@ public class Sistema {
                     return Float.compare(preco1, preco2);
                 }
             });
-
         for(String categoria: pecasEmCategoria.keySet()){
-            Peca maisBarata = pecasEmCategoria.get(categoria).get(1);
-            configOtima.addPeca(maisBarata,1);
-            addDependenciasDePeca(maisBarata, configOtima);
+            if(pecasEmCategoria.get(categoria).isEmpty()) pecasEmCategoria.remove(categoria);
+            else{
+                Peca maisBarata = pecasEmCategoria.get(categoria).get(0);
+                configOtima.addPeca(maisBarata,1);
+                addDependenciasDePeca(maisBarata, configOtima);
+                pecasEmCategoria.get(categoria).remove(0);
+                if(pecasEmCategoria.get(categoria).isEmpty()) pecasEmCategoria.remove(categoria);
+            }
         }
+
+
         if(configOtima.getPreco() > quantiaMaxima)
             throw new Exception("Nao existe configuração ótima para a quantia escolhida");
 
-        System.out.println(configOtima.getFatura());
+        // A cada iteraçao a encomenda fica mais cara
+        while(!pecasEmCategoria.isEmpty()){
+            for(String categoria: pecasEmCategoria.keySet())
+                pecasEmCategoria.get(categoria).sort(new Comparator<Peca>() {
+                    @Override
+                    public int compare(Peca peca, Peca t1) {
+                        Float preco1, preco2;
+                        preco1 = preco2 = 0.0f;
+                        try{
+                            preco1 = costToAddPeca(peca, configOtima);
+                            preco2 = costToAddPeca(t1, configOtima);
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        return Float.compare(preco1, preco2);
+                    }
+                });
+            String categoria = getLowestCostCategoria(pecasEmCategoria, configOtima);
+            Peca maisBarata = pecasEmCategoria.get(categoria).get(0);
+            if(costToAddPeca(maisBarata, configOtima) + configOtima.getPreco() >= quantiaMaxima)
+                break;
 
+            configOtima.addPeca(maisBarata,1);
+            addDependenciasDePeca(maisBarata, configOtima);
+            pecasEmCategoria.get(categoria).remove(0);
+            if(pecasEmCategoria.get(categoria).isEmpty()) pecasEmCategoria.remove(categoria);
+        }
         this.enc = configOtima;
     }
 
@@ -491,11 +489,31 @@ public class Sistema {
         Encomenda encWithPeca = enc.clone();
         encWithPeca.addPeca(peca,1);
         int precoOfDependencias = 0;
+        if(!enc.getLEIncompativeisCom(peca).isEmpty()) return 99999999999.98f;
             for(Integer i: enc.getPecasObrigatorias(peca)){
                 Peca p = facade.getPeca(i);
                 precoOfDependencias += costToAddPeca(p, encWithPeca);
             }
         return peca.getPreco() + precoOfDependencias;
+    }
+
+    private String getLowestCostCategoria(Map<String, List<Peca>> pecas, Encomenda enc) throws Exception{
+        String categoria = "";
+        for(String s : pecas.keySet())
+            if(categoria == ""){
+                categoria = s;
+                break;
+            }
+        float custo = 99999999999.99f;
+
+        for(String cat : pecas.keySet()){
+            float cost2compare = costToAddPeca(pecas.get(cat).get(0), enc);
+            if(custo > cost2compare ){
+                categoria = cat;
+                custo = cost2compare;
+            }
+        }
+        return categoria;
     }
 
     /*
@@ -650,7 +668,7 @@ public class Sistema {
             */
             //sis.addPeca(1000,1);
             //sis.configuracaoOtima(100);
-            sis.configuracaoOtima(100);
+            sis.configuracaoOtima(200000);
             System.out.println(sis.imprimirFatura(1, "123456789"));
             for(String s : sis.possiblePacotesInEncomenda().keySet())
                 System.out.println("pacotesPossiveis: " + s);
