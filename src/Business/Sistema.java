@@ -101,7 +101,7 @@ public class Sistema {
     }
 
 
-<<<<<<< HEAD
+
 
     public int getIdEncomenda(String nome){
         try{
@@ -132,8 +132,7 @@ public class Sistema {
         return -1;
     }
 
-=======
->>>>>>> 96fa5e145a279cc05873a7460869626b5b8d12b4
+
     public Funcionario getFuncionario(int id) throws Exception{
         try{
             if(facade.constainsUtilizador(id))
