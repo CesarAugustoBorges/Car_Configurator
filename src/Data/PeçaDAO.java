@@ -52,21 +52,25 @@ public class PeçaDAO {
 
 
     public Peca getPeca(int id) throws Exception{
+
         con = Connect.connect();
         Peca p = null;
 
         if(con!=null){
+            try {
+
+                con.setAutoCommit(false);
 
                 p = new Peca();
                 ArrayList<Integer> dependencia = new ArrayList<>();
                 ArrayList<Integer> incompatibilidade = new ArrayList<>();
 
                 PreparedStatement ps = con.prepareStatement("Select * from Peça where id = ?");
-                ps.setInt(1,id);
+                ps.setInt(1, id);
                 ResultSet rs = ps.executeQuery();
 
                 //trata da informação da peça
-                while  (rs.next()){
+                while (rs.next()) {
                     p.setId(rs.getInt("id"));
                     p.setPreco(rs.getFloat("preco"));
                     p.setCategoria(rs.getString("categoria"));
@@ -75,10 +79,10 @@ public class PeçaDAO {
 
                 //trata das peças dependentes
                 ps = con.prepareStatement("Select iddependente from PeçasDependentes where id1 = ?");
-                ps.setInt(1,id);
+                ps.setInt(1, id);
                 rs = ps.executeQuery();
 
-                while(rs.next()){
+                while (rs.next()) {
                     dependencia.add(rs.getInt("iddependente"));
                 }
 
@@ -86,15 +90,19 @@ public class PeçaDAO {
 
                 //trata das peças incompatíveis
                 ps = con.prepareStatement("Select idincompativel from PeçasIncompativeis where id1 = ?");
-                ps.setInt(1,id);
+                ps.setInt(1, id);
                 rs = ps.executeQuery();
 
-                while(rs.next()){
+                while (rs.next()) {
                     incompatibilidade.add(rs.getInt("idincompativel"));
                 }
 
                 p.setIncompatibilidades(incompatibilidade);
+                con.commit();
 
+            }catch (SQLException e){
+                con.rollback();
+            }
 
         }else Connect.close(con);
 
