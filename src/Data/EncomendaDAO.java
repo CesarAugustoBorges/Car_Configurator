@@ -16,63 +16,84 @@ public class EncomendaDAO {
 
     Connection con;
 
-    public void addEncomenda(Encomenda enc,String nif) throws Exception{
-        con = Connect.connect();
-        if(con!=null) {
 
-            int id = new ClienteDAO().getIdCliente(nif);
+    public void addEncomenda(Encomenda enc,String nif,String nome) throws Exception {
+
+        try {
+            con = Connect.connect();
+
+
+            int idCliente;
+            int idEncomenda = -1;
 
             try {
                 con.setAutoCommit(false);
 
-
                 //start the transaction
+
                 List<LinhaDeEncomenda> ld = enc.getLinhasDeEncomenda();
                 PreparedStatement ps;
-                List<LinhaDeEncomendaPacote> ldpacote = new ArrayList<>();
-                List<LinhaDeEncomendaPeca> ldpeca = new ArrayList<>();
 
-                for(LinhaDeEncomenda tmp : ld){
 
-                    ps = con.prepareStatement("Inserto into LDEncomenda  (preco,quantidade,idEncomenda) VALUES (?,?,?)");
-                    ps.setFloat(1,tmp.getPrecoTotal());
-                    ps.setInt(2,tmp.getQuantidade());
-                    ps.setInt(3,enc.getId());
+                //caso o cliente não exista adiciono
+                if((idCliente = new ClienteDAO().getIdCliente(nif)) == -1){
+                    ps = con.prepareStatement("Insert into Cliente (nome,nif) VALUES (?,?)");
+                    ps.setString(1,nome);
+                    ps.setString(2,nif);
                     ps.executeUpdate();
                 }
 
-
-                for(LinhaDeEncomenda tmp : ld){
-
-                    if(tmp instanceof LinhaDeEncomendaPeca){//caso seja linha de encomenda peça
-                        ps = con.prepareStatement("Insert into LDEPeça (idPeca,idEncomenda) VALUES(?,?)");
-                        ps.setInt(1,((LinhaDeEncomendaPeca) tmp).getIdPeca());
-                        ps.setInt(2,tmp.getId());
-                        ps.executeUpdate();
-
-                    }
-                    else{ //caso seja linha de encomenda pacote
-                        ps = con.prepareStatement("Insert into LDEPacote (idPacote,idEncomenda) VALUES(?,?)");
-                        ps.setInt(1,((LinhaDeEncomendaPacote) tmp).getPacoteDeConfiguracao().getId());
-                        ps.setInt(2,tmp.getId());
-                        ps.executeUpdate();
-                    }
-
-                }
+                idCliente = new ClienteDAO().getIdCliente(nif);//id do cliente
 
 
                 ps = con.prepareStatement("Insert into Encomenda (estado,descricao,idCliente) VALUES (?,?,?)");
                 ps.setString(1, enc.getStatus());
                 ps.setString(2, enc.getDescricao());
-                ps.setInt(3,id);
+                ps.setInt(3, idCliente);
                 ps.executeUpdate();
 
+
+                ps = con.prepareStatement("Select Max(id) from Encomenda;");
+                ResultSet rs = ps.executeQuery();
+
+                //de cretza que tem pois acabei de inserir uma encomenda
+                while(rs.next()) {
+                    idEncomenda = rs.getInt("Max(id)");
+                }
+
+                for (LinhaDeEncomenda tmp : ld) {
+
+                    ps = con.prepareStatement("Insert into LDEncomenda  (preco,quantidade,idEncomenda) VALUES (?,?,?)");
+                    ps.setFloat(1, tmp.getPrecoTotal());
+                    ps.setInt(2, tmp.getQuantidade());
+                    ps.setInt(3, idEncomenda);
+                    ps.executeUpdate();
+                }
+
+
+                for (LinhaDeEncomenda tmp : ld) {
+
+                    if (tmp instanceof LinhaDeEncomendaPeca) {//caso seja linha de encomenda peça
+                        ps = con.prepareStatement("Insert into LDEPeça (idPeca,idLDEncomenda) VALUES(?,?)");
+                        ps.setInt(1, ((LinhaDeEncomendaPeca) tmp).getIdPeca());
+                        ps.setInt(2, idEncomenda);
+                        ps.executeUpdate();
+
+                    } else { //caso seja linha de encomenda pacote
+                        ps = con.prepareStatement("Insert into LDEPacote (idPacote,idLDEncomenda) VALUES(?,?)");
+                        ps.setInt(1, ((LinhaDeEncomendaPacote) tmp).getPacoteDeConfiguracao().getId());
+                        ps.setInt(2, idCliente);
+                        ps.executeUpdate();
+                    }
+
+                }
                 con.commit();
-            }catch (SQLException e){
-                con.rollback();
-            }
-        }
-        else Connect.close(con);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            con.rollback();
+          }
+    }finally {Connect.close(con);}
+
     }
 
 

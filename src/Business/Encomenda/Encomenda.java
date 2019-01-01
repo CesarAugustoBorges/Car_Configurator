@@ -13,8 +13,8 @@ public class Encomenda {
     private String descricao;
 
     public Encomenda() {
-        this.descricao = "";
-        this.status = "Valid";
+        this.descricao = "made by a client";
+        this.status = "Em espera";
         this.linhasDeEncomenda = new ArrayList<>();
     }
 
@@ -343,6 +343,49 @@ public class Encomenda {
             String cate = "";
             for(String s : categorias) cate += s;
             throw new Exception("Categorias que falta serem preenchidas: " + cate + "; ");
+        }
+        return true;
+    }
+
+    private void cascadeRemoveLsEDependentesDe(Integer peca){
+        Peca p = new Peca();
+        p.setId(peca);
+        List<Pair<Integer, String>> les = getLsEDependentes(p);
+        for(Pair<Integer,String> i : les)
+            linhasDeEncomenda.remove(i);
+        for(Pair<Integer,String> i : les){
+            LinhaDeEncomendaPeca lep = (LinhaDeEncomendaPeca) getLinhaEncomenda(i.getKey());
+            if(lep.getIdPeca() != peca)
+                cascadeRemoveLsEDependentesDe(lep.getIdPeca());
+        }
+    }
+
+    public void removeCategoria(String categoria){
+        for(int i = 0; i < linhasDeEncomenda.size(); i++){
+            LinhaDeEncomenda le = linhasDeEncomenda.get(i);
+            if(linhasDeEncomenda.get(i).hasCategoria(categoria)){
+                if(le instanceof LinhaDeEncomendaPeca){
+                    cascadeRemoveLsEDependentesDe(((LinhaDeEncomendaPeca) le).getIdPeca());
+                }
+                linhasDeEncomenda.remove(i);
+            }
+        }
+    }
+
+    public boolean NoDepsAndNoInc(){
+        for(LinhaDeEncomenda l: linhasDeEncomenda){
+            if( l instanceof LinhaDeEncomendaPeca){
+                Peca p = ((LinhaDeEncomendaPeca) l).getPeca();
+                if(!getLEIncompativeisCom(p).isEmpty()) return false;
+                if(!getPecasObrigatorias(p).isEmpty()) return false;
+            }
+            if( l instanceof  LinhaDeEncomendaPacote){
+                Map<Peca, Integer> pecas = ((LinhaDeEncomendaPacote) l).getPacoteDeConfiguracao().getPecas();
+                for(Peca p: pecas.keySet()){
+                    if(!getLEIncompativeisCom(p).isEmpty()) return false;
+                    if(!getPecasObrigatorias(p).isEmpty()) return false;
+                }
+            }
         }
         return true;
     }

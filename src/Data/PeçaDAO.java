@@ -53,13 +53,15 @@ public class PeçaDAO {
 
     public Peca getPeca(int id) throws Exception{
 
-        con = Connect.connect();
-        Peca p = null;
 
-        if(con!=null){
-            try {
+        Peca p = new Peca();
 
+        try {
+            con = Connect.connect();
+
+             try{
                 con.setAutoCommit(false);
+
 
                 p = new Peca();
                 ArrayList<Integer> dependencia = new ArrayList<>();
@@ -100,11 +102,12 @@ public class PeçaDAO {
                 p.setIncompatibilidades(incompatibilidade);
                 con.commit();
 
-            }catch (SQLException e){
-                con.rollback();
+            }catch (SQLException e) {
+            con.rollback();
             }
-
-        }else Connect.close(con);
+        }finally{
+            Connect.close(con);
+        }
 
         return p;
     }

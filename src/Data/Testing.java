@@ -1,7 +1,9 @@
 package Data;
 
 import Business.Encomenda.Encomenda;
+import Business.Utilizador.Cliente;
 import Business.Utilizador.Funcionario;
+import com.mysql.fabric.xmlrpc.Client;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,8 +17,6 @@ public class Testing {
     public static void main(String args[]) throws Exception {
 
         //System.out.println(new PeçaDAO().getPeca(1).getDescricao());
-
-     new DAOFacede().getStock().values().forEach(s -> System.out.println(s));
 
 
 

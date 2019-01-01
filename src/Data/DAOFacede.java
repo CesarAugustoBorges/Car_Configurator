@@ -101,8 +101,8 @@ public class DAOFacede {
     }
 
     //adiciona uma peça
-    public void addEncomenda(Encomenda enc,String nif) throws Exception {
-        EDAO.addEncomenda(enc,nif);
+    public void addEncomenda(Encomenda enc,String nif,String nome) throws Exception {
+        EDAO.addEncomenda(enc,nif,nome);
     }
 
     //devolve uma peça

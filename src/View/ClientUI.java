@@ -9,10 +9,8 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -368,7 +366,7 @@ public class ClientUI extends JPanel{
         newCar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Stuff here
+
             }
         });
 
@@ -430,8 +428,7 @@ public class ClientUI extends JPanel{
                     public void actionPerformed(ActionEvent e) {
                         try{
 
-
-                            s.addEncomenda(nifTxt.getText());
+                            s.addEncomenda(nifTxt.getText(),nomeTxt.getText());
 
                             //s.imprimirFatura(1, nifTxt.getText());//nomeTxt.getText()
                         }

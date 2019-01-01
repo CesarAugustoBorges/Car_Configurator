@@ -12,7 +12,7 @@ public class Connect {
     //representa qual a base de dados a usar
     private final static String db = "CarData";
     //representa a password do root
-    private final static String password = "123cacbCACBCESAR";
+    private final static String password = "andreguigui1";
 
 
     public static Connection connect(){
