@@ -341,8 +341,8 @@ public class Encomenda {
         }
         if(!categorias.isEmpty()){
             String cate = "";
-            for(String s : categorias) cate += s;
-            throw new Exception("Categorias que falta serem preenchidas: " + cate + "; ");
+            for(String s : categorias) cate += s+"; ";
+            throw new Exception("Categorias que falta serem preenchidas: " + cate);
         }
         return true;
     }

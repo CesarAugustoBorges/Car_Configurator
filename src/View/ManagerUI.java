@@ -296,7 +296,7 @@ public class ManagerUI extends JPanel{
             public void actionPerformed(ActionEvent e){
             	try {
             		int idEncomenda = allEncs.get(encs.getSelectedValue().toString()).getKey();
-					s.setStatusEncomenda(idEncomenda, "Valida");
+					s.aceitaEncomenda(idEncomenda);
 					((DefaultListModel) encs.getModel()).remove(encs.getSelectedIndex());
 
 				}catch (Exception a){

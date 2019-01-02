@@ -176,7 +176,7 @@ public class DAOFacede {
     }
 
     //devolve todos os pacotes de uma encomenda
-    public List<PacoteDeConfiguracao> getPacotesEncomenda(int id) throws Exception{
+    public List<String> getPacotesEncomenda(int id) throws Exception{
         return EDAO.getPacotesEncomenda(id);
     }
 

@@ -255,20 +255,24 @@ public class EncomendaDAO {
         return result;
     }
 
-    public List<PacoteDeConfiguracao> getPacotesEncomenda(int id) throws Exception{
+    public List<String> getPacotesEncomenda(int id) throws Exception{
         con = Connect.connect();
-        List<PacoteDeConfiguracao> result = new ArrayList<>();
-        if(con!=null) {
-
-            PreparedStatement ps = con.prepareStatement("Select idPacote from LDEPacote where idLDEncomenda = ?");
+        List<String> result = new ArrayList<>();
+        try{
+            PreparedStatement ps = con.prepareStatement("Select P.descricao as descricao from LDEPacote as LP\n"
+                                                            + "INNER JOIN LDEncomenda as LDE on LP.idLDEncomenda = LDE.id\n"
+                                                            + "INNER JOIN Pacote as P on P.id = LP.idPacote \n"
+                                                            +" where LDE.idEncomenda = ?");
             ps.setInt(1,id);
             ResultSet rs = ps.executeQuery();
-            PacoteDeConfiguracaoDAO peça = new PacoteDeConfiguracaoDAO();
-            while(rs.next()){
-                result.add(peça.getPacote(rs.getInt("idPacote")));
-            }
-
-        }else Connect.close(con);
+            while(rs.next())
+                result.add(rs.getString("descricao"));
+        } catch(Exception e){
+            e.printStackTrace();
+            throw new Exception("Não foi possível obter os pacotes da Encomenda " + id);
+        } finally {
+            Connect.close(con);
+        }
 
         return result;
     }

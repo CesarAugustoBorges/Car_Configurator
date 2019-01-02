@@ -61,6 +61,8 @@ public class Sistema {
         this.categoriasObrigatorias.add("Volante");
         this.categoriasObrigatorias.add("Porta");
         this.categoriasObrigatorias.add("Vidro");
+        this.categoriasObrigatorias.add("Vidro Frente");
+        this.categoriasObrigatorias.add("Vidro Tras");
     }
 
     public Map<String, Pair<Integer, String>> getAllPecas() throws Exception{
@@ -91,13 +93,8 @@ public class Sistema {
         return null;
     }
 
-    public List<PacoteDeConfiguracao> getPacoteOfEncomenda(int x){
-        try {
-            return facade.getPacotesEncomenda(x);
-        }catch (Exception e){
-            System.out.println("Encomenda inexistente na base de dados");
-        }
-        return null;
+    public List<String> getPacoteOfEncomenda(int x) throws Exception{
+        return facade.getPacotesEncomenda(x);
     }
 
 
@@ -453,13 +450,11 @@ public class Sistema {
                 }
             });
         for(String categoria: pecasEmCategoria.keySet()){
-            if(pecasEmCategoria.get(categoria).isEmpty()) pecasEmCategoria.remove(categoria);
-            else{
+            if(!pecasEmCategoria.get(categoria).isEmpty()){
                 Peca maisBarata = pecasEmCategoria.get(categoria).get(0);
                 configOtima.addPeca(maisBarata,1);
                 addDependenciasDePeca(maisBarata, configOtima);
                 pecasEmCategoria.get(categoria).remove(0);
-                if(pecasEmCategoria.get(categoria).isEmpty()) pecasEmCategoria.remove(categoria);
             }
         }
 
@@ -552,10 +547,12 @@ public class Sistema {
         float custo = 99999999999.99f;
 
         for(String cat : pecas.keySet()){
-            float cost2compare = costToAddPeca(pecas.get(cat).get(0), enc);
-            if(custo > cost2compare ){
-                categoria = cat;
-                custo = cost2compare;
+            if(!pecas.get(cat).isEmpty()){
+                float cost2compare = costToAddPeca(pecas.get(cat).get(0), enc);
+                if(custo > cost2compare ){
+                    categoria = cat;
+                    custo = cost2compare;
+                }
             }
         }
         return categoria;
@@ -598,7 +595,9 @@ public class Sistema {
             */
             //sis.addPeca(1000,1);
             //sis.configuracaoOtima(100);
-            sis.configuracaoOtima(1000000);
+            for(String s : sis.getPacoteOfEncomenda(1))
+                System.out.println(s);
+            // sis.configuracaoOtima(1000000);
             System.out.println(sis.imprimirFatura(1, "123456789"));
             for(String s : sis.possiblePacotesInEncomenda().keySet())
                 System.out.println("pacotesPossiveis: " + s);
