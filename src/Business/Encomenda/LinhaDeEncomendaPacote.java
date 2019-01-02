@@ -16,12 +16,12 @@ public class LinhaDeEncomendaPacote extends LinhaDeEncomenda {
     }
 
     public LinhaDeEncomendaPacote(LinhaDeEncomendaPacote le){
-        super(le);
+        new LinhaDeEncomendaPacote(le.getId(), le.getQuantidade(), le.getPacoteDeConfiguracao().clone());
     }
 
     public LinhaDeEncomendaPacote(int id, int quantidade, PacoteDeConfiguracao p) {
         super(id, quantidade);
-        this.pacoteDeConfiguracao = p;
+        this.pacoteDeConfiguracao = p.clone();
         this.setPreco(p.getPreco());
     }
 

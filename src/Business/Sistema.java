@@ -1,9 +1,6 @@
 package Business;
 
-import Business.Encomenda.Encomenda;
-import Business.Encomenda.LinhaDeEncomenda;
-import Business.Encomenda.LinhaDeEncomendaPeca;
-import Business.Encomenda.PacoteDeConfiguracao;
+import Business.Encomenda.*;
 import Business.Stock.Peca;
 import Business.Utilizador.Cliente;
 import Business.Utilizador.Funcionario;
@@ -312,6 +309,18 @@ public class Sistema {
         return fatura;
     }
 
+    public String imprimirFatura(String nome, String nif) throws Exception {
+        if(!facade.containsCliente(nif))
+            throw new Exception("Cliente não existe");
+        Cliente c = facade.getCliente(nif);
+        if(!c.getName().equals(nome))
+            throw new Exception("Nif não é do Cliente");
+
+        String fatura = this.enc.getFatura();
+        fatura += "Nome: " + nome + " --- NIF: " + nif;
+        return fatura;
+    }
+
 
     public Map<String, Pair<Integer,String>> getAllEncomendas() throws Exception {
         try{
@@ -424,6 +433,27 @@ public class Sistema {
 
     public void removePacote(int id, int quantidade){
         this.enc.removePacote(id, quantidade);
+    }
+
+    public List<String> getPecasEncomenda(){
+        List<String> res = new ArrayList<>();
+        for(LinhaDeEncomenda l : this.enc.getLinhasDeEncomenda()){
+            if(l instanceof LinhaDeEncomendaPeca){
+                res.add(l.getDescricao());
+            }
+        }
+
+        return res;
+    }
+
+    public List<String> getPacotesEncomenda(){
+        List<String> res = new ArrayList<>();
+        for(LinhaDeEncomenda l : this.enc.getLinhasDeEncomenda()){
+            if(l instanceof LinhaDeEncomendaPacote){
+                res.add(l.getDescricao());
+            }
+        }
+        return res;
     }
 
     public void configuracaoOtima(int quantiaMaxima) throws Exception{
