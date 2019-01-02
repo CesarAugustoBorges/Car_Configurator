@@ -90,8 +90,14 @@ public class Sistema {
         return null;
     }
 
-    public List<String> getPacoteOfEncomenda(int x) throws Exception{
-        return facade.getPacotesEncomenda(x);
+    public List<String> getPacoteOfEncomenda(int x){
+        try{
+            return facade.getPacotesEncomenda(x);
+        }
+            catch (Exception e){
+            System.out.println("Encomenda inexistente na base de dados");
+        }
+            return null;
     }
 
 
@@ -316,7 +322,8 @@ public class Sistema {
         if(!c.getName().equals(nome))
             throw new Exception("Nif não é do Cliente");
 
-        String fatura = this.enc.getFatura();
+        Encomenda e = getEncomenda(19);
+        String fatura = e.getFatura();
         fatura += "Nome: " + nome + " --- NIF: " + nif;
         return fatura;
     }
@@ -622,8 +629,9 @@ public class Sistema {
                 sis.addPeca(i,2);
             */
             //sis.addPeca(1000,1);
-            //sis.configuracaoOtima(100);
+            ;
             sis.configuracaoOtima(100000);
+            sis.addEncomenda("123456666","Discipulo");
             System.out.println(sis.imprimirFatura(1, "123456789"));
             for(String s : sis.possiblePacotesInEncomenda().keySet())
                 System.out.println(s);

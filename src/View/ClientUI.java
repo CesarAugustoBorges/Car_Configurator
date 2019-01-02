@@ -473,8 +473,7 @@ public class ClientUI extends JPanel{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         try{
-                            System.out.println(nifTxt.getText() + " " + nomeTxt.getText());
-                            s.addEncomenda(nifTxt.getText(), nomeTxt.getText());
+                            //s.addEncomenda(nifTxt.getText(), nomeTxt.getText());
                             showBill(s.imprimirFatura(nomeTxt.getText(), nifTxt.getText()));
                         }
                         catch (Exception ex){
@@ -514,6 +513,7 @@ public class ClientUI extends JPanel{
 
         JEditorPane myPane = new JEditorPane();
         myPane.setContentType("text/plain");
+        myPane.setEditable(false);
         myPane.setText(fatura);
         f.setContentPane(myPane);
     }

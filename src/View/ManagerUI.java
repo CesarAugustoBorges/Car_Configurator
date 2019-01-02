@@ -34,6 +34,7 @@ public class ManagerUI extends JPanel{
 
 	private Map<String, Pair<Integer,String>> allEncs;
 	private Map<String, Pair<Integer,String>> allPecas;
+	private Map<String, Pair<Integer, List<String>>> allPacotes;
 	private DefaultMutableTreeNode root;
 
 	//Stock
@@ -75,6 +76,7 @@ public class ManagerUI extends JPanel{
 		//Map<Descricao, Pair<Id, Categoria>>
 		allEncs = s.getAllEncomendas();
 		allPecas = s.getAllPecas();
+		allPacotes = s.getAllPacotes();
 
 		List<String> x = allEncs.keySet().stream().collect(Collectors.toList());
 		DefaultListModel modelo = new DefaultListModel();
@@ -141,6 +143,8 @@ public class ManagerUI extends JPanel{
 					//Map<Categoria, List<peças>>
 					Map<String, List<String>> tmp = new HashMap<>();
 
+					List<String> pacotes = s.getPacoteOfEncomenda(allEncs.get(enc).getKey());
+
 					for(Map.Entry<String,Pair<Integer, String>> entry : pecas.entrySet()){
 						String key = entry.getKey();
 						Pair<Integer, String> value = entry.getValue();
@@ -164,6 +168,15 @@ public class ManagerUI extends JPanel{
 							node.add(new DefaultMutableTreeNode(str));
 						}
 
+						newroot.add(node);
+					}
+					//Map<String, Pair<Integer, List<String>>>
+					for(String pac : pacotes){
+						DefaultMutableTreeNode node = new DefaultMutableTreeNode(pac);
+						List<String> pecasOfPac = allPacotes.get(pac).getValue();
+						for(String pec : pecasOfPac){
+							node.add(new DefaultMutableTreeNode(pec));
+						}
 						newroot.add(node);
 					}
 
