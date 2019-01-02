@@ -458,12 +458,14 @@ public class Sistema {
             }
         }
 
-
         if(configOtima.getPreco() > quantiaMaxima)
             throw new Exception("Nao existe configuração ótima para a quantia escolhida");
         pecasEmCategoria.put("Extra", facade.getPecasOfCategorias("Extra"));
         // A cada iteraçao a encomenda fica mais cara
-        while(!pecasEmCategoria.isEmpty()){
+        while(true){
+            if(configOtima.valid(categoriasObrigatorias) && configOtima.NoDepsAndNoInc())
+                validConfigOtima = configOtima.clone();
+
             for(String categoria: pecasEmCategoria.keySet())
                 pecasEmCategoria.get(categoria).sort(new Comparator<Peca>() {
                     @Override
@@ -480,9 +482,8 @@ public class Sistema {
                     }
                 });
             String categoria = getLowestCostCategoria(pecasEmCategoria, configOtima);
+            if(pecasEmCategoria.get(categoria).isEmpty()) break;
             Peca maisBarata = pecasEmCategoria.get(categoria).get(0);
-            for(Pair<Integer,String> le: getLsEIncompativeisComPeca(maisBarata.getId()))
-                configOtima.removeLinhaEncomenda(le.getKey());
 
             if(categoria != "Extra" && configOtima.hasCategoriaFilled(maisBarata.getCategoria()))
                 configOtima.removeCategoria(maisBarata.getCategoria());
@@ -491,12 +492,11 @@ public class Sistema {
                 break;
 
             configOtima.addPeca(maisBarata,1);
+            for(Pair<Integer,String> le: getLsEIncompativeisComPeca(maisBarata.getId()))
+                configOtima.removeLinhaEncomenda(le.getKey());
             addDependenciasDePeca(maisBarata, configOtima);
             pecasEmCategoria.get(categoria).remove(0);
             if(pecasEmCategoria.get(categoria).isEmpty()) pecasEmCategoria.remove(categoria);
-
-            if(configOtima.valid(categoriasObrigatorias))
-                validConfigOtima = configOtima.clone();
         }
         System.out.println(validConfigOtima.valid(categoriasObrigatorias));
         System.out.println(validConfigOtima.NoDepsAndNoInc());
@@ -515,9 +515,7 @@ public class Sistema {
         Encomenda encWithPeca = enc.clone();
         encWithPeca.addPeca(peca,1);
         int custoTotal = 0;
-        for(Pair<Integer,String> le: encWithPeca.getLEIncompativeisCom(peca))
-            custoTotal -= getPeca(le.getKey()).getPreco();
-        //if(!encWithPeca.getLEIncompativeisCom(peca).isEmpty()) return 99999999999.98f;
+        if(!encWithPeca.getLEIncompativeisCom(peca).isEmpty()) return 99999999999.98f;
         /*for(Pair<Integer,String> i : enc.getLEIncompativeisCom(peca)){
             LinhaDeEncomenda le = encWithPeca.getLinhaEncomenda(i.getKey());
             int pecaId = ((LinhaDeEncomendaPeca) le).getId();
@@ -595,13 +593,12 @@ public class Sistema {
             */
             //sis.addPeca(1000,1);
             //sis.configuracaoOtima(100);
-            for(String s : sis.getPacoteOfEncomenda(1))
-                System.out.println(s);
-            // sis.configuracaoOtima(1000000);
+            sis.configuracaoOtima(100000);
             System.out.println(sis.imprimirFatura(1, "123456789"));
             for(String s : sis.possiblePacotesInEncomenda().keySet())
-                System.out.println("pacotesPossiveis: " + s);
-            System.out.println(sis.enc.NoDepsAndNoInc());
+                System.out.println(s);
+            System.out.println(sis.validaEncomendaAtual() && sis.enc.NoDepsAndNoInc());
+
 
             //sis.addEncomenda();
 
