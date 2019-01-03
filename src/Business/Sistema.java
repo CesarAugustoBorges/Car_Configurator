@@ -1,9 +1,6 @@
 package Business;
 
-import Business.Encomenda.Encomenda;
-import Business.Encomenda.LinhaDeEncomenda;
-import Business.Encomenda.LinhaDeEncomendaPeca;
-import Business.Encomenda.PacoteDeConfiguracao;
+import Business.Encomenda.*;
 import Business.Stock.Peca;
 import Business.Utilizador.Cliente;
 import Business.Utilizador.Funcionario;
@@ -93,8 +90,14 @@ public class Sistema {
         return null;
     }
 
-    public List<String> getPacoteOfEncomenda(int x) throws Exception{
-        return facade.getPacotesEncomenda(x);
+    public List<String> getPacoteOfEncomenda(int x){
+        try{
+            return facade.getPacotesEncomenda(x);
+        }
+            catch (Exception e){
+            System.out.println("Encomenda inexistente na base de dados");
+        }
+            return null;
     }
 
 
@@ -312,6 +315,19 @@ public class Sistema {
         return fatura;
     }
 
+    public String imprimirFatura(String nome, String nif) throws Exception {
+        if(!facade.containsCliente(nif))
+            throw new Exception("Cliente não existe");
+        Cliente c = facade.getCliente(nif);
+        if(!c.getName().equals(nome))
+            throw new Exception("Nif não é do Cliente");
+
+        Encomenda e = getEncomenda(19);
+        String fatura = e.getFatura();
+        fatura += "Nome: " + nome + " --- NIF: " + nif;
+        return fatura;
+    }
+
 
     public Map<String, Pair<Integer,String>> getAllEncomendas() throws Exception {
         try{
@@ -424,6 +440,27 @@ public class Sistema {
 
     public void removePacote(int id, int quantidade){
         this.enc.removePacote(id, quantidade);
+    }
+
+    public List<String> getPecasEncomenda(){
+        List<String> res = new ArrayList<>();
+        for(LinhaDeEncomenda l : this.enc.getLinhasDeEncomenda()){
+            if(l instanceof LinhaDeEncomendaPeca){
+                res.add(l.getDescricao());
+            }
+        }
+
+        return res;
+    }
+
+    public List<String> getPacotesEncomenda(){
+        List<String> res = new ArrayList<>();
+        for(LinhaDeEncomenda l : this.enc.getLinhasDeEncomenda()){
+            if(l instanceof LinhaDeEncomendaPacote){
+                res.add(l.getDescricao());
+            }
+        }
+        return res;
     }
 
     public void configuracaoOtima(int quantiaMaxima) throws Exception{
@@ -592,8 +629,9 @@ public class Sistema {
                 sis.addPeca(i,2);
             */
             //sis.addPeca(1000,1);
-            //sis.configuracaoOtima(100);
+            ;
             sis.configuracaoOtima(100000);
+            sis.addEncomenda("123456666","Discipulo");
             System.out.println(sis.imprimirFatura(1, "123456789"));
             for(String s : sis.possiblePacotesInEncomenda().keySet())
                 System.out.println(s);
