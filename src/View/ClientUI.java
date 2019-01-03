@@ -437,7 +437,9 @@ public class ClientUI extends JPanel{
                             allLogs.add(ex.toString());
                         }
                         frame2.dispose();
+                        frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     }
+
                 });
             }
         });
