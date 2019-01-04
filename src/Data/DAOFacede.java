@@ -30,6 +30,10 @@ public class DAOFacede {
         return ClDAO.getCliente(id);
     }
 
+    public Cliente getCliente(String nif) throws Exception{//done
+        return ClDAO.getCliente(nif);
+    }
+
     //verifica se existe um Utilizador
     public boolean constainsUtilizador(int id) throws Exception{//done
         return UtlDAO.constainsUtilizador(id);
@@ -100,6 +104,11 @@ public class DAOFacede {
         return UtlDAO.validaUtilizador(userId, pass);
     }
 
+    //cria um novo cliente
+    public void putCliente(Cliente x) throws Exception{
+        ClDAO.putCliente(x);
+    }
+
     //adiciona uma peça
     public void addEncomenda(Encomenda enc,String nif,String nome) throws Exception {
         EDAO.addEncomenda(enc,nif,nome);
@@ -113,6 +122,10 @@ public class DAOFacede {
     //verifica se contem um determinado cliente
     public boolean containsCliente(int id) throws Exception{
         return ClDAO.containsCliente(id);
+    }
+
+    public boolean containsCliente(String nif) throws Exception{
+        return ClDAO.containsCliente(nif);
     }
 
     //quantidade atual de uma peça em stock

@@ -18,12 +18,12 @@ import javax.swing.tree.TreeModel;
 
 public class ClientUI extends JPanel{
     private static Sistema s;
-    private Map<String, Pair<Integer,String>> pecas;
-    private Map<String, Pair<Integer, List<String>>> pacotes;
+    private static Map<String, Pair<Integer,String>> pecas;
+    private static Map<String, Pair<Integer, List<String>>> pacotes;
     private int selectedItem;
     private static List<String> allLogs;
 
-    private JTree my;
+    private static JTree my;
     private JScrollPane myScroll;
     private DefaultMutableTreeNode myRoot;
     private JTree all;
@@ -48,8 +48,9 @@ public class ClientUI extends JPanel{
             pecas = s.getAllPecas();
         }
         catch (Exception e){
-            logs.setText(e.toString());
-            this.allLogs.add(e.toString());
+            int leng = allLogs.size() + 1;
+            logs.setText(leng + ". " + e.getMessage());
+            this.allLogs.add(leng + ". " + e.getMessage());
         }
 
         this.pacotes = new HashMap<>();
@@ -57,8 +58,9 @@ public class ClientUI extends JPanel{
             pacotes = s.getAllPacotes();
         }
         catch (Exception ex){
-            logs.setText(ex.toString());
-            this.allLogs.add(ex.toString());
+            int len = allLogs.size() + 1;
+            logs.setText(len + ". " + ex.getMessage());
+            this.allLogs.add(len + ". " + ex.getMessage());
         }
 
         this.selectedItem = 0;
@@ -204,62 +206,85 @@ public class ClientUI extends JPanel{
         this.addPartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TreeModel model = my.getModel();
-                Object[] path = all.getSelectionPath().getPath();
-                int i = path.length-1;
-                int childs = model.getChildCount(path[i]);
-                String nome = path[i].toString();
-                DefaultMutableTreeNode root = (DefaultMutableTreeNode) my.getModel().getRoot();
+                if(all.getSelectionPath()!=null){
+                    TreeModel model = my.getModel();
+                    Object[] path = all.getSelectionPath().getPath();
+                    int i = path.length-1;
+                    int childs = model.getChildCount(path[i]);
+                    String nome = path[i].toString();
+                    DefaultMutableTreeNode root = (DefaultMutableTreeNode) my.getModel().getRoot();
+                    //List<Pair<Id, Nome>> (idPeça)
+                    //List<Pair<Integer,String>> getLsEIncompativeisComPeca(int id)
 
+                    //List<Pair<Id, Nome>> (idPacote)
+                    //List<Pair<Integer,String>> getLsEIncompativeisComPacote(int id)
 
-                if(path.length!=1){
-                    if(selectedItem==0){
-                        if(childs==0){
-                            root.add(new DefaultMutableTreeNode(nome));
-                            List<Integer> listPecas = new ArrayList<>();
-                            int idPeca = pecas.get(nome).getKey();
-                            listPecas.add(idPeca);
-                            try{
-                                s.addPecas(listPecas);
+                    //List<IdPeça> Dependencia
+                    //List<Integer> getPecasObrigatorias(int id)
+
+                    if(path.length!=1){
+                        if(selectedItem==0){
+                            if(childs==0){
+                                root.add(new DefaultMutableTreeNode(nome));
+                                List<Integer> listPecas = new ArrayList<>();
+                                int idPeca = pecas.get(nome).getKey();
+                                listPecas.add(idPeca);
+                                try{
+                                    incomFrame(0,nome);
+                                }
+                                catch(Exception ex){
+                                    int len = allLogs.size() + 1;
+                                    logs.setText(len + ". " + ex.getMessage());
+                                    allLogs.add(len + ". " + ex.getMessage());
+                                }
                             }
-                            catch(Exception ex){
-                                logs.setText(ex.toString());
-                                allLogs.add(ex.toString());
+                            else{
+                                int len = allLogs.size() + 1;
+                                logs.setText(len + ". " + "Não é uma peça");
+                                allLogs.add(len + ". " + "Não é uma peça");
                             }
                         }
-                        else{
-                            System.out.println("Não é uma peça");
+                        if(selectedItem==1){
+                            if(childs!=0){
+                                int idPacote = pacotes.get(nome).getKey();
+                                try{
+                                    incomFrame(1,nome);
+                                    s.addPacote(idPacote);
+                                }
+                                catch (Exception exc){
+                                    int len = allLogs.size() + 1;
+                                    logs.setText(len + ". " + exc.getMessage());
+                                    allLogs.add(len + ". " + exc.getMessage());
+                                }
+                                DefaultMutableTreeNode node = new DefaultMutableTreeNode(nome);
+                                int w=0;
+                                while(w<childs){
+                                    node.add(new DefaultMutableTreeNode(model.getChild(path[i],w).toString()));
+                                    w++;
+                                }
+
+                                root.add(node);
+                            }
+                            else{
+                                int len = allLogs.size() + 1;
+                                logs.setText(len + ". " + "Não é um Pacote");
+                                allLogs.add(len + ". " + "Não é um Pacote");
+                            }
                         }
+                        DefaultTreeModel newmodel = new DefaultTreeModel(root);
+                        my.setModel(newmodel);
                     }
-                    if(selectedItem==1){
-                        if(childs!=0){
-                            int idPacote = pacotes.get(nome).getKey();
-                            try{
-                                s.addPacote(idPacote);
-                            }
-                            catch (Exception exc)
-                            {
-                                logs.setText(exc.toString());
-                                allLogs.add(exc.toString());
-                            }
-                            DefaultMutableTreeNode node = new DefaultMutableTreeNode(nome);
-                            int w=0;
-                            while(w<childs){
-                                node.add(new DefaultMutableTreeNode(model.getChild(path[i],w).toString()));
-                                w++;
-                            }
-
-                            root.add(node);
-                        }
-                        else{
-                            System.out.println("Não é um Pacote");
-                        }
+                    else{
+                        int len = allLogs.size() + 1;
+                        logs.setText(len + ". " + "Não é uma Peça nem um Pacote");
+                        allLogs.add(len + ". " + "Não é uma Peça nem um Pacote");
                     }
-                    DefaultTreeModel newmodel = new DefaultTreeModel(root);
-                    my.setModel(newmodel);
+                    all.clearSelection();
                 }
                 else{
-                    System.out.println("Não é uma Peça nem um Pacote");
+                    int len = allLogs.size() + 1;
+                    logs.setText(len + ". " + "Nada Selecionado");
+                    allLogs.add(len + ". " + "Nada Selecionado");
                 }
             }
         });
@@ -267,39 +292,59 @@ public class ClientUI extends JPanel{
         this.removePartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TreeModel model = my.getModel();
-                DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-                Object[] path = my.getSelectionPath().getPath();
-                int i = path.length-1;
-                int childs = model.getChildCount(path[i]);
+                if(my.getSelectionPath()!=null){
+                    TreeModel model = my.getModel();
+                    DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+                    Object[] path = my.getSelectionPath().getPath();
+                    int i = path.length-1;
+                    int childs = model.getChildCount(path[i]);
+                    my.clearSelection();
 
-                if(path.length==2){
-                    if(childs==0) {
-                        try {
-                            Pair<Integer, String> par = pecas.get(path[1].toString());
-                            int idp = par.getKey();
-                            s.removePeca(idp,1);
-                        } catch (Exception ex){
-                            logs.setText(ex.toString());
-                            allLogs.add(ex.toString());
+                    if(path.length==2){
+                        if(childs==0) {
+                            try {
+                                Pair<Integer, String> par = pecas.get(path[1].toString());
+                                int idp = par.getKey();
+                                s.removePeca(idp,1);
+                            } catch (Exception ex){
+                                int len = allLogs.size() + 1;
+                                logs.setText(len + ". " + ex.getMessage());
+                                allLogs.add(len + ". " + ex.getMessage());
+                            }
+                        } else{
+                            try{
+                                int id = pacotes.get(path[1].toString()).getKey();
+                                s.removePacote(id,1);
+                            }
+                            catch (Exception ex){
+                                int len = allLogs.size() + 1;
+                                logs.setText(len + ". " + ex.getMessage());
+                                allLogs.add(len + ". " + ex.getMessage());
+                            }
                         }
-                    } else{
-                        try{
-                            int id = pacotes.get(path[1].toString()).getKey();
-                            s.removePacote(id,1);
+                        root.remove((DefaultMutableTreeNode) path[1]);
+                        DefaultTreeModel newmodel = new DefaultTreeModel(root);
+                        my.setModel(newmodel);
+                    }
+                    else {
+                        if(path.length==1){
+                            int len = allLogs.size() + 1;
+                            logs.setText(len + ". " + "Nao é uma peça nem pacote");
+                            allLogs.add(len + ". " + "Nao é uma peça nem pacote");
                         }
-                        catch (Exception ex){
-                            logs.setText(ex.toString());
-                            allLogs.add(ex.toString());
+                        else{
+                            int len = allLogs.size() + 1;
+                            logs.setText(len + ". " + "Nao pode apagar itens de um pacote");
+                            allLogs.add(len + ". " + "Nao pode apagar itens de um pacote");
                         }
                     }
-                    root.remove((DefaultMutableTreeNode) path[1]);
-                    DefaultTreeModel newmodel = new DefaultTreeModel(root);
-                    my.setModel(newmodel);
                 }
-                else {
-                    System.out.println("Nao pode apagar itens de um pacote");
+                else{
+                    int len = allLogs.size() + 1;
+                    logs.setText(len + ". " + "Nada Selecionado");
+                    allLogs.add(len + ". " + "Nada Selecionado");
                 }
+
             }
         });
 
@@ -366,7 +411,7 @@ public class ClientUI extends JPanel{
         newCar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                //Stuff here
             }
         });
 
@@ -394,6 +439,7 @@ public class ClientUI extends JPanel{
         order.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 JLabel nome = new JLabel("Nome:");
                 nome.setBounds(55,40,60,15);
 
@@ -410,7 +456,6 @@ public class ClientUI extends JPanel{
                 print.setBounds(180,165,90,30);
 
                 JFrame frame2 = new JFrame("Faturação");
-                frame2.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 frame2.setLayout(null);
                 frame2.setSize(325,235);
                 frame2.setResizable(false);
@@ -427,14 +472,14 @@ public class ClientUI extends JPanel{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         try{
-
-                            s.addEncomenda(nifTxt.getText(),nomeTxt.getText());
-
-                            //s.imprimirFatura(1, nifTxt.getText());//nomeTxt.getText()
+                            //s.addEncomenda(nifTxt.getText(), nomeTxt.getText());
+                            //showBill(s.imprimirFatura(nomeTxt.getText(), nifTxt.getText()));
                         }
                         catch (Exception ex){
-                            logs.setText(ex.toString());
-                            allLogs.add(ex.toString());
+                            ex.printStackTrace();
+                            int len = allLogs.size() + 1;
+                            logs.setText(len + ". " + ex.getMessage());
+                            allLogs.add(len + ". " + ex.getMessage());
                         }
                         frame2.dispose();
                     }
@@ -455,6 +500,131 @@ public class ClientUI extends JPanel{
                 //Stuff here
             }
         });
+    }
+    /*
+    private Map<String, Pair<Integer,String>> pecas;
+    private Map<String, Pair<Integer, List<String>>> pacotes;*/
+    private static void incomFrame(int type, String str){
+        JFrame f = new JFrame("Imcompatibilidades");
+        f.setLayout(null);
+        f.setSize(500,400);
+        f.setResizable(false);
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
+
+        JLabel label = new JLabel("Qual quer na sua configuração:");
+        label.setBounds(15,15,250,15);
+
+        JRadioButton atual = new JRadioButton(str);
+        atual.setSelected(true);
+        atual.setBounds(15,60,20,20);
+
+        JRadioButton inco = new JRadioButton("Itens incompativeis");
+        inco.setBounds(260,60,20,20);
+
+        JButton done = new JButton("Feito");
+        done.setBounds(400,15,50,30);
+        done.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(atual.isSelected()){
+                    List<Integer> listPecas = new ArrayList<>();
+                    try {
+                        s.addPecas(listPecas);
+                    } catch (Exception ex) {
+                        int len = allLogs.size() + 1;
+                        logs.setText(len + ". " + ex.getMessage());
+                        allLogs.add(len + ". " + ex.getMessage());
+                    }
+                }
+                if(inco.isSelected()){
+
+                }
+            }
+        });
+
+        JList iList;
+
+        JList aList;
+
+
+        if(type == 0){
+            String[] arr = new String[1];
+            arr[0] = str;
+            aList = new JList(arr);
+            List<Pair<Integer,String>> l1 = new ArrayList<>();
+
+            try{
+                l1 = s.getLsEIncompativeisComPeca(pecas.get(str).getKey());
+                System.out.println(l1);
+            }
+            catch (Exception ex){
+                int len = allLogs.size() + 1;
+                logs.setText(len + ". " + ex.getMessage());
+                allLogs.add(len + ". " + ex.getMessage());
+            }
+
+            Vector<String> v1 = new Vector<>();
+            for(Pair<Integer,String> par : l1){
+                v1.add(par.getValue());
+            }
+
+            iList = new JList(v1);
+        }
+        else{
+            Vector<String> vetor = new Vector<>();
+            List<String> p = pacotes.get(str).getValue();
+            List<Pair<Integer,String>> l2 = new ArrayList<>();
+            for(String s : p){
+                vetor.add(s);
+            }
+            aList = new JList(vetor);
+
+            try{
+                l2 = s.getLsEIncompativeisComPacote(pacotes.get(str).getKey());
+                System.out.println(l2);
+            }
+            catch (Exception ex){
+                int len = allLogs.size() + 1;
+                logs.setText(len + ". " + ex.getMessage());
+                allLogs.add(len + ". " + ex.getMessage());
+            }
+
+            Vector<String> v2 = new Vector<>();
+            for(Pair<Integer,String> par : l2){
+                v2.add(par.getValue());
+            }
+            iList = new JList(v2);
+        }
+
+        JScrollPane spA = new JScrollPane(aList);
+        spA.setBounds(15,90,230,270);
+        aList.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+        JScrollPane spI = new JScrollPane(iList);
+        spI.setBounds(260,90,230,270);
+        iList.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+
+        f.add(label);
+        f.add(done);
+        f.add(atual);
+        f.add(spA);
+        f.add(inco);
+        f.add(spI);
+    }
+
+    private static void showBill(String fatura){
+        JFrame f = new JFrame("Fatura");
+        f.setLayout(null);
+        f.setSize(300,400);
+        f.setResizable(false);
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
+
+        JEditorPane myPane = new JEditorPane();
+        myPane.setContentType("text/plain");
+        myPane.setEditable(false);
+        myPane.setText(fatura);
+        f.setContentPane(myPane);
     }
 
     private static void configOtima(){
@@ -486,14 +656,37 @@ public class ClientUI extends JPanel{
         done.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
+                List<String> peçasEnc = new ArrayList<>();
+                List<String> pacotesEnc = new ArrayList<>();
                 try{
                     int value = Integer.parseInt(txtBox.getText());
-
-                    confFrame.dispose();
+                    s.configuracaoOtima(value);
+                    peçasEnc = s.getPecasEncomenda();
+                    pacotesEnc = s.getPacotesEncomenda();
                 }
                 catch(NumberFormatException ex){
                     error.setVisible(true);
                 }
+                catch (Exception ex){
+                    int len = allLogs.size() + 1;
+                    logs.setText(len + ". " + ex.getMessage());
+                    allLogs.add(len + ". " + ex.getMessage());
+                    confFrame.dispose();
+                }
+
+                DefaultMutableTreeNode root = new DefaultMutableTreeNode("Carro");
+
+                for(String str : peçasEnc){
+                    root.add(new DefaultMutableTreeNode(str));
+                }
+                for(String str : pacotesEnc){
+                    root.add(new DefaultMutableTreeNode(str));
+                }
+
+                DefaultTreeModel newmodel = new DefaultTreeModel(root);
+                my.setModel(newmodel);
+
+                confFrame.dispose();
             }
         });
     }

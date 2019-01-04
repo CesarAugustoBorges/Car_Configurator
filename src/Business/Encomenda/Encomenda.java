@@ -3,6 +3,8 @@ package Business.Encomenda;
 import Business.Stock.Peca;
 import javafx.util.Pair;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -11,9 +13,9 @@ public class Encomenda {
     private List<LinhaDeEncomenda> linhasDeEncomenda;
     private String status;
     private String descricao;
-
+   
     public Encomenda() {
-        this.descricao = "made by a client";
+        this.descricao = "made by a client" + LocalDateTime.now();
         this.status = "Em espera";
         this.linhasDeEncomenda = new ArrayList<>();
     }

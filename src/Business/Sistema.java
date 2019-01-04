@@ -1,9 +1,6 @@
 package Business;
 
-import Business.Encomenda.Encomenda;
-import Business.Encomenda.LinhaDeEncomenda;
-import Business.Encomenda.LinhaDeEncomendaPeca;
-import Business.Encomenda.PacoteDeConfiguracao;
+import Business.Encomenda.*;
 import Business.Stock.Peca;
 import Business.Utilizador.Cliente;
 import Business.Utilizador.Funcionario;
@@ -93,8 +90,14 @@ public class Sistema {
         return null;
     }
 
-    public List<String> getPacoteOfEncomenda(int x) throws Exception{
-        return facade.getPacotesEncomenda(x);
+    public List<String> getPacoteOfEncomenda(int x){
+        try{
+            return facade.getPacotesEncomenda(x);
+        }
+            catch (Exception e){
+            System.out.println("Encomenda inexistente na base de dados");
+        }
+            return null;
     }
 
 
@@ -182,6 +185,7 @@ public class Sistema {
 
         try{
             if(!facade.constainsUtilizador(userId))
+              //  System.out.println();
                 return -1;
             f = facade.getUtilizador(userId);
         } catch(Exception e){
@@ -209,6 +213,11 @@ public class Sistema {
 
     public void addEncomenda(String nif,String nome) throws Exception{
         if(this.validaEncomendaAtual()) {
+
+            if(!facade.containsCliente(nif)){
+                facade.putCliente(new Cliente(nome,nif));
+            }
+
             facade.addEncomenda(this.enc, nif,nome);
         }
     }
@@ -300,17 +309,14 @@ public class Sistema {
         return true;
     }
 
-    public String imprimirFatura(int clienteId, String Nif) throws Exception {
-        if(!facade.containsCliente(clienteId))
-            throw new Exception("Cliente não existe");
-        Cliente c = facade.getCliente(clienteId);
-        if(!c.getNif().equals(Nif))
-            throw new Exception("Nif não é do Cliente");
+    public String imprimirFatura(String nome, String Nif) throws Exception {
 
+        Cliente c = facade.getCliente(Nif);
         String fatura = this.enc.getFatura();
         fatura += "Nome: " + c.getName() + " --- NIF: " + c.getNif();
         return fatura;
     }
+
 
 
     public Map<String, Pair<Integer,String>> getAllEncomendas() throws Exception {
@@ -426,7 +432,32 @@ public class Sistema {
         this.enc.removePacote(id, quantidade);
     }
 
+<<<<<<< HEAD
     private Encomenda initConfiguracaoOtima(Map<String, List<Peca>> pecasEmCategoria) throws Exception{
+=======
+    public List<String> getPecasEncomenda(){
+        List<String> res = new ArrayList<>();
+        for(LinhaDeEncomenda l : this.enc.getLinhasDeEncomenda()){
+            if(l instanceof LinhaDeEncomendaPeca){
+                res.add(l.getDescricao());
+            }
+        }
+
+        return res;
+    }
+
+    public List<String> getPacotesEncomenda(){
+        List<String> res = new ArrayList<>();
+        for(LinhaDeEncomenda l : this.enc.getLinhasDeEncomenda()){
+            if(l instanceof LinhaDeEncomendaPacote){
+                res.add(l.getDescricao());
+            }
+        }
+        return res;
+    }
+
+    public void configuracaoOtima(int quantiaMaxima) throws Exception{
+>>>>>>> cd46125ecd0cf152a2135d07b45dbb5b4f7b25cf
         Encomenda configOtima = new Encomenda();
         // Construção da solução mais barata
         for(String categoria: pecasEmCategoria.keySet())
@@ -592,10 +623,29 @@ public class Sistema {
     public static void main(String[] args) {
         try{
             Sistema sis = new Sistema();
+<<<<<<< HEAD
             sis.addPeca(14,1);
             System.out.println(sis.enc.getFatura());
             for(Pair<Integer, String> i : sis.getLsEIncompativeisComPeca(1))
                 System.out.println(i.getKey());
+=======
+            /*for(String s : sis.getEncomendasDeCliente(1).keySet()) System.out.println("Encomenda de "+ 1 +" " + s);
+            for(int i = 1; i < 20; i++)
+                sis.addPeca(i,2);
+            */
+            //sis.addPeca(1000,1);
+            ;
+            sis.configuracaoOtima(100000);
+            sis.addEncomenda("123456666","Discipulo");
+            System.out.println(sis.imprimirFatura("asdas", "123456789"));
+            for(String s : sis.possiblePacotesInEncomenda().keySet())
+                System.out.println(s);
+            System.out.println(sis.validaEncomendaAtual() && sis.enc.NoDepsAndNoInc());
+
+
+            //sis.addEncomenda();
+
+>>>>>>> cd46125ecd0cf152a2135d07b45dbb5b4f7b25cf
 
         } catch(Exception e){
             e.printStackTrace();

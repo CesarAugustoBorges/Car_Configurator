@@ -30,7 +30,7 @@ CREATE TABLE Funcionario(
 -- tabela de Pacotes
 CREATE TABLE Pacote(
 id INT NOT NULL ,
-preco FLOAT NOT NULL,
+desconto FLOAT NOT NULL,
 descricao VARCHAR(45) NOT NULL,
 PRIMARY KEY(id));
 
@@ -108,14 +108,14 @@ FOREIGN Key(idPeça) references Peça(id));
 
 -- POVOVAMENTO DAS TABELAS
 INSERT Into Pacote
- (id,preco,descricao)
+ (id,desconto,descricao)
  VALUES
- (1,10,"Pacote Desportivo"),
- (2,5,"Pacote Caroxa"),
- (3,20,"Pacote M2"),
- (4,24,"Pacote luxo"),
- (5,10,"Carro completo"),
- (6,12,"Extras")
+ (1,0.10,"Pacote Desportivo"),
+ (2,0.05,"Pacote Caroxa"),
+ (3,0.20,"Pacote M2"),
+ (4,0.24,"Pacote luxo"),
+ (5,0.10,"Carro completo"),
+ (6,0.12,"Extras")
  
  ;
 
@@ -130,11 +130,11 @@ INSERT Into Pacote
  ("Motor","motor 1000",4000),	-- 6
  ("Vidro Tras","vidro de tras",50.2), -- 7
  ("Vidro Tras","vidro de tras escurecido",150.2), -- 8
- ("Pintura","vermelhor,",123.2), -- 9
+ ("Pintura","vermelho,",123.2), -- 9
  ("Vidro","retrovisres",123), -- 10
- ("Pintura","azul,",123.2),	-- 11
- ("Pintura","preto,",123.2),	-- 12
- ("Pintura","branco,",123.2),	-- 13
+ ("Pintura","azul",123.2),	-- 11
+ ("Pintura","preto",123.2),	-- 12
+ ("Pintura","branco",123.2),	-- 13
  ("Roda","roda casual",800),	-- 14
  ("Volante","volante casual",200),	-- 15
  ("Porta","porta casual",600),	-- 16
@@ -150,7 +150,17 @@ INSERT Into Pacote
   ("Extra","Computador de bordo",800),		-- 26
   ("Extra","Alarme",400),					-- 27
   ("Caixa","caixa manual",400),		-- 28
-  ("Caixa","caixa automatica",800)	-- 29
+  ("Caixa","caixa automatica",800),	-- 29
+  ("Pintura","Dourado",4000),	-- 30
+  ("Extra","Paineis solares",4000),		-- 31
+  ("Extra","Motor a gasoleo",2000),		-- 32
+  ("Extra","baterias eletricas premium",2000), -- 33
+  ("Extra","luzes pirosas",1500) ,  				-- 34
+  ("Extra","Descapotavel",3000)   	,				-- 35
+  ("Extra","Motor eletrico",5000),		-- 36
+  ("Extra","Motor Diesel",3000),    		-- 37
+  ("Vidro Tras","vidro de tras anti-bala",2999.99),		-- 38
+   ("Vidro Frente","vidro da frente anti-bala",2999.99) -- 39
  ;
 
 
@@ -181,7 +191,21 @@ VALUES
 (50,50,22),
 (50,50,23),
 (50,50,24),
-(50,50,25);
+(50,50,25),
+(50,50,26),
+(50,50,27),
+(50,50,28),
+(50,50,29),
+(50,50,30),
+(50,50,31),
+(50,50,32),
+(50,50,33),
+(50,50,34),
+(50,50,35),
+(50,50,36),
+(50,50,37),
+(50,50,38),
+(50,50,39);
  
   
  Insert Into Cliente 
@@ -207,23 +231,23 @@ INSERT INTO Encomenda
 (id,estado,descricao,idCliente)
 VALUES
 (1,"Em espera","Encomenda topo de gama",1),
-(2,"Em espera","Encomenda carro de luxo",1),
-(3,"Em espera","Encomenda desportiva",2),
+(2,"Em espera","Paro a o meu filhote",1),
+(3,"Em espera","Paro a o meu paizinho",2),
 (4,"Em espera","Encomenda caroxa",2),
 (5,"Em espera","Encomenda desportiva",3),
-(6,"Em espera","Encomenda topo de gama",9),
-(7,"Em espera","Encomenda topo de gama",9),
-(8,"Em espera","Encomenda topo de gama",9),
-(9,"Em espera","Encomenda topo de gama",9),
-(10,"Em espera","Encomenda topo de gama",9),
-(11,"Valida","Encomenda caroxa",9),
-(12,"Valida","Encomenda topo de gama",7),
-(13,"Valida","Encomenda caroxa",15),
-(14,"Valida","Encomenda caroxa",11),
-(15,"Em espera","Encomenda desportiva",6),
-(16,"Valida","Encomenda desportiva",5),
-(17,"Em espera","Encomenda topo de gama",12),
-(18,"Em espera","Encomenda topo de gama",12)
+(6,"Em espera","Encomenda topo ",9),
+(7,"Em espera","Encomenda maravilha",9),
+(8,"Em espera","Feliz natal",9),
+(9,"Em espera","Boa viagem",9),
+(10,"Em espera","ola",9),
+(11,"Valida","adeus",9),
+(12,"Valida","Parabens ",7),
+(13,"Valida","vamos viajar",15),
+(14,"Valida","carro lindo",11),
+(15,"Em espera","carro",6),
+(16,"Valida","carrito",5),
+(17,"Em espera","Para a familia",12),
+(18,"Em espera","Carro bomba",12)
 ;
 
 
@@ -276,6 +300,7 @@ VALUES
  ,(4,5),(5,4)
  ,(7,8),(6,7)
  ,(17,18),(6,17),(6,18),(29,28)
+ ,(36,32), (36,37) ,(37,32)
  ;
  
  

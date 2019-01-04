@@ -94,9 +94,9 @@ public class LoginUI{
                         break;
             case 1:     w = 500;h = 500;name="Gestor";
                         break;
-            case 2:     w = 500;h = 600;name="ConfiguraçãoFácil";
+            case 2:     w = 500;h = 600;name="ConfiguraFácil";
                         break;
-            default:    w = 500;h = 600;name="ConfiguraçãoFácil";
+            default:    w = 500;h = 600;name="ConfiguraFácil";
                         break;
         }
 

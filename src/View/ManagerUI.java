@@ -34,6 +34,7 @@ public class ManagerUI extends JPanel{
 
 	private Map<String, Pair<Integer,String>> allEncs;
 	private Map<String, Pair<Integer,String>> allPecas;
+	private Map<String, Pair<Integer, List<String>>> allPacotes;
 	private DefaultMutableTreeNode root;
 
 	//Stock
@@ -65,7 +66,7 @@ public class ManagerUI extends JPanel{
 		filter.setBounds(260,30,180,30);
 		goFilter = new JButton("->");
 		goFilter.setBounds(437,30,30,30);
-		
+
 		encsLabel = new JLabel("Encomendas:");
 		encsLabel.setBounds(20,70,100,15);
 		encs = new JList();
@@ -75,6 +76,7 @@ public class ManagerUI extends JPanel{
 		//Map<Descricao, Pair<Id, Categoria>>
 		allEncs = s.getAllEncomendas();
 		allPecas = s.getAllPecas();
+		allPacotes = s.getAllPacotes();
 
 		List<String> x = allEncs.keySet().stream().collect(Collectors.toList());
 		DefaultListModel modelo = new DefaultListModel();
@@ -141,6 +143,8 @@ public class ManagerUI extends JPanel{
 					//Map<Categoria, List<peças>>
 					Map<String, List<String>> tmp = new HashMap<>();
 
+					List<String> pacotes = s.getPacoteOfEncomenda(allEncs.get(enc).getKey());
+
 					for(Map.Entry<String,Pair<Integer, String>> entry : pecas.entrySet()){
 						String key = entry.getKey();
 						Pair<Integer, String> value = entry.getValue();
@@ -164,6 +168,15 @@ public class ManagerUI extends JPanel{
 							node.add(new DefaultMutableTreeNode(str));
 						}
 
+						newroot.add(node);
+					}
+					//Map<String, Pair<Integer, List<String>>>
+					for(String pac : pacotes){
+						DefaultMutableTreeNode node = new DefaultMutableTreeNode(pac);
+						List<String> pecasOfPac = allPacotes.get(pac).getValue();
+						for(String pec : pecasOfPac){
+							node.add(new DefaultMutableTreeNode(pec));
+						}
 						newroot.add(node);
 					}
 
@@ -203,42 +216,42 @@ public class ManagerUI extends JPanel{
 		});
 
 		this.moreStock.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                JFrame more = new JFrame("Encomendar mais");
-                more.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		        more.setLayout(null);
-		        more.setSize(325,175);
-		        more.setResizable(false);
-		        more.setLocationRelativeTo(null);
-		        more.setVisible(true);
+			@Override
+			public void actionPerformed(ActionEvent e){
+				JFrame more = new JFrame("Encomendar mais");
+				more.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+				more.setLayout(null);
+				more.setSize(325,175);
+				more.setResizable(false);
+				more.setLocationRelativeTo(null);
+				more.setVisible(true);
 
-		        JLabel label = new JLabel("Quantidade:");
-		        JLabel error = new JLabel("Valor errado!");
-		        JTextField txtBox = new JTextField();
-		        JButton done = new JButton("Feito");
+				JLabel label = new JLabel("Quantidade:");
+				JLabel error = new JLabel("Valor errado!");
+				JTextField txtBox = new JTextField();
+				JButton done = new JButton("Feito");
 
-		        label.setBounds(55,25,90,30);
-		        error.setBounds(180,25,90,30);
-		        error.setForeground(Color.red);
-		        error.setVisible(false);
-		        txtBox.setBounds(50,50,220,30);
-		        done.setBounds(180,100,90,30);
+				label.setBounds(55,25,90,30);
+				error.setBounds(180,25,90,30);
+				error.setForeground(Color.red);
+				error.setVisible(false);
+				txtBox.setBounds(50,50,220,30);
+				done.setBounds(180,100,90,30);
 
-		        more.add(label);
-		        more.add(error);
-		        more.add(txtBox);
-		        more.add(done);
+				more.add(label);
+				more.add(error);
+				more.add(txtBox);
+				more.add(done);
 
-		        done.addActionListener(new ActionListener(){
-		            @Override
-		            public void actionPerformed(ActionEvent e){
+				done.addActionListener(new ActionListener(){
+					@Override
+					public void actionPerformed(ActionEvent e){
 						String peça = stockTree.getSelectedValue().toString();
 						int value = Integer.parseInt(txtBox.getText());
 						String maximo = new String();
 						String disponibilidade = new String();;
-		            	try{
-		            		int idpeca = allPecas.get(peça).getKey();
+						try{
+							int idpeca = allPecas.get(peça).getKey();
 							s.encomendarPeca(idpeca,value);
 							maximo = ("Máximo = " + s.getInfoOfPeca(idpeca).getKey() + " da mesma.");
 							disponibilidade = "Disponibilidade atual = " + s.getInfoOfPeca(idpeca).getValue();
@@ -247,19 +260,19 @@ public class ManagerUI extends JPanel{
 							mod.addElement(disponibilidade);
 							infoStockList.setModel(mod);
 							more.dispose();
-		                }
-		                catch(Exception ex){
-		                	error.setVisible(true);
-		                	System.out.println(ex);
-		                }
-		            }
-		        });
-            }
-        });
+						}
+						catch(Exception ex){
+							error.setVisible(true);
+							System.out.println(ex);
+						}
+					}
+				});
+			}
+		});
 
-        this.goFilter.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
+		this.goFilter.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
 				//Stuff here
 				System.out.println("Filter");
 				DefaultMutableTreeNode r = new DefaultMutableTreeNode("Encomenda");
@@ -289,53 +302,53 @@ public class ManagerUI extends JPanel{
 					System.out.println(a);
 				}
 			}
-        });
+		});
 
-        this.accept.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-            	try {
-            		int idEncomenda = allEncs.get(encs.getSelectedValue().toString()).getKey();
+		this.accept.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				try {
+					int idEncomenda = allEncs.get(encs.getSelectedValue().toString()).getKey();
 					s.aceitaEncomenda(idEncomenda);
 					((DefaultListModel) encs.getModel()).remove(encs.getSelectedIndex());
 
 				}catch (Exception a){
-            		System.out.println(a);
+					System.out.println(a);
 				}
-            }
-        });
+			}
+		});
 
-        this.decline.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-            	try {
+		this.decline.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				try {
 					int idEncomenda = allEncs.get(encs.getSelectedValue().toString()).getKey();
 					s.rejeitarEncomenda(idEncomenda);
 
 					((DefaultListModel) encs.getModel()).remove(encs.getSelectedIndex());
 
 				}catch (Exception a){
-            		System.out.println(a);
+					System.out.println(a);
 				}
-            }
-        });
+			}
+		});
 
-        this.choose.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                String selected = (String) choose.getSelectedItem();
-                if(selected.equals("Stock")){
-                	hideEncs();
+		this.choose.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				String selected = (String) choose.getSelectedItem();
+				if(selected.equals("Stock")){
+					hideEncs();
 
-                	//adiciona aqui
+					//adiciona aqui
 					//System.out.println(stockTree.getLeadSelectionIndex());
 
-                }
-                else{
-                	hideStock();
-                }
-            }
-        });
+				}
+				else{
+					hideStock();
+				}
+			}
+		});
 	}
 
 	private void hideEncs(){
@@ -377,19 +390,19 @@ public class ManagerUI extends JPanel{
 	private void addAll(){
 		add(choose);
 		add(seing);
-        
-        //Lista de Encomendas
+
+		//Lista de Encomendas
 		add(filterLabel);
 		add(filter);
-        add(goFilter);
-        add(encsLabel);
-        add(encs);
-        add(infoEncLabel);
-        add(infoEncTree);
-        add(accept);
-        add(decline);
+		add(goFilter);
+		add(encsLabel);
+		add(encs);
+		add(infoEncLabel);
+		add(infoEncTree);
+		add(accept);
+		add(decline);
 
-        //Stock
+		//Stock
 		add(stockLabel);
 		add(stockTree);
 		add(infoStockLabel);
