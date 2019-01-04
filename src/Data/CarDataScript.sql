@@ -30,7 +30,7 @@ CREATE TABLE Funcionario(
 -- tabela de Pacotes
 CREATE TABLE Pacote(
 id INT NOT NULL ,
-preco FLOAT NOT NULL,
+desconto FLOAT NOT NULL,
 descricao VARCHAR(45) NOT NULL,
 PRIMARY KEY(id));
 
@@ -108,14 +108,14 @@ FOREIGN Key(idPeça) references Peça(id));
 
 -- POVOVAMENTO DAS TABELAS
 INSERT Into Pacote
- (id,preco,descricao)
+ (id,desconto,descricao)
  VALUES
- (1,10,"Pacote Desportivo"),
- (2,5,"Pacote Caroxa"),
- (3,20,"Pacote M2"),
- (4,24,"Pacote luxo"),
- (5,10,"Carro completo"),
- (6,12,"Extras")
+ (1,0.10,"Pacote Desportivo"),
+ (2,0.05,"Pacote Caroxa"),
+ (3,0.20,"Pacote M2"),
+ (4,0.24,"Pacote luxo"),
+ (5,0.10,"Carro completo"),
+ (6,0.12,"Extras")
  
  ;
 
@@ -132,9 +132,9 @@ INSERT Into Pacote
  ("Vidro Tras","vidro de tras escurecido",150.2), -- 8
  ("Pintura","vermelho,",123.2), -- 9
  ("Vidro","retrovisres",123), -- 10
- ("Pintura","azul,",123.2),	-- 11
- ("Pintura","preto,",123.2),	-- 12
- ("Pintura","branco,",123.2),	-- 13
+ ("Pintura","azul",123.2),	-- 11
+ ("Pintura","preto",123.2),	-- 12
+ ("Pintura","branco",123.2),	-- 13
  ("Roda","roda casual",800),	-- 14
  ("Volante","volante casual",200),	-- 15
  ("Porta","porta casual",600),	-- 16
@@ -151,7 +151,7 @@ INSERT Into Pacote
   ("Extra","Alarme",400),					-- 27
   ("Caixa","caixa manual",400),		-- 28
   ("Caixa","caixa automatica",800),	-- 29
-  ("Pintura","Dourado,",4000),	-- 30
+  ("Pintura","Dourado",4000),	-- 30
   ("Extra","Paineis solares",4000),		-- 31
   ("Extra","Motor a gasoleo",2000),		-- 32
   ("Extra","baterias eletricas premium",2000), -- 33
