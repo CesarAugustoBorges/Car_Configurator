@@ -158,7 +158,9 @@ INSERT Into Pacote
   ("Extra","luzes pirosas",1500) ,  				-- 34
   ("Extra","Descapotavel",3000)   	,				-- 35
   ("Extra","Motor eletrico",5000),		-- 36
-  ("Extra","Motor Diesel",3000)    		-- 37
+  ("Extra","Motor Diesel",3000),    		-- 37
+  ("Vidro Tras","vidro de tras anti-bala",2999.99),		-- 38
+   ("Vidro Frente","vidro da frente anti-bala",2999.99) -- 39
  ;
 
 
@@ -201,7 +203,9 @@ VALUES
 (50,50,34),
 (50,50,35),
 (50,50,36),
-(50,50,37);
+(50,50,37),
+(50,50,38),
+(50,50,39);
  
   
  Insert Into Cliente 
