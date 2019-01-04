@@ -130,7 +130,7 @@ INSERT Into Pacote
  ("Motor","motor 1000",4000),	-- 6
  ("Vidro Tras","vidro de tras",50.2), -- 7
  ("Vidro Tras","vidro de tras escurecido",150.2), -- 8
- ("Pintura","vermelhor,",123.2), -- 9
+ ("Pintura","vermelho,",123.2), -- 9
  ("Vidro","retrovisres",123), -- 10
  ("Pintura","azul,",123.2),	-- 11
  ("Pintura","preto,",123.2),	-- 12
@@ -150,7 +150,17 @@ INSERT Into Pacote
   ("Extra","Computador de bordo",800),		-- 26
   ("Extra","Alarme",400),					-- 27
   ("Caixa","caixa manual",400),		-- 28
-  ("Caixa","caixa automatica",800)	-- 29
+  ("Caixa","caixa automatica",800),	-- 29
+  ("Pintura","Dourado,",4000),	-- 30
+  ("Extra","Paineis solares",4000),		-- 31
+  ("Extra","Motor a gasoleo",2000),		-- 32
+  ("Extra","baterias eletricas premium",2000), -- 33
+  ("Extra","luzes pirosas",1500) ,  				-- 34
+  ("Extra","Descapotavel",3000)   	,				-- 35
+  ("Extra","Motor eletrico",5000),		-- 36
+  ("Extra","Motor Diesel",3000),    		-- 37
+  ("Vidro Tras","vidro de tras anti-bala",2999.99),		-- 38
+   ("Vidro Frente","vidro da frente anti-bala",2999.99) -- 39
  ;
 
 
@@ -181,7 +191,21 @@ VALUES
 (50,50,22),
 (50,50,23),
 (50,50,24),
-(50,50,25);
+(50,50,25),
+(50,50,26),
+(50,50,27),
+(50,50,28),
+(50,50,29),
+(50,50,30),
+(50,50,31),
+(50,50,32),
+(50,50,33),
+(50,50,34),
+(50,50,35),
+(50,50,36),
+(50,50,37),
+(50,50,38),
+(50,50,39);
  
   
  Insert Into Cliente 
@@ -276,6 +300,7 @@ VALUES
  ,(4,5),(5,4)
  ,(7,8),(6,7)
  ,(17,18),(6,17),(6,18),(29,28)
+ ,(36,32), (36,37) ,(37,32)
  ;
  
  
