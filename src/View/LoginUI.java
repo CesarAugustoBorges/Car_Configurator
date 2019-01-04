@@ -58,7 +58,6 @@ public class LoginUI{
                 try {
 
                     switch (sistema.login(userTxt.getText(), new String(passTxt.getPassword()) )) {
-
                         case 0:
                             createJFrame(0,new AdminUI( sistema));
                             frame.dispose();

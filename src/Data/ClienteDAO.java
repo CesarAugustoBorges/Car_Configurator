@@ -55,6 +55,7 @@ public class ClienteDAO{
             ps.setString(1, nif);
             ResultSet rs = ps.executeQuery();
 
+
             while (rs.next()) {
                 c = new Cliente();
                 c.setName(rs.getString("nome"));
@@ -68,6 +69,25 @@ public class ClienteDAO{
         return  c;
 
     }
+
+    public void putCliente(Cliente x) throws Exception{
+        try {
+            con = Connect.connect();
+
+            if (con != null) {
+
+                PreparedStatement ps = con.prepareStatement("Insert into Cliente (nif,nome) VALUES (?,?)");
+                ps.setString(1, x.getNif());
+                ps.setString(2,x.getName());
+
+                int a = ps.executeUpdate();
+
+            }
+        }finally {
+            Connect.close(con);
+        }
+    }
+
 
     public int getIdCliente(String nif) throws Exception{
         con = Connect.connect();

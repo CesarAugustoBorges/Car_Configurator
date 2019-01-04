@@ -185,6 +185,7 @@ public class Sistema {
 
         try{
             if(!facade.constainsUtilizador(userId))
+              //  System.out.println();
                 return -1;
             f = facade.getUtilizador(userId);
         } catch(Exception e){
@@ -212,6 +213,11 @@ public class Sistema {
 
     public void addEncomenda(String nif,String nome) throws Exception{
         if(this.validaEncomendaAtual()) {
+
+            if(!facade.containsCliente(nif)){
+                facade.putCliente(new Cliente(nome,nif));
+            }
+
             facade.addEncomenda(this.enc, nif,nome);
         }
     }
@@ -303,30 +309,14 @@ public class Sistema {
         return true;
     }
 
-    public String imprimirFatura(int clienteId, String Nif) throws Exception {
-        if(!facade.containsCliente(clienteId))
-            throw new Exception("Cliente não existe");
-        Cliente c = facade.getCliente(clienteId);
-        if(!c.getNif().equals(Nif))
-            throw new Exception("Nif não é do Cliente");
+    public String imprimirFatura(String nome, String Nif) throws Exception {
 
+        Cliente c = facade.getCliente(Nif);
         String fatura = this.enc.getFatura();
         fatura += "Nome: " + c.getName() + " --- NIF: " + c.getNif();
         return fatura;
     }
 
-    public String imprimirFatura(String nome, String nif) throws Exception {
-        if(!facade.containsCliente(nif))
-            throw new Exception("Cliente não existe");
-        Cliente c = facade.getCliente(nif);
-        if(!c.getName().equals(nome))
-            throw new Exception("Nif não é do Cliente");
-
-        Encomenda e = getEncomenda(19);
-        String fatura = e.getFatura();
-        fatura += "Nome: " + nome + " --- NIF: " + nif;
-        return fatura;
-    }
 
 
     public Map<String, Pair<Integer,String>> getAllEncomendas() throws Exception {
@@ -632,7 +622,7 @@ public class Sistema {
             ;
             sis.configuracaoOtima(100000);
             sis.addEncomenda("123456666","Discipulo");
-            System.out.println(sis.imprimirFatura(1, "123456789"));
+            System.out.println(sis.imprimirFatura("asdas", "123456789"));
             for(String s : sis.possiblePacotesInEncomenda().keySet())
                 System.out.println(s);
             System.out.println(sis.validaEncomendaAtual() && sis.enc.NoDepsAndNoInc());

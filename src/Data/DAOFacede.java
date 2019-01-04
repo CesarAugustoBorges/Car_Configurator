@@ -104,6 +104,11 @@ public class DAOFacede {
         return UtlDAO.validaUtilizador(userId, pass);
     }
 
+    //cria um novo cliente
+    public void putCliente(Cliente x) throws Exception{
+        ClDAO.putCliente(x);
+    }
+
     //adiciona uma peça
     public void addEncomenda(Encomenda enc,String nif,String nome) throws Exception {
         EDAO.addEncomenda(enc,nif,nome);

@@ -6,6 +6,16 @@ public class Cliente {
     private int Id;
     private String Nif;
 
+    public Cliente(){
+        this.Name = "";
+        this.Nif = "";
+    }
+
+    public Cliente(String nome,String nif){
+        this.Name = nome;
+        this.Nif = nif;
+    }
+
     public String getName() {
         return Name;
     }
