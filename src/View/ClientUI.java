@@ -9,10 +9,8 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -20,8 +18,8 @@ import javax.swing.tree.TreeModel;
 
 public class ClientUI extends JPanel{
     private static Sistema s;
-    private Map<String, Pair<Integer,String>> pecas;
-    private Map<String, Pair<Integer, List<String>>> pacotes;
+    private static Map<String, Pair<Integer,String>> pecas;
+    private static Map<String, Pair<Integer, List<String>>> pacotes;
     private int selectedItem;
     private static List<String> allLogs;
 
@@ -232,7 +230,7 @@ public class ClientUI extends JPanel{
                                 int idPeca = pecas.get(nome).getKey();
                                 listPecas.add(idPeca);
                                 try{
-                                    s.addPecas(listPecas);
+                                    incomFrame(0,nome);
                                 }
                                 catch(Exception ex){
                                     int len = allLogs.size() + 1;
@@ -250,6 +248,7 @@ public class ClientUI extends JPanel{
                             if(childs!=0){
                                 int idPacote = pacotes.get(nome).getKey();
                                 try{
+                                    incomFrame(1,nome);
                                     s.addPacote(idPacote);
                                 }
                                 catch (Exception exc){
@@ -473,9 +472,8 @@ public class ClientUI extends JPanel{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         try{
-                            s.addEncomenda(nifTxt.getText(), nomeTxt.getText());
-                            showBill(s.imprimirFatura(nomeTxt.getText(), nifTxt.getText()));
-
+                            //s.addEncomenda(nifTxt.getText(), nomeTxt.getText());
+                            //showBill(s.imprimirFatura(nomeTxt.getText(), nifTxt.getText()));
                         }
                         catch (Exception ex){
                             ex.printStackTrace();
@@ -484,9 +482,7 @@ public class ClientUI extends JPanel{
                             allLogs.add(len + ". " + ex.getMessage());
                         }
                         frame2.dispose();
-                        frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     }
-
                 });
             }
         });
@@ -504,6 +500,116 @@ public class ClientUI extends JPanel{
                 //Stuff here
             }
         });
+    }
+    /*
+    private Map<String, Pair<Integer,String>> pecas;
+    private Map<String, Pair<Integer, List<String>>> pacotes;*/
+    private static void incomFrame(int type, String str){
+        JFrame f = new JFrame("Imcompatibilidades");
+        f.setLayout(null);
+        f.setSize(500,400);
+        f.setResizable(false);
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
+
+        JLabel label = new JLabel("Qual quer na sua configuração:");
+        label.setBounds(15,15,250,15);
+
+        JRadioButton atual = new JRadioButton(str);
+        atual.setSelected(true);
+        atual.setBounds(15,60,20,20);
+
+        JRadioButton inco = new JRadioButton("Itens incompativeis");
+        inco.setBounds(260,60,20,20);
+
+        JButton done = new JButton("Feito");
+        done.setBounds(400,15,50,30);
+        done.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(atual.isSelected()){
+                    List<Integer> listPecas = new ArrayList<>();
+                    try {
+                        s.addPecas(listPecas);
+                    } catch (Exception ex) {
+                        int len = allLogs.size() + 1;
+                        logs.setText(len + ". " + ex.getMessage());
+                        allLogs.add(len + ". " + ex.getMessage());
+                    }
+                }
+                if(inco.isSelected()){
+
+                }
+            }
+        });
+
+        JList iList;
+
+        JList aList;
+
+
+        if(type == 0){
+            String[] arr = new String[1];
+            arr[0] = str;
+            aList = new JList(arr);
+            List<Pair<Integer,String>> l1 = new ArrayList<>();
+
+            try{
+                l1 = s.getLsEIncompativeisComPeca(pecas.get(str).getKey());
+                System.out.println(l1);
+            }
+            catch (Exception ex){
+                int len = allLogs.size() + 1;
+                logs.setText(len + ". " + ex.getMessage());
+                allLogs.add(len + ". " + ex.getMessage());
+            }
+
+            Vector<String> v1 = new Vector<>();
+            for(Pair<Integer,String> par : l1){
+                v1.add(par.getValue());
+            }
+
+            iList = new JList(v1);
+        }
+        else{
+            Vector<String> vetor = new Vector<>();
+            List<String> p = pacotes.get(str).getValue();
+            List<Pair<Integer,String>> l2 = new ArrayList<>();
+            for(String s : p){
+                vetor.add(s);
+            }
+            aList = new JList(vetor);
+
+            try{
+                l2 = s.getLsEIncompativeisComPacote(pacotes.get(str).getKey());
+                System.out.println(l2);
+            }
+            catch (Exception ex){
+                int len = allLogs.size() + 1;
+                logs.setText(len + ". " + ex.getMessage());
+                allLogs.add(len + ". " + ex.getMessage());
+            }
+
+            Vector<String> v2 = new Vector<>();
+            for(Pair<Integer,String> par : l2){
+                v2.add(par.getValue());
+            }
+            iList = new JList(v2);
+        }
+
+        JScrollPane spA = new JScrollPane(aList);
+        spA.setBounds(15,90,230,270);
+        aList.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+        JScrollPane spI = new JScrollPane(iList);
+        spI.setBounds(260,90,230,270);
+        iList.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+
+        f.add(label);
+        f.add(done);
+        f.add(atual);
+        f.add(spA);
+        f.add(inco);
+        f.add(spI);
     }
 
     private static void showBill(String fatura){
