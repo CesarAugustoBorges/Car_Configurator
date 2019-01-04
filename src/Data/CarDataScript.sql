@@ -231,23 +231,23 @@ INSERT INTO Encomenda
 (id,estado,descricao,idCliente)
 VALUES
 (1,"Em espera","Encomenda topo de gama",1),
-(2,"Em espera","Encomenda carro de luxo",1),
-(3,"Em espera","Encomenda desportiva",2),
+(2,"Em espera","Paro a o meu filhote",1),
+(3,"Em espera","Paro a o meu paizinho",2),
 (4,"Em espera","Encomenda caroxa",2),
 (5,"Em espera","Encomenda desportiva",3),
-(6,"Em espera","Encomenda topo de gama",9),
-(7,"Em espera","Encomenda topo de gama",9),
-(8,"Em espera","Encomenda topo de gama",9),
-(9,"Em espera","Encomenda topo de gama",9),
-(10,"Em espera","Encomenda topo de gama",9),
-(11,"Valida","Encomenda caroxa",9),
-(12,"Valida","Encomenda topo de gama",7),
-(13,"Valida","Encomenda caroxa",15),
-(14,"Valida","Encomenda caroxa",11),
-(15,"Em espera","Encomenda desportiva",6),
-(16,"Valida","Encomenda desportiva",5),
-(17,"Em espera","Encomenda topo de gama",12),
-(18,"Em espera","Encomenda topo de gama",12)
+(6,"Em espera","Encomenda topo ",9),
+(7,"Em espera","Encomenda maravilha",9),
+(8,"Em espera","Feliz natal",9),
+(9,"Em espera","Boa viagem",9),
+(10,"Em espera","ola",9),
+(11,"Valida","adeus",9),
+(12,"Valida","Parabens ",7),
+(13,"Valida","vamos viajar",15),
+(14,"Valida","carro lindo",11),
+(15,"Em espera","carro",6),
+(16,"Valida","carrito",5),
+(17,"Em espera","Para a familia",12),
+(18,"Em espera","Carro bomba",12)
 ;
 
 
