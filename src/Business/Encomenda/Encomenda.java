@@ -111,10 +111,25 @@ public class Encomenda {
     public List<Pair<Integer,String>> getLEIncompativeisCom(Peca p){
         ArrayList<Integer> incom = p.getIncompatibilidades();
         List<Pair<Integer,String>> res = new ArrayList<>();
-        for(LinhaDeEncomenda le: linhasDeEncomenda)
-            for(Integer inc : incom)
-                if(le.hasPeca(inc))
-                    res.add(new Pair<>(le.getId(), le.getDescricao()));
+        for(LinhaDeEncomenda le: linhasDeEncomenda){
+            boolean incompativel = false;
+            if(le instanceof LinhaDeEncomendaPeca)
+                if(((LinhaDeEncomendaPeca) le).getPeca().getIncompatibilidades().contains(Integer.valueOf(p.getId())))
+                    incompativel = true;
+
+            if(le instanceof LinhaDeEncomendaPacote){
+                if(((LinhaDeEncomendaPacote) le).getPacoteDeConfiguracao().getIncompatibilidades().contains(Integer.valueOf(p.getId())))
+                    incompativel = true;
+            }
+
+            if(incompativel)
+                res.add(new Pair<>(le.getId(), le.getDescricao()));
+            else
+                for(Integer inc : incom){
+                        if(le.hasPeca(inc) || incompativel)
+                            res.add(new Pair<>(le.getId(), le.getDescricao()));
+                }
+        }
         return res;
     }
 

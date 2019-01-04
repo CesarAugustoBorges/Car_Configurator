@@ -426,13 +426,8 @@ public class Sistema {
         this.enc.removePacote(id, quantidade);
     }
 
-    public void configuracaoOtima(int quantiaMaxima) throws Exception{
+    private Encomenda initConfiguracaoOtima(Map<String, List<Peca>> pecasEmCategoria) throws Exception{
         Encomenda configOtima = new Encomenda();
-        Encomenda validConfigOtima = new Encomenda();
-        Map<String, List<Peca>> pecasEmCategoria = new HashMap<>();
-        for(String categoria: categoriasObrigatorias)
-            pecasEmCategoria.put(categoria, facade.getPecasOfCategorias(categoria));
-
         // Construção da solução mais barata
         for(String categoria: pecasEmCategoria.keySet())
             pecasEmCategoria.get(categoria).sort(new Comparator<Peca>() {
@@ -457,7 +452,17 @@ public class Sistema {
                 pecasEmCategoria.get(categoria).remove(0);
             }
         }
+        return  configOtima;
+    }
 
+    public void configuracaoOtima(int quantiaMaxima) throws Exception{
+        Encomenda configOtima;
+        Encomenda validConfigOtima = new Encomenda();
+        Map<String, List<Peca>> pecasEmCategoria = new HashMap<>();
+        for(String categoria: categoriasObrigatorias)
+            pecasEmCategoria.put(categoria, facade.getPecasOfCategorias(categoria));
+
+        configOtima = initConfiguracaoOtima(pecasEmCategoria);
         if(configOtima.getPreco() > quantiaMaxima)
             throw new Exception("Nao existe configuração ótima para a quantia escolhida");
         pecasEmCategoria.put("Extra", facade.getPecasOfCategorias("Extra"));
@@ -587,21 +592,10 @@ public class Sistema {
     public static void main(String[] args) {
         try{
             Sistema sis = new Sistema();
-            /*for(String s : sis.getEncomendasDeCliente(1).keySet()) System.out.println("Encomenda de "+ 1 +" " + s);
-            for(int i = 1; i < 20; i++)
-                sis.addPeca(i,2);
-            */
-            //sis.addPeca(1000,1);
-            //sis.configuracaoOtima(100);
-            sis.configuracaoOtima(100000);
-            System.out.println(sis.imprimirFatura(1, "123456789"));
-            for(String s : sis.possiblePacotesInEncomenda().keySet())
-                System.out.println(s);
-            System.out.println(sis.validaEncomendaAtual() && sis.enc.NoDepsAndNoInc());
-
-
-            //sis.addEncomenda();
-
+            sis.addPeca(14,1);
+            System.out.println(sis.enc.getFatura());
+            for(Pair<Integer, String> i : sis.getLsEIncompativeisComPeca(1))
+                System.out.println(i.getKey());
 
         } catch(Exception e){
             e.printStackTrace();
