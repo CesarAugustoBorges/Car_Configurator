@@ -1,6 +1,7 @@
 package View;
 
 import Business.Sistema;
+import com.sun.scenario.effect.impl.sw.java.JSWBlend_COLOR_BURNPeer;
 import javafx.util.Pair;
 
 import javax.swing.*;
@@ -213,14 +214,6 @@ public class ClientUI extends JPanel{
                     int childs = model.getChildCount(path[i]);
                     String nome = path[i].toString();
                     DefaultMutableTreeNode root = (DefaultMutableTreeNode) my.getModel().getRoot();
-                    //List<Pair<Id, Nome>> (idPeça)
-                    //List<Pair<Integer,String>> getLsEIncompativeisComPeca(int id)
-
-                    //List<Pair<Id, Nome>> (idPacote)
-                    //List<Pair<Integer,String>> getLsEIncompativeisComPacote(int id)
-
-                    //List<IdPeça> Dependencia
-                    //List<Integer> getPecasObrigatorias(int id)
 
                     if(path.length!=1){
                         if(selectedItem==0){
@@ -249,7 +242,6 @@ public class ClientUI extends JPanel{
                                 int idPacote = pacotes.get(nome).getKey();
                                 try{
                                     incomFrame(1,nome);
-                                    s.addPacote(idPacote);
                                 }
                                 catch (Exception exc){
                                     int len = allLogs.size() + 1;
@@ -472,7 +464,7 @@ public class ClientUI extends JPanel{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         try{
-                            //s.addEncomenda(nifTxt.getText(), nomeTxt.getText());
+                            s.addEncomenda(nifTxt.getText(), nomeTxt.getText());
                             //showBill(s.imprimirFatura(nomeTxt.getText(), nifTxt.getText()));
                         }
                         catch (Exception ex){
@@ -512,51 +504,20 @@ public class ClientUI extends JPanel{
         f.setLocationRelativeTo(null);
         f.setVisible(true);
 
-        JLabel label = new JLabel("Qual quer na sua configuração:");
+        JLabel label = new JLabel("Qual quer sua da sua configuração:");
         label.setBounds(15,15,250,15);
 
-        JRadioButton atual = new JRadioButton(str);
-        atual.setSelected(true);
-        atual.setBounds(15,60,20,20);
-
-        JRadioButton inco = new JRadioButton("Itens incompativeis");
-        inco.setBounds(260,60,20,20);
-
         JButton done = new JButton("Feito");
-        done.setBounds(400,15,50,30);
-        done.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(atual.isSelected()){
-                    List<Integer> listPecas = new ArrayList<>();
-                    try {
-                        s.addPecas(listPecas);
-                    } catch (Exception ex) {
-                        int len = allLogs.size() + 1;
-                        logs.setText(len + ". " + ex.getMessage());
-                        allLogs.add(len + ". " + ex.getMessage());
-                    }
-                }
-                if(inco.isSelected()){
-
-                }
-            }
-        });
+        done.setBounds(400,15,60,40);
 
         JList iList;
 
-        JList aList;
-
+        Map<String,Integer> l1 = new HashMap<>();
+        Map<String,Integer> l2 = new HashMap<>();
 
         if(type == 0){
-            String[] arr = new String[1];
-            arr[0] = str;
-            aList = new JList(arr);
-            List<Pair<Integer,String>> l1 = new ArrayList<>();
-
             try{
                 l1 = s.getLsEIncompativeisComPeca(pecas.get(str).getKey());
-                System.out.println(l1);
             }
             catch (Exception ex){
                 int len = allLogs.size() + 1;
@@ -565,51 +526,191 @@ public class ClientUI extends JPanel{
             }
 
             Vector<String> v1 = new Vector<>();
-            for(Pair<Integer,String> par : l1){
-                v1.add(par.getValue());
+            for(Map.Entry<String, Integer> entry : l1.entrySet()) {
+                String key = entry.getKey();
+                v1.add(key);
             }
 
             iList = new JList(v1);
         }
         else{
-            Vector<String> vetor = new Vector<>();
-            List<String> p = pacotes.get(str).getValue();
-            List<Pair<Integer,String>> l2 = new ArrayList<>();
-            for(String s : p){
-                vetor.add(s);
-            }
-            aList = new JList(vetor);
-
             try{
                 l2 = s.getLsEIncompativeisComPacote(pacotes.get(str).getKey());
-                System.out.println(l2);
             }
             catch (Exception ex){
                 int len = allLogs.size() + 1;
                 logs.setText(len + ". " + ex.getMessage());
                 allLogs.add(len + ". " + ex.getMessage());
             }
-
+            System.out.println(l2);
             Vector<String> v2 = new Vector<>();
-            for(Pair<Integer,String> par : l2){
-                v2.add(par.getValue());
+            for(Map.Entry<String, Integer> entry : l2.entrySet()) {
+                String key = entry.getKey();
+                v2.add(key);
             }
             iList = new JList(v2);
         }
 
-        JScrollPane spA = new JScrollPane(aList);
-        spA.setBounds(15,90,230,270);
-        aList.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
         JScrollPane spI = new JScrollPane(iList);
-        spI.setBounds(260,90,230,270);
+        spI.setBounds(15,90,470,270);
         iList.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
 
         f.add(label);
         f.add(done);
-        f.add(atual);
-        f.add(spA);
-        f.add(inco);
         f.add(spI);
+
+        done.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(type == 0){
+                    Map<String,Integer> map = new HashMap<>();
+
+                    List<String> lista = iList.getSelectedValuesList();
+                    List<Pair<Integer, Boolean>> listaFinal = new ArrayList<>();
+                    Map<Integer, String> listaFinal2 = new HashMap<>();
+
+                    try{
+                        map = s.getLsEIncompativeisComPeca(pecas.get(str).getKey());
+                    }
+                    catch (Exception ex){
+                        int len = allLogs.size() + 1;
+                        logs.setText(len + ". " + ex.getMessage());
+                        allLogs.add(len + ". " + ex.getMessage());
+                        f.dispose();
+                    }
+
+                    for(String str : lista){
+                        if(str.startsWith("Pacote")){
+                            listaFinal.add(new Pair<>(map.get(str), false));
+                        }
+                        else {
+                            listaFinal.add(new Pair<>(map.get(str), true));
+                        }
+                        listaFinal2.put(map.get(str), str);
+                    }
+                    List<Pair<Integer, Boolean>> res = new ArrayList<>();
+                    try{
+                        s.addPeca(pecas.get(str).getKey(),1);
+                        givePermission(listaFinal, listaFinal2, res);
+                        s.removeLsEIncompativeisComPeca(res, pecas.get(str).getKey());
+                        updateFrame();
+                        f.dispose();
+                    }
+                    catch(Exception ex){
+                        int len = allLogs.size() + 1;
+                        logs.setText(len + ". " + ex.getMessage());
+                        allLogs.add(len + ". " + ex.getMessage());
+                        f.dispose();
+                    }
+                }
+                else {
+                    Map<String,Integer> map = new HashMap<>();
+
+                    List<String> lista = iList.getSelectedValuesList();
+                    List<Pair<Integer, Boolean>> listaFinal = new ArrayList<>();
+                    Map<Integer, String> listaFinal2 = new HashMap<>();
+
+                    try{
+                        map = s.getLsEIncompativeisComPacote(pacotes.get(str).getKey());
+                    }
+                    catch (Exception ex){
+                        int len = allLogs.size() + 1;
+                        logs.setText(len + ". " + ex.getMessage());
+                        allLogs.add(len + ". " + ex.getMessage());
+                        f.dispose();
+                    }
+
+                    for(String str : lista){
+                        if(str.startsWith("Pacote")){
+                            listaFinal.add(new Pair<>(map.get(str), false));
+                        }
+                        else {
+                            listaFinal.add(new Pair<>(map.get(str), true));
+                        }
+                        listaFinal2.put(map.get(str), str);
+                    }
+                    List<Pair<Integer, Boolean>> res = new ArrayList<>();
+                    try{
+                        s.addPacote(pacotes.get(str).getKey());
+                        givePermission(listaFinal, listaFinal2, res);
+                        s.removeLsEIncompativeisComPacote(res, pecas.get(str).getKey());
+                        updateFrame();
+                        f.dispose();
+                    }
+                    catch(Exception ex){
+                        int len = allLogs.size() + 1;
+                        logs.setText(len + ". " + ex.getMessage());
+                        allLogs.add(len + ". " + ex.getMessage());
+                        f.dispose();
+                    }
+                }
+            }
+        });
+    }
+
+    private static void givePermission(List<Pair<Integer, Boolean>> lista, Map<Integer, String> lista2, List<Pair<Integer, Boolean>> res){
+        for(Pair<Integer,Boolean> par : lista){
+            if(!par.getValue()){
+                JFrame f = new JFrame("Desfazer pacote");
+                f.setLayout(null);
+                f.setSize(200,200);
+                f.setResizable(false);
+                f.setLocationRelativeTo(null);
+                f.setVisible(true);
+
+                JLabel label = new JLabel("Quer desfazer o pacote " + lista2.get(par.getKey()));
+                label.setBounds(15,15,70,15);
+                JButton yes = new JButton("Sim");
+                yes.setBounds(15,40,50,30);
+                JButton no = new JButton("Não");
+                no.setBounds(50,40,50,30);
+
+                f.add(label);
+                f.add(yes);
+                f.add(no);
+
+                yes.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        res.add(new Pair<>(par.getKey(),true));
+                        f.dispose();
+                    }
+                });
+
+                no.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        f.dispose();
+                    }
+                });
+            }
+            else {
+                res.add(new Pair<>(par.getKey(),par.getValue()));
+            }
+        }
+    }
+
+    private static void updateFrame(){
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Carro");
+
+        List<String> peçasEnc = s.getPecasEncomenda();
+        List<String> pacotesEnc = s.getPacotesEncomenda();
+
+        for(String str:peçasEnc){
+            root.add(new DefaultMutableTreeNode(str));
+        }
+
+        for(String str:pacotesEnc){
+            List<String> lista = pacotes.get(str).getValue();
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(str);
+            for(String s:lista){
+                node.add(new DefaultMutableTreeNode(s));
+            }
+            root.add(node);
+        }
+
+        DefaultTreeModel newmodel = new DefaultTreeModel(root);
+        my.setModel(newmodel);
     }
 
     private static void showBill(String fatura){
