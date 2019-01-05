@@ -601,7 +601,17 @@ public class ClientUI extends JPanel{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         try{
-                            showBill(s.imprimirFatura(nifTxt.getText()), nifTxt.getText(), nomeTxt.getText());
+                            System.out.println("coisa");
+                            String nif = nifTxt.getText();
+                            String nome = nomeTxt.getText();
+
+                            System.out.println(nif);
+                            System.out.println(nome);
+                            System.out.println(s.imprimirFatura(nome,nif));
+
+                            showBill(s.imprimirFatura(nome,nif), nif, nome);
+                            System.out.println("imprimir");
+
                         }
                         catch (Exception ex){
                             int len = allLogs.size() + 1;
@@ -629,6 +639,55 @@ public class ClientUI extends JPanel{
         });
     }
 
+    private static void showBill(String fatura, String nif, String nome){
+
+        System.out.println("adsasd");
+
+        JFrame f = new JFrame("Fatura");
+        f.setLayout(null);
+        f.setSize(300,400);
+        f.setResizable(false);
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
+
+        JEditorPane myPane = new JEditorPane();
+        JScrollPane sp = new JScrollPane(myPane);
+        sp.setBounds(1,1,295,300);
+        myPane.setContentType("text/plain");
+        myPane.setEditable(false);
+        myPane.setText(fatura);
+
+        JButton a = new JButton("Aceitar");
+        a.setBounds(15,320,70,30);
+        JButton d = new JButton("Recusar");
+        d.setBounds(150,320,70,30);
+
+        a.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    s.addEncomenda(nif, nome);
+                }
+                catch (Exception ex){
+                    int len = allLogs.size() + 1;
+                    logs.setText(len + ". " + ex.getMessage());
+                    allLogs.add(len + ". " + ex.getMessage());
+                }
+                f.dispose();
+            }
+        });
+
+        d.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                f.dispose();
+            }
+        });
+
+        f.add(sp);
+        f.add(a);
+        f.add(d);
+    }
 
     private static void incomFrame(int type, String str){
         JFrame f = new JFrame("Imcompatibilidades");
@@ -906,53 +965,6 @@ public class ClientUI extends JPanel{
 
         DefaultTreeModel newmodel = new DefaultTreeModel(root);
         my.setModel(newmodel);
-    }
-
-    private static void showBill(String fatura, String nif, String nome){
-        JFrame f = new JFrame("Fatura");
-        f.setLayout(null);
-        f.setSize(300,400);
-        f.setResizable(false);
-        f.setLocationRelativeTo(null);
-        f.setVisible(true);
-
-        JEditorPane myPane = new JEditorPane();
-        JScrollPane sp = new JScrollPane(myPane);
-        sp.setBounds(1,1,295,300);
-        myPane.setContentType("text/plain");
-        myPane.setEditable(false);
-        myPane.setText(fatura);
-
-        JButton a = new JButton("Aceitar");
-        a.setBounds(15,320,70,30);
-        JButton d = new JButton("Recusar");
-        d.setBounds(150,320,70,30);
-
-        a.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try{
-                    s.addEncomenda(nif, nome);
-                }
-                catch (Exception ex){
-                    int len = allLogs.size() + 1;
-                    logs.setText(len + ". " + ex.getMessage());
-                    allLogs.add(len + ". " + ex.getMessage());
-                }
-                f.dispose();
-            }
-        });
-
-        d.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                f.dispose();
-            }
-        });
-
-        f.add(sp);
-        f.add(a);
-        f.add(d);
     }
 
     private static void configOtima(){

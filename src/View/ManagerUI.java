@@ -337,21 +337,37 @@ public class ManagerUI extends JPanel{
 
 		this.reloadButton.addActionListener(new ActionListener(){
 			@Override
-			public void actionPerformed(ActionEvent e){
+			public void actionPerformed(ActionEvent e) {
+				//Stuff here
+				DefaultMutableTreeNode r = new DefaultMutableTreeNode("Encomenda");
+				DefaultTreeModel newmodel = new DefaultTreeModel(r);
+				infoEncTree.setModel(newmodel);
 				try {
-					List<String> x = allEncs.keySet().stream().collect(Collectors.toList());
-					DefaultListModel modelo = new DefaultListModel();
-					for (String a : x ) {
-						modelo.addElement(a);
+					if(filter.getText().equals("")){
+						List<String> encomendas = s.getAllEncomendas().keySet().stream().collect(Collectors.toList());
+						DefaultListModel mod = new DefaultListModel();
+						for (String tmp : encomendas) {
+							mod.addElement(tmp);
+						}
+
+						encs.setModel(mod);
+					}else {
+						Map<String, Pair<Integer, String>> x = s.getEncomendasDeCliente(Integer.parseInt(filter.getText()));
+
+						DefaultListModel mod = new DefaultListModel();
+						for (String tmp : x.keySet()){
+							mod.addElement(tmp);
+						}
+
+						encs.setModel(mod);
 					}
 
-					encs.setModel(modelo);
-				}
-				catch (Exception a){
+				}catch (Exception a){
 					System.out.println(a);
 				}
 			}
 		});
+
 
 		this.accept.addActionListener(new ActionListener(){
 			@Override

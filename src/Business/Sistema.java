@@ -215,10 +215,6 @@ public class Sistema {
     public void addEncomenda(String nif,String nome) throws Exception{
         if(this.validaEncomendaAtual()) {
 
-            if(!facade.containsCliente(nif)){
-                facade.putCliente(new Cliente(nome,nif));
-            }
-
             facade.addEncomenda(this.enc, nif,nome);
         }
     }
@@ -316,7 +312,12 @@ public class Sistema {
         return true;
     }
 
-    public String imprimirFatura(String Nif) throws Exception {
+    public String imprimirFatura(String nome,String Nif) throws Exception {
+
+
+        if(!facade.containsCliente(Nif)){
+            facade.putCliente(new Cliente(nome,Nif));
+        }
 
         Cliente c = facade.getCliente(Nif);
         String fatura = this.enc.getFatura();
