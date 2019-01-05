@@ -432,32 +432,8 @@ public class Sistema {
         this.enc.removePacote(id, quantidade);
     }
 
-<<<<<<< HEAD
+
     private Encomenda initConfiguracaoOtima(Map<String, List<Peca>> pecasEmCategoria) throws Exception{
-=======
-    public List<String> getPecasEncomenda(){
-        List<String> res = new ArrayList<>();
-        for(LinhaDeEncomenda l : this.enc.getLinhasDeEncomenda()){
-            if(l instanceof LinhaDeEncomendaPeca){
-                res.add(l.getDescricao());
-            }
-        }
-
-        return res;
-    }
-
-    public List<String> getPacotesEncomenda(){
-        List<String> res = new ArrayList<>();
-        for(LinhaDeEncomenda l : this.enc.getLinhasDeEncomenda()){
-            if(l instanceof LinhaDeEncomendaPacote){
-                res.add(l.getDescricao());
-            }
-        }
-        return res;
-    }
-
-    public void configuracaoOtima(int quantiaMaxima) throws Exception{
->>>>>>> cd46125ecd0cf152a2135d07b45dbb5b4f7b25cf
         Encomenda configOtima = new Encomenda();
         // Construção da solução mais barata
         for(String categoria: pecasEmCategoria.keySet())
@@ -484,6 +460,27 @@ public class Sistema {
             }
         }
         return  configOtima;
+    }
+
+    public List<String> getPecasEncomenda(){
+        List<String> res = new ArrayList<>();
+        for(LinhaDeEncomenda l : this.enc.getLinhasDeEncomenda()){
+            if(l instanceof LinhaDeEncomendaPeca){
+                res.add(l.getDescricao());
+            }
+        }
+
+        return res;
+    }
+
+    public List<String> getPacotesEncomenda(){
+        List<String> res = new ArrayList<>();
+        for(LinhaDeEncomenda l : this.enc.getLinhasDeEncomenda()){
+            if(l instanceof LinhaDeEncomendaPacote){
+                res.add(l.getDescricao());
+            }
+        }
+        return res;
     }
 
     public void configuracaoOtima(int quantiaMaxima) throws Exception{
@@ -623,29 +620,12 @@ public class Sistema {
     public static void main(String[] args) {
         try{
             Sistema sis = new Sistema();
-<<<<<<< HEAD
             sis.addPeca(14,1);
+            sis.configuracaoOtima(1000000);
             System.out.println(sis.enc.getFatura());
             for(Pair<Integer, String> i : sis.getLsEIncompativeisComPeca(1))
                 System.out.println(i.getKey());
-=======
-            /*for(String s : sis.getEncomendasDeCliente(1).keySet()) System.out.println("Encomenda de "+ 1 +" " + s);
-            for(int i = 1; i < 20; i++)
-                sis.addPeca(i,2);
-            */
-            //sis.addPeca(1000,1);
-            ;
-            sis.configuracaoOtima(100000);
-            sis.addEncomenda("123456666","Discipulo");
-            System.out.println(sis.imprimirFatura("asdas", "123456789"));
-            for(String s : sis.possiblePacotesInEncomenda().keySet())
-                System.out.println(s);
-            System.out.println(sis.validaEncomendaAtual() && sis.enc.NoDepsAndNoInc());
 
-
-            //sis.addEncomenda();
-
->>>>>>> cd46125ecd0cf152a2135d07b45dbb5b4f7b25cf
 
         } catch(Exception e){
             e.printStackTrace();
