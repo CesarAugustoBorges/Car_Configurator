@@ -623,6 +623,9 @@ public class Sistema {
             sis.addPeca(25,1);
             sis.addPeca(5,1);
             sis.addPeca(8,1);
+            sis.addPacote(1);
+            sis.addPacote(2);
+            sis.getPacotesEncomenda();
             for(String s : sis.addPeca(29,1))
                 System.out.print("É possivel fazer este pacote : " +s + "\n");
 
