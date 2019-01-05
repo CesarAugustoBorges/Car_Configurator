@@ -54,7 +54,7 @@ public class PacoteDeConfiguracaoDAO {
             while (rs.next()) {
                 pc.setId(rs.getInt("id"));
                 pc.setDescricao(rs.getString("descricao"));
-                pc.setPreco(rs.getFloat("preco"));
+                pc.setDesconto(rs.getFloat("desconto"));
             }
 
             ps = con.prepareStatement("Select * from PeçaDoPacote where idPacote = ?");

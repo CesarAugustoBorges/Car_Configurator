@@ -271,9 +271,15 @@ public class Sistema {
         }
     }
 
-    public void addPeca(int id, int quantidade) throws Exception{
+    public List<String> addPeca(int id, int quantidade) throws Exception{
+        List<String> possiveisPacotes = new ArrayList<>();
         Peca peca = getPeca(id);
         this.enc.addPeca(peca, quantidade);
+        List<PacoteDeConfiguracao> pacotes = facade.pacotesComPeca(id);
+        for(PacoteDeConfiguracao pacote : pacotes)
+            if(this.enc.canCreatePacote(pacote))
+                possiveisPacotes.add(pacote.getDescricao());
+        return possiveisPacotes;
     }
 
     public void addPeca(Peca peca, int quantidade) throws Exception{
@@ -309,7 +315,7 @@ public class Sistema {
         return true;
     }
 
-    public String imprimirFatura(String nome, String Nif) throws Exception {
+    public String imprimirFatura(String Nif) throws Exception {
 
         Cliente c = facade.getCliente(Nif);
         String fatura = this.enc.getFatura();
@@ -620,11 +626,20 @@ public class Sistema {
     public static void main(String[] args) {
         try{
             Sistema sis = new Sistema();
-            sis.addPeca(14,1);
-            sis.addPeca(19,1);
+            sis.addPeca(1,1);
+            sis.addPeca(2,1);
+            sis.addPeca(3,1);
+            sis.addPeca(4,1);
+            sis.addPeca(6,1);
+            sis.addPeca(5,1);
+            sis.addPeca(8,1);
+            for(String s : sis.addPeca(29,1))
+                System.out.print("É possivel fazer este pacote : " +s + "\n");
+
             System.out.println(sis.enc.getFatura());
-            for(Integer i : sis.getLsEIncompativeisComPeca(1).values())
-                System.out.println(i);
+            sis.createPacote(1);
+            System.out.println(sis.enc.getFatura());
+
         } catch(Exception e){
             e.printStackTrace();
         }
