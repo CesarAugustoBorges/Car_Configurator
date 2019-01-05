@@ -223,7 +223,15 @@ public class ClientUI extends JPanel{
                                 int idPeca = pecas.get(nome).getKey();
                                 listPecas.add(idPeca);
                                 try{
-                                    incomFrame(0,nome);
+                                    System.out.println("Peça:" + pecas.get(nome).getKey());
+                                    List<String> joinList = s.addPeca(pecas.get(nome).getKey(),1);
+                                    System.out.println("join" + joinList);
+                                    joinToPacote(joinList);
+
+                                    if(!s.getLsEIncompativeisComPeca(pecas.get(nome).getKey()).isEmpty()){
+                                        incomFrame(0,nome);
+                                    }
+                                    updateFrame();
                                 }
                                 catch(Exception ex){
                                     int len = allLogs.size() + 1;
@@ -241,7 +249,11 @@ public class ClientUI extends JPanel{
                             if(childs!=0){
                                 int idPacote = pacotes.get(nome).getKey();
                                 try{
-                                    incomFrame(1,nome);
+                                    s.addPacote(pacotes.get(nome).getKey());
+                                    if(!s.getLsEIncompativeisComPacote(pacotes.get(nome).getKey()).isEmpty()){
+                                        incomFrame(1,nome);
+                                    }
+                                    updateFrame();
                                 }
                                 catch (Exception exc){
                                     int len = allLogs.size() + 1;
@@ -286,7 +298,6 @@ public class ClientUI extends JPanel{
             public void actionPerformed(ActionEvent e) {
                 if(my.getSelectionPath()!=null){
                     TreeModel model = my.getModel();
-                    DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
                     Object[] path = my.getSelectionPath().getPath();
                     int i = path.length-1;
                     int childs = model.getChildCount(path[i]);
@@ -298,6 +309,7 @@ public class ClientUI extends JPanel{
                                 Pair<Integer, String> par = pecas.get(path[1].toString());
                                 int idp = par.getKey();
                                 s.removePeca(idp,1);
+                                updateFrame();
                             } catch (Exception ex){
                                 int len = allLogs.size() + 1;
                                 logs.setText(len + ". " + ex.getMessage());
@@ -307,6 +319,7 @@ public class ClientUI extends JPanel{
                             try{
                                 int id = pacotes.get(path[1].toString()).getKey();
                                 s.removePacote(id,1);
+                                updateFrame();
                             }
                             catch (Exception ex){
                                 int len = allLogs.size() + 1;
@@ -314,9 +327,6 @@ public class ClientUI extends JPanel{
                                 allLogs.add(len + ". " + ex.getMessage());
                             }
                         }
-                        root.remove((DefaultMutableTreeNode) path[1]);
-                        DefaultTreeModel newmodel = new DefaultTreeModel(root);
-                        my.setModel(newmodel);
                     }
                     else {
                         if(path.length==1){
@@ -465,7 +475,7 @@ public class ClientUI extends JPanel{
                     public void actionPerformed(ActionEvent e) {
                         try{
                             s.addEncomenda(nifTxt.getText(), nomeTxt.getText());
-                            //showBill(s.imprimirFatura(nomeTxt.getText(), nifTxt.getText()));
+                            showBill(s.imprimirFatura(nifTxt.getText()));
                         }
                         catch (Exception ex){
                             ex.printStackTrace();
@@ -493,9 +503,8 @@ public class ClientUI extends JPanel{
             }
         });
     }
-    /*
-    private Map<String, Pair<Integer,String>> pecas;
-    private Map<String, Pair<Integer, List<String>>> pacotes;*/
+
+
     private static void incomFrame(int type, String str){
         JFrame f = new JFrame("Imcompatibilidades");
         f.setLayout(null);
@@ -504,8 +513,8 @@ public class ClientUI extends JPanel{
         f.setLocationRelativeTo(null);
         f.setVisible(true);
 
-        JLabel label = new JLabel("Qual quer sua da sua configuração:");
-        label.setBounds(15,15,250,15);
+        JLabel label = new JLabel("Qual quer remover da sua configuração:");
+        label.setBounds(15,15,300,15);
 
         JButton done = new JButton("Feito");
         done.setBounds(400,15,60,40);
@@ -524,7 +533,7 @@ public class ClientUI extends JPanel{
                 logs.setText(len + ". " + ex.getMessage());
                 allLogs.add(len + ". " + ex.getMessage());
             }
-
+            System.out.println(l1);
             Vector<String> v1 = new Vector<>();
             for(Map.Entry<String, Integer> entry : l1.entrySet()) {
                 String key = entry.getKey();
@@ -542,7 +551,7 @@ public class ClientUI extends JPanel{
                 logs.setText(len + ". " + ex.getMessage());
                 allLogs.add(len + ". " + ex.getMessage());
             }
-            System.out.println(l2);
+
             Vector<String> v2 = new Vector<>();
             for(Map.Entry<String, Integer> entry : l2.entrySet()) {
                 String key = entry.getKey();
@@ -588,12 +597,10 @@ public class ClientUI extends JPanel{
                         }
                         listaFinal2.put(map.get(str), str);
                     }
-                    List<Pair<Integer, Boolean>> res = new ArrayList<>();
+
                     try{
-                        s.addPeca(pecas.get(str).getKey(),1);
-                        givePermission(listaFinal, listaFinal2, res);
-                        s.removeLsEIncompativeisComPeca(res, pecas.get(str).getKey());
-                        updateFrame();
+                        givePermission(listaFinal, listaFinal2, pecas.get(str).getKey());
+                        s.removeLsEIncompativeisComPeca(listaFinal, pecas.get(str).getKey());
                         f.dispose();
                     }
                     catch(Exception ex){
@@ -629,11 +636,11 @@ public class ClientUI extends JPanel{
                         }
                         listaFinal2.put(map.get(str), str);
                     }
-                    List<Pair<Integer, Boolean>> res = new ArrayList<>();
+
                     try{
-                        s.addPacote(pacotes.get(str).getKey());
-                        givePermission(listaFinal, listaFinal2, res);
-                        s.removeLsEIncompativeisComPacote(res, pecas.get(str).getKey());
+                        givePermission(listaFinal, listaFinal2, pecas.get(str).getKey());
+                        updateFrame();
+                        s.removeLsEIncompativeisComPacote(listaFinal, pecas.get(str).getKey());
                         updateFrame();
                         f.dispose();
                     }
@@ -648,31 +655,94 @@ public class ClientUI extends JPanel{
         });
     }
 
-    private static void givePermission(List<Pair<Integer, Boolean>> lista, Map<Integer, String> lista2, List<Pair<Integer, Boolean>> res){
-        for(Pair<Integer,Boolean> par : lista){
+    private static void joinToPacote(List<String> joinList){
+        if(!joinList.isEmpty()){
+            JFrame f = new JFrame("Transformar num pacote");
+            f.setLayout(null);
+            f.setSize(500,400);
+            f.setResizable(false);
+            f.setLocationRelativeTo(null);
+            f.setVisible(true);
+
+            JLabel label = new JLabel("Deseja transformar alguns itens existentes em só um dos seguintes pacotes?");
+            label.setBounds(15,15,250,15);
+
+            Object[] arr = joinList.toArray();
+
+            JList list = new JList(arr);
+
+            JButton done = new JButton("Feito");
+            done.setBounds(400,15,60,40);
+            done.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(list.getSelectedValuesList().size()==1){
+                        try{
+                            int i = pacotes.get(list.getSelectedValue().toString()).getKey();
+                            s.createPacote(i);
+                            updateFrame();
+                        }
+                        catch (Exception ex){
+                            int len = allLogs.size() + 1;
+                            logs.setText(len + ". " + ex.getMessage());
+                            allLogs.add(len + ". " + ex.getMessage());
+                        }
+                        f.dispose();
+                    }
+                    else {
+                        int len = allLogs.size() + 1;
+                        logs.setText(len + ". Só pode selecionar um pacote");
+                        allLogs.add(len + ". Só pode selecionar um pacote");
+                    }
+                }
+            });
+
+            JScrollPane spI = new JScrollPane(list);
+            spI.setBounds(15,90,470,270);
+            list.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+
+            f.add(label);
+            f.add(done);
+            f.add(spI);
+        }
+    }
+
+    private static void givePermission(List<Pair<Integer, Boolean>> lista, Map<Integer, String> lista2, int w){
+        int var;
+        for(var=0; var<lista.size(); var++){
+            Pair<Integer,Boolean> par = lista.get(var);
             if(!par.getValue()){
                 JFrame f = new JFrame("Desfazer pacote");
                 f.setLayout(null);
-                f.setSize(200,200);
+                f.setSize(500,150);
                 f.setResizable(false);
                 f.setLocationRelativeTo(null);
                 f.setVisible(true);
 
                 JLabel label = new JLabel("Quer desfazer o pacote " + lista2.get(par.getKey()));
-                label.setBounds(15,15,70,15);
+                label.setBounds(15,15,400,15);
                 JButton yes = new JButton("Sim");
-                yes.setBounds(15,40,50,30);
+                yes.setBounds(15,50,50,30);
                 JButton no = new JButton("Não");
-                no.setBounds(50,40,50,30);
+                no.setBounds(70,50,50,30);
 
                 f.add(label);
                 f.add(yes);
                 f.add(no);
-
+                int i=var;
                 yes.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        res.add(new Pair<>(par.getKey(),true));
+                        lista.set(i, new Pair<>(par.getKey(),true));
+                        try{
+                            s.removeLsEIncompativeisComPacote(lista, w);
+                            updateFrame();
+                        }
+                        catch (Exception ex){
+                            int len = allLogs.size() + 1;
+                            logs.setText(len + ". " + ex.getMessage());
+                            allLogs.add(len + ". " + ex.getMessage());
+                        }
                         f.dispose();
                     }
                 });
@@ -684,9 +754,6 @@ public class ClientUI extends JPanel{
                     }
                 });
             }
-            else {
-                res.add(new Pair<>(par.getKey(),par.getValue()));
-            }
         }
     }
 
@@ -694,7 +761,9 @@ public class ClientUI extends JPanel{
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Carro");
 
         List<String> peçasEnc = s.getPecasEncomenda();
+        System.out.println("peças" + peçasEnc);
         List<String> pacotesEnc = s.getPacotesEncomenda();
+        System.out.println("pacotes" + pacotesEnc);
 
         for(String str:peçasEnc){
             root.add(new DefaultMutableTreeNode(str));
@@ -722,10 +791,34 @@ public class ClientUI extends JPanel{
         f.setVisible(true);
 
         JEditorPane myPane = new JEditorPane();
+        JScrollPane sp = new JScrollPane(myPane);
+        sp.setBounds(1,1,295,300);
         myPane.setContentType("text/plain");
         myPane.setEditable(false);
         myPane.setText(fatura);
-        f.setContentPane(myPane);
+
+        JButton a = new JButton("Aceitar");
+        a.setBounds(15,320,70,30);
+        JButton d = new JButton("Recusar");
+        d.setBounds(150,320,70,30);
+
+        a.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                f.dispose();
+            }
+        });
+
+        d.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                f.dispose();
+            }
+        });
+
+        f.add(sp);
+        f.add(a);
+        f.add(d);
     }
 
     private static void configOtima(){
