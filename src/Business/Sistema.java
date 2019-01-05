@@ -236,15 +236,15 @@ public class Sistema {
         facade.setQuantidadeAtualStock(id, quantia + quantidade);
     }
 
-    public List<Pair<Integer,String>> getLsEIncompativeisComPeca(int id) throws Exception {
+    public Map<String, Integer> getLsEIncompativeisComPeca(int id) throws Exception {
         Peca p = facade.getPeca(id);
-        List<Pair<Integer,String>> incom = this.enc.getLEIncompativeisCom(p);
+        Map<String, Integer> incom = this.enc.getLEIncompativeisCom(p);
         return incom;
     }
 
-    public List<Pair<Integer,String>> getLsEIncompativeisComPacote(int id) throws Exception  {
+    public Map<String, Integer> getLsEIncompativeisComPacote(int id) throws Exception  {
         PacoteDeConfiguracao p = facade.getPacote(id);
-        List<Pair<Integer,String>> incom = this.enc.getLEIncompativeisCom(p);
+        Map<String, Integer> incom = this.enc.getLEIncompativeisCom(p);
         return incom;
     }
 
@@ -287,7 +287,7 @@ public class Sistema {
     }
 
 
-    public List<Pair<Integer, String>> getLsEDependentesPacote(int IdPacote) throws Exception {
+    public Map<String, Integer> getLsEDependentesPacote(int IdPacote) throws Exception {
         PacoteDeConfiguracao p = facade.getPacote(IdPacote);
         return this.enc.getLsEDependentes(p);
     }
@@ -525,8 +525,8 @@ public class Sistema {
                 break;
 
             configOtima.addPeca(maisBarata,1);
-            for(Pair<Integer,String> le: getLsEIncompativeisComPeca(maisBarata.getId()))
-                configOtima.removeLinhaEncomenda(le.getKey());
+            for(Integer le: getLsEIncompativeisComPeca(maisBarata.getId()).values())
+                configOtima.removeLinhaEncomenda(le);
             addDependenciasDePeca(maisBarata, configOtima);
             pecasEmCategoria.get(categoria).remove(0);
             if(pecasEmCategoria.get(categoria).isEmpty()) pecasEmCategoria.remove(categoria);
@@ -621,12 +621,10 @@ public class Sistema {
         try{
             Sistema sis = new Sistema();
             sis.addPeca(14,1);
-            sis.configuracaoOtima(1000000);
+            sis.addPeca(19,1);
             System.out.println(sis.enc.getFatura());
-            for(Pair<Integer, String> i : sis.getLsEIncompativeisComPeca(1))
-                System.out.println(i.getKey());
-
-
+            for(Integer i : sis.getLsEIncompativeisComPeca(1).values())
+                System.out.println(i);
         } catch(Exception e){
             e.printStackTrace();
         }

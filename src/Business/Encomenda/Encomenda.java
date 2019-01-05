@@ -110,9 +110,9 @@ public class Encomenda {
     }
 
     // Devolve uma lista com os ids e as descrições das linhas de encomenda que são incompativeis com a peça p
-    public List<Pair<Integer,String>> getLEIncompativeisCom(Peca p){
+    public Map<String, Integer> getLEIncompativeisCom(Peca p){
         ArrayList<Integer> incom = p.getIncompatibilidades();
-        List<Pair<Integer,String>> res = new ArrayList<>();
+        Map<String, Integer> res = new HashMap<>();
         for(LinhaDeEncomenda le: linhasDeEncomenda){
             boolean incompativel = false;
             if(le instanceof LinhaDeEncomendaPeca)
@@ -125,24 +125,24 @@ public class Encomenda {
             }
 
             if(incompativel)
-                res.add(new Pair<>(le.getId(), le.getDescricao()));
+                res.put(le.getDescricao(), le.getId());
             else
                 for(Integer inc : incom){
                         if(le.hasPeca(inc) || incompativel)
-                            res.add(new Pair<>(le.getId(), le.getDescricao()));
+                            res.put(le.getDescricao(), le.getId());
                 }
         }
         return res;
     }
 
     // Devolve uma lista com os ids e as descrições das linhas de encomenda que são incompativeis com o pacote p
-    public List<Pair<Integer,String>> getLEIncompativeisCom(PacoteDeConfiguracao p){
+    public Map<String, Integer> getLEIncompativeisCom(PacoteDeConfiguracao p){
         Set<Integer> incom = p.getIncompatibilidades();
-        List<Pair<Integer,String>> res = new ArrayList<>();
+        Map<String, Integer> res = new HashMap<>();
         for(LinhaDeEncomenda le: linhasDeEncomenda)
             for(Integer inc : incom)
                 if(le.hasPeca(inc))
-                    res.add(new Pair<>(le.getId(), le.getDescricao()));
+                    res.put(le.getDescricao(), le.getId());
         return res;
     }
 
@@ -247,22 +247,22 @@ public class Encomenda {
     }
 
 
-    public List<Pair<Integer, String>> getLsEDependentes(PacoteDeConfiguracao p){
-        List<Pair<Integer, String>> res = new ArrayList<>();
+    public Map<String, Integer> getLsEDependentes(PacoteDeConfiguracao p){
+        Map<String, Integer>res = new HashMap<>();
         int count = 0;
         for(LinhaDeEncomenda le: linhasDeEncomenda){
             if(le.dependeDe(p))
-                res.add(new Pair<>(le.getId(), le.getDescricao()));
+                res.put(le.getDescricao(), le.getId());
         }
         return res;
     }
 
-    public List<Pair<Integer, String>> getLsEDependentes(Peca p){
-        List<Pair<Integer, String>> res = new ArrayList<>();
+    public Map<String, Integer> getLsEDependentes(Peca p){
+        Map<String, Integer> res = new HashMap<>();
         int count = 0;
         for(LinhaDeEncomenda le: linhasDeEncomenda){
             if(le.dependeDe(p))
-                res.add(new Pair<>(le.getId(), le.getDescricao()));
+                res.put(le.getDescricao(), le.getId());
         }
         return res;
     }
@@ -367,11 +367,11 @@ public class Encomenda {
     private void cascadeRemoveLsEDependentesDe(Integer peca){
         Peca p = new Peca();
         p.setId(peca);
-        List<Pair<Integer, String>> les = getLsEDependentes(p);
-        for(Pair<Integer,String> i : les)
-            linhasDeEncomenda.remove(i);
-        for(Pair<Integer,String> i : les){
-            LinhaDeEncomendaPeca lep = (LinhaDeEncomendaPeca) getLinhaEncomenda(i.getKey());
+        Map<String, Integer> les = getLsEDependentes(p);
+        for(Integer i : les.values())
+            removeLinhaEncomenda(i);
+        for(Integer i : les.values()){
+            LinhaDeEncomendaPeca lep = (LinhaDeEncomendaPeca) getLinhaEncomenda(i);
             if(lep.getIdPeca() != peca)
                 cascadeRemoveLsEDependentesDe(lep.getIdPeca());
         }
