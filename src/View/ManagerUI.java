@@ -3,6 +3,7 @@ package View;
 import Business.Sistema;
 import javafx.util.Pair;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -10,6 +11,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,10 +29,13 @@ public class ManagerUI extends JPanel{
 	private JLabel filterLabel;
 	private JTextField filter;
 	private JButton goFilter;
+	private JButton reloadButton;
 	private JLabel encsLabel;
 	private JList encs;
+	private JScrollPane spEncs;
 	private JLabel infoEncLabel;
 	private JTree infoEncTree;
+	private JScrollPane spInfoEncTree;
 	private JButton accept;
 	private JButton decline;
 
@@ -40,8 +47,10 @@ public class ManagerUI extends JPanel{
 	//Stock
 	private JLabel stockLabel;
 	private JList stockTree;
+	private JScrollPane spStockTree;
 	private JLabel infoStockLabel;
 	private JList infoStockList;
+	private JScrollPane spInfoStockList;
 	private JButton moreStock;
 
 	public ManagerUI(Sistema x) throws Exception{
@@ -67,11 +76,31 @@ public class ManagerUI extends JPanel{
 		goFilter = new JButton("->");
 		goFilter.setBounds(437,30,30,30);
 
+		BufferedImage img = null;
+		try{
+			img = ImageIO.read(new File("src/View/reload.png"));
+
+		}
+		catch(IOException e){
+			System.err.println("Caught IOException: " + e.getMessage());
+		}
+
+		Image tmp = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+		BufferedImage dimg = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = dimg.createGraphics();
+		g2d.drawImage(tmp, 0, 0, null);
+		g2d.dispose();
+
+		reloadButton = new JButton(new ImageIcon(dimg));
+		reloadButton.setBounds(215,30,30,30);
+
 		encsLabel = new JLabel("Encomendas:");
 		encsLabel.setBounds(20,70,100,15);
 		encs = new JList();
+		spEncs = new JScrollPane(encs);
+		spEncs.setBounds(15,90,227,365);
 		encs.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-		encs.setBounds(15,90,227,365);
+
 
 		//Map<Descricao, Pair<Id, Categoria>>
 		allEncs = s.getAllEncomendas();
@@ -92,7 +121,8 @@ public class ManagerUI extends JPanel{
 		root = new DefaultMutableTreeNode("Encomenda");
 		infoEncTree = new JTree(root);
 		infoEncTree.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-		infoEncTree.setBounds(258,90,227,325);
+		spInfoEncTree = new JScrollPane(infoEncTree);
+		spInfoEncTree.setBounds(258,90,227,325);
 
 		accept = new JButton("Validar");
 		accept.setBounds(345,425,65,30);
@@ -115,16 +145,19 @@ public class ManagerUI extends JPanel{
 
 		stockTree.setModel(modelo);
 
-		stockTree.setBounds(15,90,227,365);
-		stockTree.setVisible(false);
+		spStockTree = new JScrollPane(stockTree);
+		spStockTree.setBounds(15,90,227,365);
+		spStockTree.setVisible(false);
 
 		infoStockLabel = new JLabel("Informação do Item:");
 		infoStockLabel.setBounds(263,70,190,15);
 		infoStockLabel.setVisible(false);
 		infoStockList = new JList();
 		infoStockList.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-		infoStockList.setBounds(258,90,227,325);
-		infoStockList.setVisible(false);
+
+		spInfoStockList = new JScrollPane(infoStockList);
+		spInfoStockList.setBounds(258,90,227,325);
+		spInfoStockList.setVisible(false);
 
 		moreStock = new JButton("Encomendar Mais");
 		moreStock.setBounds(315,425,170,30);
@@ -132,7 +165,6 @@ public class ManagerUI extends JPanel{
 	}
 
 	private void createListeners(){
-
 		this.encs.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if(encs.getSelectedValue() != null){
@@ -274,7 +306,6 @@ public class ManagerUI extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//Stuff here
-				System.out.println("Filter");
 				DefaultMutableTreeNode r = new DefaultMutableTreeNode("Encomenda");
 				DefaultTreeModel newmodel = new DefaultTreeModel(r);
 				infoEncTree.setModel(newmodel);
@@ -299,6 +330,24 @@ public class ManagerUI extends JPanel{
 					}
 
 				}catch (Exception a){
+					System.out.println(a);
+				}
+			}
+		});
+
+		this.reloadButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				try {
+					List<String> x = allEncs.keySet().stream().collect(Collectors.toList());
+					DefaultListModel modelo = new DefaultListModel();
+					for (String a : x ) {
+						modelo.addElement(a);
+					}
+
+					encs.setModel(modelo);
+				}
+				catch (Exception a){
 					System.out.println(a);
 				}
 			}
@@ -339,10 +388,6 @@ public class ManagerUI extends JPanel{
 				String selected = (String) choose.getSelectedItem();
 				if(selected.equals("Stock")){
 					hideEncs();
-
-					//adiciona aqui
-					//System.out.println(stockTree.getLeadSelectionIndex());
-
 				}
 				else{
 					hideStock();
@@ -354,35 +399,37 @@ public class ManagerUI extends JPanel{
 	private void hideEncs(){
 		filterLabel.setVisible(false);
 		filter.setVisible(false);
+		reloadButton.setVisible(false);
 		goFilter.setVisible(false);
 		encsLabel.setVisible(false);
-		encs.setVisible(false);
+		spEncs.setVisible(false);
 		infoEncLabel.setVisible(false);
-		infoEncTree.setVisible(false);
+		spInfoEncTree.setVisible(false);
 		accept.setVisible(false);
 		decline.setVisible(false);
 
 		stockLabel.setVisible(true);
-		stockTree.setVisible(true);
+		spStockTree.setVisible(true);
 		infoStockLabel.setVisible(true);
-		infoStockList.setVisible(true);
+		spInfoStockList.setVisible(true);
 		moreStock.setVisible(true);
 	}
 
 	private void hideStock(){
 		stockLabel.setVisible(false);
-		stockTree.setVisible(false);
+		spStockTree.setVisible(false);
 		infoStockLabel.setVisible(false);
-		infoStockList.setVisible(false);
+		spInfoStockList.setVisible(false);
 		moreStock.setVisible(false);
 
 		filterLabel.setVisible(true);
 		filter.setVisible(true);
+		reloadButton.setVisible(true);
 		goFilter.setVisible(true);
 		encsLabel.setVisible(true);
-		encs.setVisible(true);
+		spEncs.setVisible(true);
 		infoEncLabel.setVisible(true);
-		infoEncTree.setVisible(true);
+		spInfoEncTree.setVisible(true);
 		accept.setVisible(true);
 		decline.setVisible(true);
 	}
@@ -394,19 +441,20 @@ public class ManagerUI extends JPanel{
 		//Lista de Encomendas
 		add(filterLabel);
 		add(filter);
+		add(reloadButton);
 		add(goFilter);
 		add(encsLabel);
-		add(encs);
+		add(spEncs);
 		add(infoEncLabel);
-		add(infoEncTree);
+		add(spInfoEncTree);
 		add(accept);
 		add(decline);
 
 		//Stock
 		add(stockLabel);
-		add(stockTree);
+		add(spStockTree);
 		add(infoStockLabel);
-		add(infoStockList);
+		add(spInfoStockList);
 		add(moreStock);
 	}
 }

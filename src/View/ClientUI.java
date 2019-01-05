@@ -223,13 +223,15 @@ public class ClientUI extends JPanel{
                                 int idPeca = pecas.get(nome).getKey();
                                 listPecas.add(idPeca);
                                 try{
-                                    System.out.println("Peça:" + pecas.get(nome).getKey());
                                     List<String> joinList = s.addPeca(pecas.get(nome).getKey(),1);
-                                    System.out.println("join" + joinList);
                                     joinToPacote(joinList);
 
                                     if(!s.getLsEIncompativeisComPeca(pecas.get(nome).getKey()).isEmpty()){
                                         incomFrame(0,nome);
+                                    }
+                                    updateFrame();
+                                    if(!s.getPecasObrigatorias(pecas.get(nome).getKey()).isEmpty()){
+                                        dependenciesFrame(0, nome);
                                     }
                                     updateFrame();
                                 }
@@ -252,6 +254,10 @@ public class ClientUI extends JPanel{
                                     s.addPacote(pacotes.get(nome).getKey());
                                     if(!s.getLsEIncompativeisComPacote(pacotes.get(nome).getKey()).isEmpty()){
                                         incomFrame(1,nome);
+                                    }
+                                    updateFrame();
+                                    if(!s.getLsEDependentesPacote(pacotes.get(nome).getKey()).isEmpty()){
+                                        dependenciesFrame(1,nome);
                                     }
                                     updateFrame();
                                 }
@@ -369,6 +375,106 @@ public class ClientUI extends JPanel{
         });        
     }
 
+    private Map<Integer,String> idToString(Map<String, Pair<Integer,String>> map){
+        Map<Integer,String> res = new HashMap<>();
+        for(Map.Entry<String, Pair<Integer,String>> entry : map.entrySet()) {
+            String key = entry.getKey();
+            Pair<Integer,String> value = entry.getValue();
+
+            res.put(value.getKey(),key);
+        }
+        return res;
+    }
+
+    //Map<String, Pair<Integer,String>> pecas;
+    //List<Integer> getPecasObrigatorias(int idPeça)
+
+    //Map<String, Pair<Integer, List<String>>> pacotes;
+    //Map<String, Integer> getLsEDependentesPacote(int IdPacote)
+    private void dependenciesFrame(int type, String str){
+        JFrame f = new JFrame("Dependencias");
+        f.setLayout(null);
+        f.setSize(500,400);
+        f.setResizable(false);
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
+
+        JLabel label = new JLabel("Quais quer adicionar na sua configuração:");
+        label.setBounds(15,15,300,15);
+
+        JButton done = new JButton("Feito");
+        done.setBounds(400,15,60,40);
+
+        Vector<String> vector = new Vector<>();
+
+        if(type==0){
+            Map<Integer,String> intToStr = idToString(pecas);
+            try{
+                List<Integer> DLista = s.getPecasObrigatorias(pecas.get(str).getKey());
+                for(Integer id : DLista){
+                    vector.add(intToStr.get(id));
+                }
+            }
+            catch (Exception ex){
+                int len = allLogs.size() + 1;
+                logs.setText(len + ". " + ex.getMessage());
+                allLogs.add(len + ". " + ex.getMessage());
+            }
+        }
+        else {
+            try{
+                Map<String, Integer> map = s.getLsEDependentesPacote(pacotes.get(str).getKey());
+                Set<String> set = map.keySet();
+
+                for(String s : set){
+                    vector.add(s);
+                }
+            }
+            catch (Exception ex){
+                int len = allLogs.size() + 1;
+                logs.setText(len + ". " + ex.getMessage());
+                allLogs.add(len + ". " + ex.getMessage());
+            }
+        }
+
+        JList list = new JList(vector);
+
+        JScrollPane spI = new JScrollPane(list);
+        spI.setBounds(15,90,470,270);
+        list.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+
+        done.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<String> seleList = list.getSelectedValuesList();
+                if(!seleList.isEmpty()){
+                    for(String st : seleList){
+                        try{
+                            if(st.startsWith("Pacote")){
+                                s.addPacote(pacotes.get(st).getKey());
+                                updateFrame();
+                            }
+                            else {
+                                s.addPeca(pecas.get(st).getKey(), 1);
+                                updateFrame();
+                            }
+                        }
+                        catch (Exception ex){
+                            int len = allLogs.size() + 1;
+                            logs.setText(len + ". " + ex.getMessage());
+                            allLogs.add(len + ". " + ex.getMessage());
+                        }
+                    }
+                    f.dispose();
+                }
+            }
+        });
+
+        f.add(label);
+        f.add(done);
+        f.add(spI);
+    }
+
     private void addAll(){
         add(partsButton);
         add(packsButton);
@@ -380,6 +486,27 @@ public class ClientUI extends JPanel{
         add(removePartButton);
         add(logsScroll);
         add(moreButton);
+    }
+
+    private static void cleanEnc(){
+        try{
+            List<String> peçasEnc = s.getPecasEncomenda();
+            List<String> pacotesEnc = s.getPacotesEncomenda();
+
+            for(String str : peçasEnc){
+                s.removePeca(pecas.get(str).getKey(),1);
+            }
+
+            for(String str:pacotesEnc){
+                s.removePacote(pacotes.get(str).getKey(),1);
+            }
+            updateFrame();
+        }
+        catch (Exception ex){
+            int len = allLogs.size() + 1;
+            logs.setText(len + ". " + ex.getMessage());
+            allLogs.add(len + ". " + ex.getMessage());
+        }
     }
 
     public static void createMenuBar(JFrame frame){
@@ -413,7 +540,7 @@ public class ClientUI extends JPanel{
         newCar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Stuff here
+                cleanEnc();
             }
         });
 
@@ -474,11 +601,9 @@ public class ClientUI extends JPanel{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         try{
-                            s.addEncomenda(nifTxt.getText(), nomeTxt.getText());
-                            showBill(s.imprimirFatura(nifTxt.getText()));
+                            showBill(s.imprimirFatura(nifTxt.getText()), nifTxt.getText(), nomeTxt.getText());
                         }
                         catch (Exception ex){
-                            ex.printStackTrace();
                             int len = allLogs.size() + 1;
                             logs.setText(len + ". " + ex.getMessage());
                             allLogs.add(len + ". " + ex.getMessage());
@@ -533,7 +658,6 @@ public class ClientUI extends JPanel{
                 logs.setText(len + ". " + ex.getMessage());
                 allLogs.add(len + ". " + ex.getMessage());
             }
-            System.out.println(l1);
             Vector<String> v1 = new Vector<>();
             for(Map.Entry<String, Integer> entry : l1.entrySet()) {
                 String key = entry.getKey();
@@ -599,8 +723,11 @@ public class ClientUI extends JPanel{
                     }
 
                     try{
+                        updateFrame();
                         givePermission(listaFinal, listaFinal2, pecas.get(str).getKey());
+                        updateFrame();
                         s.removeLsEIncompativeisComPeca(listaFinal, pecas.get(str).getKey());
+                        updateFrame();
                         f.dispose();
                     }
                     catch(Exception ex){
@@ -638,6 +765,7 @@ public class ClientUI extends JPanel{
                     }
 
                     try{
+                        updateFrame();
                         givePermission(listaFinal, listaFinal2, pecas.get(str).getKey());
                         updateFrame();
                         s.removeLsEIncompativeisComPacote(listaFinal, pecas.get(str).getKey());
@@ -761,9 +889,7 @@ public class ClientUI extends JPanel{
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Carro");
 
         List<String> peçasEnc = s.getPecasEncomenda();
-        System.out.println("peças" + peçasEnc);
         List<String> pacotesEnc = s.getPacotesEncomenda();
-        System.out.println("pacotes" + pacotesEnc);
 
         for(String str:peçasEnc){
             root.add(new DefaultMutableTreeNode(str));
@@ -782,7 +908,7 @@ public class ClientUI extends JPanel{
         my.setModel(newmodel);
     }
 
-    private static void showBill(String fatura){
+    private static void showBill(String fatura, String nif, String nome){
         JFrame f = new JFrame("Fatura");
         f.setLayout(null);
         f.setSize(300,400);
@@ -805,6 +931,14 @@ public class ClientUI extends JPanel{
         a.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                try{
+                    s.addEncomenda(nif, nome);
+                }
+                catch (Exception ex){
+                    int len = allLogs.size() + 1;
+                    logs.setText(len + ". " + ex.getMessage());
+                    allLogs.add(len + ". " + ex.getMessage());
+                }
                 f.dispose();
             }
         });
