@@ -327,9 +327,6 @@ public class Encomenda {
     }
 
     public void createPacote(PacoteDeConfiguracao pacote){
-        List<LinhaDeEncomenda> leps = linhasDeEncomenda.stream()
-                .filter(l -> l instanceof LinhaDeEncomendaPeca)
-                .collect(Collectors.toList());
         Map<Peca, Integer> pecasDoPacote = pacote.getPecas();
         for(Peca p : pecasDoPacote.keySet())
             removePeca(p.getId(), pecasDoPacote.get(p));

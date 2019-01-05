@@ -493,10 +493,13 @@ public class Sistema {
         Encomenda configOtima;
         Encomenda validConfigOtima = new Encomenda();
         Map<String, List<Peca>> pecasEmCategoria = new HashMap<>();
+
         for(String categoria: categoriasObrigatorias)
             pecasEmCategoria.put(categoria, facade.getPecasOfCategorias(categoria));
 
         configOtima = initConfiguracaoOtima(pecasEmCategoria);
+
+
         if(configOtima.getPreco() > quantiaMaxima)
             throw new Exception("Nao existe configuração ótima para a quantia escolhida");
         pecasEmCategoria.put("Extra", facade.getPecasOfCategorias("Extra"));
@@ -555,18 +558,6 @@ public class Sistema {
         encWithPeca.addPeca(peca,1);
         int custoTotal = 0;
         if(!encWithPeca.getLEIncompativeisCom(peca).isEmpty()) return 99999999999.98f;
-        /*for(Pair<Integer,String> i : enc.getLEIncompativeisCom(peca)){
-            LinhaDeEncomenda le = encWithPeca.getLinhaEncomenda(i.getKey());
-            int pecaId = ((LinhaDeEncomendaPeca) le).getId();
-            Peca p = facade.getPeca(pecaId);
-            custoTotal -= p.getPreco();
-            for(Pair<Integer, String> l : encWithPeca.getLsEDependentes(p)){
-                LinhaDeEncomenda led = encWithPeca.getLinhaEncomenda(i.getKey());
-                int pId = ((LinhaDeEncomendaPeca) led).getId();
-                Peca pd = facade.getPeca(pId);
-                custoTotal -= pd.getPreco();
-            }
-        }*/
         for(Integer i: enc.getPecasObrigatorias(peca)){
             Peca p = facade.getPeca(i);
             custoTotal += costToAddPeca(p, encWithPeca);
@@ -626,18 +617,17 @@ public class Sistema {
     public static void main(String[] args) {
         try{
             Sistema sis = new Sistema();
-            sis.addPeca(1,1);
-            sis.addPeca(2,1);
-            sis.addPeca(3,1);
-            sis.addPeca(4,1);
-            sis.addPeca(6,1);
+            sis.addPeca(22,1);
+            sis.addPeca(23,1);
+            sis.addPeca(24,1);
+            sis.addPeca(25,1);
             sis.addPeca(5,1);
             sis.addPeca(8,1);
             for(String s : sis.addPeca(29,1))
                 System.out.print("É possivel fazer este pacote : " +s + "\n");
 
             System.out.println(sis.enc.getFatura());
-            sis.createPacote(1);
+            sis.createPacote(6);
             System.out.println(sis.enc.getFatura());
 
         } catch(Exception e){
