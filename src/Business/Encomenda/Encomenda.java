@@ -365,13 +365,13 @@ public class Encomenda {
         Peca p = new Peca();
         p.setId(peca);
         Map<String, Integer> les = getLsEDependentes(p);
-        for(Integer i : les.values())
-            removeLinhaEncomenda(i);
         for(Integer i : les.values()){
             LinhaDeEncomendaPeca lep = (LinhaDeEncomendaPeca) getLinhaEncomenda(i);
             if(lep.getIdPeca() != peca)
                 cascadeRemoveLsEDependentesDe(lep.getIdPeca());
         }
+        for(Integer i : les.values())
+            removeLinhaEncomenda(i);
     }
 
     public void removeCategoria(String categoria){

@@ -5,6 +5,7 @@ import Business.Stock.Peca;
 import Business.Utilizador.Cliente;
 import Business.Utilizador.Funcionario;
 import Data.*;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -617,21 +618,8 @@ public class Sistema {
     public static void main(String[] args) {
         try{
             Sistema sis = new Sistema();
-            sis.addPeca(22,1);
-            sis.addPeca(23,1);
-            sis.addPeca(24,1);
-            sis.addPeca(25,1);
-            sis.addPeca(5,1);
-            sis.addPeca(8,1);
-            sis.addPacote(1);
-            sis.addPacote(2);
-            sis.getPacotesEncomenda();
-            for(String s : sis.addPeca(29,1))
-                System.out.print("É possivel fazer este pacote : " +s + "\n");
 
-            System.out.println(sis.enc.getFatura());
-            sis.createPacote(6);
-            System.out.println(sis.enc.getFatura());
+
 
         } catch(Exception e){
             e.printStackTrace();
